@@ -423,6 +423,8 @@ function parseCSVToProducts(csvText) {
   const lines = csvText.split('\n');
   const products = [];
   
+  console.log('CSV recibido:', csvText.substring(0, 500)); // Debug
+  
   // Saltar la primera línea (encabezados)
   for (let i = 1; i < lines.length; i++) {
     const line = lines[i].trim();
@@ -431,19 +433,26 @@ function parseCSVToProducts(csvText) {
     // Parsear línea CSV (maneja comillas y comas dentro de campos)
     const fields = parseCSVLine(line);
     
+    console.log('Línea parseada:', fields); // Debug
+    
     if (fields.length >= 6) { // Mínimo campos requeridos
+      // Limpiar precio (remover $ y comas)
+      const cleanPrice = fields[3] ? fields[3].replace(/[$,]/g, '') : '0';
+      
       const product = {
         id: parseInt(fields[0]) || i,
         name: fields[1] || 'Sin nombre',
         brand: fields[2] || 'Sin marca',
-        price: parseFloat(fields[3]) || 0,
-        category: fields[4] || 'unisex',
+        price: parseFloat(cleanPrice) || 0,
+        category: fields[4] ? fields[4].toLowerCase().trim() : 'unisex',
         description: fields[5] || 'Sin descripción',
         image: fields[6] || 'https://via.placeholder.com/300x400/8B4513/FFFFFF?text=Sin+Imagen',
-        stock: parseInt(fields[7]) || 0,
+        stock: parseInt(fields[7]) || 1, // Cambiar default a 1 en lugar de 0
         whatsapp: fields[8] || '+573001234567',
         instagram: fields[9] || '@dmparfum'
       };
+      
+      console.log('Producto creado:', product); // Debug
       
       // Solo agregar productos con stock > 0
       if (product.stock > 0) {
@@ -452,6 +461,7 @@ function parseCSVToProducts(csvText) {
     }
   }
   
+  console.log('Productos finales:', products); // Debug
   return products;
 }
 
