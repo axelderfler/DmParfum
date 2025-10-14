@@ -5,7 +5,7 @@ const GOOGLE_SHEETS_CONFIG = {
   // URL de tu Google Sheet (debes cambiar esto por tu URL real)
   sheetUrl: 'https://docs.google.com/spreadsheets/d/148b-GN5OsSWdBTv7_r-M8jBVqHdGE2Wxu98IvB74L4c/edit?gid=0#gid=0',
   // ID de la hoja (se extrae automáticamente de la URL)
-  sheetId: '1YOUR_SHEET_ID',
+  sheetId: '148b-GN5OsSWdBTv7_r-M8jBVqHdGE2Wxu98IvB74L4c',
   // Nombre de la hoja dentro del spreadsheet
   sheetName: 'web',
   // Columnas esperadas en tu Google Sheet
