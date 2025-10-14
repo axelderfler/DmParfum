@@ -3,31 +3,241 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Perfumes Axel</title>
-  <style>
-    body { font-family: Arial; background-color: #f7f7f7; text-align: center; }
-    h1 { color: #444; }
-    .producto {
-      display: inline-block; 
-      background: white; 
-      margin: 10px; 
-      padding: 15px; 
-      border-radius: 10px; 
-      box-shadow: 0 0 5px rgba(0,0,0,0.1);
-      width: 200px;
-    }
-    img { width: 100%; border-radius: 10px; }
-  </style>
+  <title>Dm Parfum - Perfumes Árabes Auténticos</title>
+  <meta name="description" content="Descubre la elegancia de los perfumes árabes auténticos en Dm Parfum. Fragancias únicas y exclusivas para hombres y mujeres.">
+  <link rel="stylesheet" href="styles.css">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
-  <h1>Perfumes Axel</h1>
-  <p>Catálogo online de perfumes</p>
-  
-  <div class="producto">
-    <img src="https://via.placeholder.com/200" alt="Perfume 1">
-    <h3>Yara Tous</h3>
-    <p>Precio: $25.000</p>
-  </div>
+  <!-- Header -->
+  <header class="header">
+    <nav class="nav">
+      <div class="nav-container">
+        <div class="logo">
+          <h1>Dm Parfum</h1>
+          <span class="tagline">Perfumes Árabes</span>
+        </div>
+        <ul class="nav-menu">
+          <li><a href="#inicio" class="nav-link">Inicio</a></li>
+          <li><a href="#catalogo" class="nav-link">Catálogo</a></li>
+          <li><a href="#sobre-nosotros" class="nav-link">Nosotros</a></li>
+          <li><a href="#contacto" class="nav-link">Contacto</a></li>
+        </ul>
+        <div class="hamburger">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <!-- Hero Section -->
+  <section id="inicio" class="hero">
+    <div class="hero-content">
+      <div class="hero-text">
+        <h1 class="hero-title">Descubre la Elegancia de los Perfumes Árabes</h1>
+        <p class="hero-subtitle">Fragancias auténticas y exclusivas que capturan la esencia del lujo oriental</p>
+        <div class="hero-buttons">
+          <a href="#catalogo" class="btn btn-primary">Ver Catálogo</a>
+          <a href="#contacto" class="btn btn-secondary">Contactar</a>
+        </div>
+      </div>
+      <div class="hero-image">
+        <div class="perfume-showcase">
+          <div class="perfume-bottle"></div>
+          <div class="floating-elements">
+            <div class="element element-1"></div>
+            <div class="element element-2"></div>
+            <div class="element element-3"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features Section -->
+  <section class="features">
+    <div class="container">
+      <div class="features-grid">
+        <div class="feature">
+          <div class="feature-icon">
+            <i class="fas fa-gem"></i>
+          </div>
+          <h3>Autenticidad</h3>
+          <p>Perfumes árabes 100% originales importados directamente</p>
+        </div>
+        <div class="feature">
+          <div class="feature-icon">
+            <i class="fas fa-shipping-fast"></i>
+          </div>
+          <h3>Envío Rápido</h3>
+          <p>Entrega rápida y segura en toda la ciudad</p>
+        </div>
+        <div class="feature">
+          <div class="feature-icon">
+            <i class="fas fa-headset"></i>
+          </div>
+          <h3>Atención Personal</h3>
+          <p>Asesoramiento personalizado para encontrar tu fragancia ideal</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Catalog Section -->
+  <section id="catalogo" class="catalog">
+    <div class="container">
+      <div class="section-header">
+        <h2>Nuestro Catálogo</h2>
+        <p>Descubre nuestra selección de perfumes árabes más exclusivos</p>
+      </div>
+      
+      <div class="catalog-filters">
+        <button class="filter-btn active" data-filter="all">Todos</button>
+        <button class="filter-btn" data-filter="masculino">Masculino</button>
+        <button class="filter-btn" data-filter="femenino">Femenino</button>
+        <button class="filter-btn" data-filter="unisex">Unisex</button>
+      </div>
+
+      <div class="products-grid" id="products-grid">
+        <!-- Los productos se cargarán dinámicamente aquí -->
+      </div>
+    </div>
+  </section>
+
+  <!-- About Section -->
+  <section id="sobre-nosotros" class="about">
+    <div class="container">
+      <div class="about-content">
+        <div class="about-text">
+          <h2>Sobre Dm Parfum</h2>
+          <p>Somos especialistas en perfumes árabes auténticos, trayendo hasta ti las fragancias más exclusivas y elegantes del mundo árabe. Cada perfume en nuestro catálogo ha sido cuidadosamente seleccionado por su calidad, duración y autenticidad.</p>
+          <p>Nuestra pasión es compartir contigo la magia de estas fragancias únicas que han sido creadas con ingredientes naturales y técnicas ancestrales.</p>
+          <div class="stats">
+            <div class="stat">
+              <h3>500+</h3>
+              <p>Clientes Satisfechos</p>
+            </div>
+            <div class="stat">
+              <h3>50+</h3>
+              <p>Fragancias Disponibles</p>
+            </div>
+            <div class="stat">
+              <h3>100%</h3>
+              <p>Autenticidad Garantizada</p>
+            </div>
+          </div>
+        </div>
+        <div class="about-image">
+          <div class="image-placeholder">
+            <i class="fas fa-perfume-bottle"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact Section -->
+  <section id="contacto" class="contact">
+    <div class="container">
+      <div class="section-header">
+        <h2>Contáctanos</h2>
+        <p>¿Tienes alguna pregunta o quieres hacer un pedido?</p>
+      </div>
+      
+      <div class="contact-content">
+        <div class="contact-info">
+          <div class="contact-item">
+            <div class="contact-icon">
+              <i class="fab fa-whatsapp"></i>
+            </div>
+            <div class="contact-details">
+              <h3>WhatsApp</h3>
+              <p>+57 300 123 4567</p>
+              <a href="https://wa.me/573001234567" class="contact-link">Enviar mensaje</a>
+            </div>
+          </div>
+          
+          <div class="contact-item">
+            <div class="contact-icon">
+              <i class="fab fa-instagram"></i>
+            </div>
+            <div class="contact-details">
+              <h3>Instagram</h3>
+              <p>@dmparfum</p>
+              <a href="https://instagram.com/dmparfum" class="contact-link">Seguir</a>
+            </div>
+          </div>
+          
+          <div class="contact-item">
+            <div class="contact-icon">
+              <i class="fas fa-envelope"></i>
+            </div>
+            <div class="contact-details">
+              <h3>Email</h3>
+              <p>info@dmparfum.com</p>
+              <a href="mailto:info@dmparfum.com" class="contact-link">Enviar email</a>
+            </div>
+          </div>
+        </div>
+        
+        <div class="contact-form">
+          <form id="contact-form">
+            <div class="form-group">
+              <input type="text" id="name" name="name" placeholder="Tu nombre" required>
+            </div>
+            <div class="form-group">
+              <input type="email" id="email" name="email" placeholder="Tu email" required>
+            </div>
+            <div class="form-group">
+              <textarea id="message" name="message" placeholder="Tu mensaje" rows="5" required></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">Enviar Mensaje</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-section">
+          <h3>Dm Parfum</h3>
+          <p>Perfumes árabes auténticos para una experiencia única</p>
+          <div class="social-links">
+            <a href="https://instagram.com/dmparfum"><i class="fab fa-instagram"></i></a>
+            <a href="https://wa.me/573001234567"><i class="fab fa-whatsapp"></i></a>
+          </div>
+        </div>
+        <div class="footer-section">
+          <h4>Enlaces Rápidos</h4>
+          <ul>
+            <li><a href="#inicio">Inicio</a></li>
+            <li><a href="#catalogo">Catálogo</a></li>
+            <li><a href="#sobre-nosotros">Nosotros</a></li>
+            <li><a href="#contacto">Contacto</a></li>
+          </ul>
+        </div>
+        <div class="footer-section">
+          <h4>Información</h4>
+          <ul>
+            <li><a href="#">Política de Privacidad</a></li>
+            <li><a href="#">Términos y Condiciones</a></li>
+            <li><a href="#">Envíos y Devoluciones</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2024 Dm Parfum. Todos los derechos reservados.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
 </body>
 </html>
 
