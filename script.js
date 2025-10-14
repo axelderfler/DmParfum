@@ -26,33 +26,8 @@ const GOOGLE_SHEETS_CONFIG = {
 // Datos de productos (se cargarán desde Google Sheets)
 let productsData = [];
 
-// Datos de respaldo en caso de que falle la carga
-const fallbackProducts = [
-  {
-    id: 1,
-    name: "Oud Royal",
-    brand: "Arabian Oud",
-    price: 450000,
-    category: "masculino",
-    description: "Fragancia masculina con notas de oud auténtico, sándalo y especias orientales.",
-    image: "https://via.placeholder.com/300x400/8B4513/FFFFFF?text=Oud+Royal",
-    stock: 5,
-    whatsapp: "+573001234567",
-    instagram: "@dmparfum"
-  },
-  {
-    id: 2,
-    name: "Rose Gold",
-    brand: "Arabian Rose",
-    price: 380000,
-    category: "femenino",
-    description: "Elegante fragancia femenina con rosas de Damasco y notas de oro.",
-    image: "https://via.placeholder.com/300x400/D4AF37/FFFFFF?text=Rose+Gold",
-    stock: 3,
-    whatsapp: "+573001234567",
-    instagram: "@dmparfum"
-  }
-];
+// Datos de respaldo en caso de que falle la carga (vacío para mostrar solo datos reales)
+const fallbackProducts = [];
 
 // Variables globales
 let currentFilter = 'all';
@@ -137,6 +112,27 @@ function loadProducts(animate = false) {
   
   setTimeout(() => {
     productsGrid.innerHTML = '';
+    
+    // Si no hay productos filtrados, mostrar mensaje
+    if (filteredProducts.length === 0) {
+      if (productsData.length === 0) {
+        showNoProductsMessage();
+      } else {
+        // Hay productos pero no coinciden con el filtro
+        productsGrid.innerHTML = `
+          <div class="no-products-container" style="grid-column: 1 / -1; text-align: center; padding: 3rem;">
+            <div style="font-size: 4rem; color: var(--text-light); margin-bottom: 1rem;">
+              <i class="fas fa-filter"></i>
+            </div>
+            <h3 style="color: var(--text-dark); margin-bottom: 1rem;">No hay productos en esta categoría</h3>
+            <p style="color: var(--text-light); margin-bottom: 2rem;">
+              Prueba con otra categoría o selecciona "Todos".
+            </p>
+          </div>
+        `;
+      }
+      return;
+    }
     
     filteredProducts.forEach((product, index) => {
       const productCard = createProductCard(product);
@@ -385,7 +381,13 @@ async function loadProductsFromGoogleSheets() {
   } catch (error) {
     console.warn('Error cargando desde Google Sheets, usando datos de respaldo:', error);
     productsData = fallbackProducts;
-    showNotification('Usando datos de respaldo. Verifica la configuración de Google Sheets.', 'info');
+    
+    if (fallbackProducts.length === 0) {
+      showNotification('No se pudieron cargar los productos. Verifica la configuración de Google Sheets.', 'info');
+      showNoProductsMessage();
+    } else {
+      showNotification('Usando datos de respaldo. Verifica la configuración de Google Sheets.', 'info');
+    }
   } finally {
     hideLoadingState();
     // Cargar productos en la interfaz
@@ -515,6 +517,27 @@ function hideLoadingState() {
   const loadingContainer = document.querySelector('.loading-container');
   if (loadingContainer) {
     loadingContainer.remove();
+  }
+}
+
+// Función para mostrar mensaje cuando no hay productos
+function showNoProductsMessage() {
+  const productsGrid = document.getElementById('products-grid');
+  if (productsGrid) {
+    productsGrid.innerHTML = `
+      <div class="no-products-container" style="grid-column: 1 / -1; text-align: center; padding: 3rem;">
+        <div style="font-size: 4rem; color: var(--text-light); margin-bottom: 1rem;">
+          <i class="fas fa-box-open"></i>
+        </div>
+        <h3 style="color: var(--text-dark); margin-bottom: 1rem;">No hay productos disponibles</h3>
+        <p style="color: var(--text-light); margin-bottom: 2rem;">
+          Los productos se cargan desde Google Sheets. Verifica la configuración.
+        </p>
+        <button onclick="DmParfum.refreshProducts()" class="btn btn-primary">
+          <i class="fas fa-sync-alt"></i> Intentar de nuevo
+        </button>
+      </div>
+    `;
   }
 }
 
