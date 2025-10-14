@@ -436,8 +436,17 @@ function parseCSVToProducts(csvText) {
     console.log('Línea parseada:', fields); // Debug
     
     if (fields.length >= 6) { // Mínimo campos requeridos
-      // Limpiar precio (remover $ y comas)
-      const cleanPrice = fields[3] ? fields[3].replace(/[$,]/g, '') : '0';
+      // Limpiar precio (remover $ y comas, manejar puntos como separadores de miles)
+      let cleanPrice = fields[3] ? fields[3].replace(/[$]/g, '').replace(/,/g, '') : '0';
+      
+      // Si tiene punto y no es decimal (más de 2 dígitos después del punto), es separador de miles
+      if (cleanPrice.includes('.')) {
+        const parts = cleanPrice.split('.');
+        if (parts.length === 2 && parts[1].length > 2) {
+          // Es separador de miles, remover el punto
+          cleanPrice = parts.join('');
+        }
+      }
       
       const product = {
         id: parseInt(fields[0]) || i,
