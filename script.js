@@ -448,11 +448,14 @@ function parseCSVToProducts(csvText) {
         }
       }
       
+      const finalPrice = parseFloat(cleanPrice) || 0;
+      console.log(`Precio original: ${fields[3]}, Limpiado: ${cleanPrice}, Final: ${finalPrice}`); // Debug
+      
       const product = {
         id: parseInt(fields[0]) || i,
         name: fields[1] || 'Sin nombre',
         brand: fields[2] || 'Sin marca',
-        price: parseFloat(cleanPrice) || 0,
+        price: finalPrice,
         category: fields[4] ? fields[4].toLowerCase().trim() : 'unisex',
         description: fields[5] || 'Sin descripción',
         image: fields[6] || 'https://via.placeholder.com/300x400/8B4513/FFFFFF?text=Sin+Imagen',
