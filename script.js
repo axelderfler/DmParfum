@@ -1,7 +1,33 @@
 // Dm Parfum - JavaScript para funcionalidad dinámica
 
-// Datos de productos (esto se puede cambiar por una API más adelante)
-const productsData = [
+// Configuración de Google Sheets
+const GOOGLE_SHEETS_CONFIG = {
+  // URL de tu Google Sheet (debes cambiar esto por tu URL real)
+  sheetUrl: 'https://docs.google.com/spreadsheets/d/148b-GN5OsSWdBTv7_r-M8jBVqHdGE2Wxu98IvB74L4c/edit?gid=0#gid=0',
+  // ID de la hoja (se extrae automáticamente de la URL)
+  sheetId: '1YOUR_SHEET_ID',
+  // Nombre de la hoja dentro del spreadsheet
+  sheetName: 'web',
+  // Columnas esperadas en tu Google Sheet
+  columns: {
+    id: 'A',           // ID único
+    name: 'B',         // Nombre del perfume
+    brand: 'C',        // Marca
+    price: 'D',        // Precio
+    category: 'E',     // Categoría (masculino/femenino/unisex)
+    description: 'F',  // Descripción
+    image: 'G',        // URL de la imagen
+    stock: 'H',        // Stock disponible
+    whatsapp: 'I',     // Número de WhatsApp
+    instagram: 'J'     // Usuario de Instagram
+  }
+};
+
+// Datos de productos (se cargarán desde Google Sheets)
+let productsData = [];
+
+// Datos de respaldo en caso de que falle la carga
+const fallbackProducts = [
   {
     id: 1,
     name: "Oud Royal",
@@ -10,6 +36,7 @@ const productsData = [
     category: "masculino",
     description: "Fragancia masculina con notas de oud auténtico, sándalo y especias orientales.",
     image: "https://via.placeholder.com/300x400/8B4513/FFFFFF?text=Oud+Royal",
+    stock: 5,
     whatsapp: "+573001234567",
     instagram: "@dmparfum"
   },
@@ -21,50 +48,7 @@ const productsData = [
     category: "femenino",
     description: "Elegante fragancia femenina con rosas de Damasco y notas de oro.",
     image: "https://via.placeholder.com/300x400/D4AF37/FFFFFF?text=Rose+Gold",
-    whatsapp: "+573001234567",
-    instagram: "@dmparfum"
-  },
-  {
-    id: 3,
-    name: "Amber Noir",
-    brand: "Desert Sands",
-    price: 520000,
-    category: "unisex",
-    description: "Fragancia unisex con ámbar negro, incienso y notas de cuero.",
-    image: "https://via.placeholder.com/300x400/2C1810/FFFFFF?text=Amber+Noir",
-    whatsapp: "+573001234567",
-    instagram: "@dmparfum"
-  },
-  {
-    id: 4,
-    name: "Sandalwood Supreme",
-    brand: "Oriental Woods",
-    price: 420000,
-    category: "masculino",
-    description: "Fragancia masculina con sándalo de la India y notas de tabaco.",
-    image: "https://via.placeholder.com/300x400/8B4513/FFFFFF?text=Sandalwood",
-    whatsapp: "+573001234567",
-    instagram: "@dmparfum"
-  },
-  {
-    id: 5,
-    name: "Jasmine Dreams",
-    brand: "Arabian Nights",
-    price: 350000,
-    category: "femenino",
-    description: "Fragancia femenina con jazmín de Arabia y notas de vainilla.",
-    image: "https://via.placeholder.com/300x400/D4AF37/FFFFFF?text=Jasmine",
-    whatsapp: "+573001234567",
-    instagram: "@dmparfum"
-  },
-  {
-    id: 6,
-    name: "Mystic Oud",
-    brand: "Desert Mystique",
-    price: 480000,
-    category: "unisex",
-    description: "Fragancia unisex con oud misterioso y notas de especias exóticas.",
-    image: "https://via.placeholder.com/300x400/2C1810/FFFFFF?text=Mystic+Oud",
+    stock: 3,
     whatsapp: "+573001234567",
     instagram: "@dmparfum"
   }
@@ -78,10 +62,12 @@ let filteredProducts = productsData;
 document.addEventListener('DOMContentLoaded', function() {
   initializeNavigation();
   initializeFilters();
-  loadProducts();
   initializeContactForm();
   initializeScrollEffects();
   initializeMobileMenu();
+  
+  // Cargar productos desde Google Sheets
+  loadProductsFromGoogleSheets();
 });
 
 // Navegación suave
@@ -191,18 +177,27 @@ function createProductCard(product) {
     minimumFractionDigits: 0
   }).format(product.price);
   
+  // Determinar estado del stock
+  const stockStatus = product.stock > 0 ? 
+    `<span class="stock-available">Disponible (${product.stock})</span>` : 
+    `<span class="stock-unavailable">Agotado</span>`;
+  
   card.innerHTML = `
     <div class="product-image">
       <img src="${product.image}" alt="${product.name}" loading="lazy">
+      ${product.stock <= 3 && product.stock > 0 ? '<div class="stock-warning">¡Últimas unidades!</div>' : ''}
     </div>
     <div class="product-info">
       <h3 class="product-name">${product.name}</h3>
       <p class="product-brand">${product.brand}</p>
       <p class="product-price">${formattedPrice}</p>
       <p class="product-description">${product.description}</p>
+      <div class="product-stock">${stockStatus}</div>
       <div class="product-actions">
         <a href="https://wa.me/${product.whatsapp.replace(/[^0-9]/g, '')}?text=Hola, me interesa el perfume ${product.name}" 
-           class="btn-whatsapp" target="_blank">
+           class="btn-whatsapp ${product.stock <= 0 ? 'disabled' : ''}" 
+           target="_blank"
+           ${product.stock <= 0 ? 'onclick="return false;"' : ''}>
           <i class="fab fa-whatsapp"></i> WhatsApp
         </a>
         <a href="https://instagram.com/${product.instagram.replace('@', '')}" 
@@ -371,10 +366,177 @@ function removeProduct(id) {
   }
 }
 
-// Exportar funciones para uso global (si es necesario)
+// Función para cargar productos desde Google Sheets
+async function loadProductsFromGoogleSheets() {
+  try {
+    showLoadingState();
+    
+    // Intentar cargar desde Google Sheets
+    const sheetData = await fetchGoogleSheetsData();
+    
+    if (sheetData && sheetData.length > 0) {
+      productsData = sheetData;
+      console.log('Productos cargados desde Google Sheets:', productsData.length);
+      showNotification(`Se cargaron ${productsData.length} productos desde Google Sheets`, 'success');
+    } else {
+      throw new Error('No se encontraron datos en Google Sheets');
+    }
+    
+  } catch (error) {
+    console.warn('Error cargando desde Google Sheets, usando datos de respaldo:', error);
+    productsData = fallbackProducts;
+    showNotification('Usando datos de respaldo. Verifica la configuración de Google Sheets.', 'info');
+  } finally {
+    hideLoadingState();
+    // Cargar productos en la interfaz
+    loadProducts();
+  }
+}
+
+// Función para obtener datos de Google Sheets
+async function fetchGoogleSheetsData() {
+  const { sheetId, sheetName } = GOOGLE_SHEETS_CONFIG;
+  
+  // Construir URL para obtener datos como CSV
+  const csvUrl = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:csv&sheet=${sheetName}`;
+  
+  try {
+    const response = await fetch(csvUrl);
+    
+    if (!response.ok) {
+      throw new Error(`Error HTTP: ${response.status}`);
+    }
+    
+    const csvText = await response.text();
+    return parseCSVToProducts(csvText);
+    
+  } catch (error) {
+    console.error('Error fetching Google Sheets data:', error);
+    throw error;
+  }
+}
+
+// Función para convertir CSV a array de productos
+function parseCSVToProducts(csvText) {
+  const lines = csvText.split('\n');
+  const products = [];
+  
+  // Saltar la primera línea (encabezados)
+  for (let i = 1; i < lines.length; i++) {
+    const line = lines[i].trim();
+    if (!line) continue;
+    
+    // Parsear línea CSV (maneja comillas y comas dentro de campos)
+    const fields = parseCSVLine(line);
+    
+    if (fields.length >= 6) { // Mínimo campos requeridos
+      const product = {
+        id: parseInt(fields[0]) || i,
+        name: fields[1] || 'Sin nombre',
+        brand: fields[2] || 'Sin marca',
+        price: parseFloat(fields[3]) || 0,
+        category: fields[4] || 'unisex',
+        description: fields[5] || 'Sin descripción',
+        image: fields[6] || 'https://via.placeholder.com/300x400/8B4513/FFFFFF?text=Sin+Imagen',
+        stock: parseInt(fields[7]) || 0,
+        whatsapp: fields[8] || '+573001234567',
+        instagram: fields[9] || '@dmparfum'
+      };
+      
+      // Solo agregar productos con stock > 0
+      if (product.stock > 0) {
+        products.push(product);
+      }
+    }
+  }
+  
+  return products;
+}
+
+// Función para parsear una línea CSV correctamente
+function parseCSVLine(line) {
+  const fields = [];
+  let current = '';
+  let inQuotes = false;
+  
+  for (let i = 0; i < line.length; i++) {
+    const char = line[i];
+    
+    if (char === '"') {
+      inQuotes = !inQuotes;
+    } else if (char === ',' && !inQuotes) {
+      fields.push(current.trim());
+      current = '';
+    } else {
+      current += char;
+    }
+  }
+  
+  fields.push(current.trim());
+  return fields;
+}
+
+// Función para mostrar estado de carga
+function showLoadingState() {
+  const productsGrid = document.getElementById('products-grid');
+  if (productsGrid) {
+    productsGrid.innerHTML = `
+      <div class="loading-container" style="grid-column: 1 / -1; text-align: center; padding: 2rem;">
+        <div class="loading-spinner" style="
+          width: 40px;
+          height: 40px;
+          border: 4px solid #f3f3f3;
+          border-top: 4px solid var(--primary-color);
+          border-radius: 50%;
+          animation: spin 1s linear infinite;
+          margin: 0 auto 1rem;
+        "></div>
+        <p style="color: var(--text-light);">Cargando productos desde Google Sheets...</p>
+      </div>
+    `;
+    
+    // Agregar animación CSS si no existe
+    if (!document.querySelector('#loading-styles')) {
+      const style = document.createElement('style');
+      style.id = 'loading-styles';
+      style.textContent = `
+        @keyframes spin {
+          0% { transform: rotate(0deg); }
+          100% { transform: rotate(360deg); }
+        }
+      `;
+      document.head.appendChild(style);
+    }
+  }
+}
+
+// Función para ocultar estado de carga
+function hideLoadingState() {
+  const loadingContainer = document.querySelector('.loading-container');
+  if (loadingContainer) {
+    loadingContainer.remove();
+  }
+}
+
+// Función para actualizar configuración de Google Sheets
+function updateGoogleSheetsConfig(newConfig) {
+  Object.assign(GOOGLE_SHEETS_CONFIG, newConfig);
+  console.log('Configuración de Google Sheets actualizada:', GOOGLE_SHEETS_CONFIG);
+}
+
+// Función para recargar productos manualmente
+function refreshProducts() {
+  loadProductsFromGoogleSheets();
+}
+
+// Exportar funciones para uso global
 window.DmParfum = {
   addProduct,
   updateProduct,
   removeProduct,
-  showNotification
+  showNotification,
+  loadProductsFromGoogleSheets,
+  updateGoogleSheetsConfig,
+  refreshProducts,
+  GOOGLE_SHEETS_CONFIG
 };
