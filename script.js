@@ -31,7 +31,7 @@ const fallbackProducts = [];
 
 // Variables globales
 let currentFilter = 'all';
-let filteredProducts = productsData;
+let filteredProducts = [];
 
 // Inicialización cuando se carga la página
 document.addEventListener('DOMContentLoaded', function() {
@@ -99,6 +99,20 @@ function filterProducts() {
   
   // Recargar productos con animación
   loadProducts(true);
+}
+
+// Función para aplicar filtro inicial (mostrar todos por defecto)
+function applyInitialFilter() {
+  currentFilter = 'all';
+  filteredProducts = productsData;
+  
+  // Marcar el botón "Todos" como activo
+  const filterButtons = document.querySelectorAll('.filter-btn');
+  filterButtons.forEach(btn => btn.classList.remove('active'));
+  const allButton = document.querySelector('[data-filter="all"]');
+  if (allButton) {
+    allButton.classList.add('active');
+  }
 }
 
 // Cargar productos en el grid
@@ -390,6 +404,8 @@ async function loadProductsFromGoogleSheets() {
     }
   } finally {
     hideLoadingState();
+    // Aplicar filtro inicial (mostrar todos)
+    applyInitialFilter();
     // Cargar productos en la interfaz
     loadProducts();
   }
