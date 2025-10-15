@@ -176,12 +176,12 @@ function createProductCard(product) {
   // Determinar estado del stock
   const stockStatus = product.stock > 0 ? 
     `<span class="stock-available">Disponible (${product.stock})</span>` : 
-    `<span class="stock-unavailable">Agotado</span>`;
+    `<span class="stock-unavailable">Sin stock</span>`;
   
   card.innerHTML = `
     <div class="product-image">
       <img src="${product.image}" alt="${product.name}" loading="lazy">
-      ${product.stock <= 3 && product.stock > 0 ? '<div class="stock-warning">¡Últimas unidades!</div>' : ''}
+      ${(typeof product.stock === 'number' && product.stock <= 3 && product.stock > 0) ? '<div class="stock-warning">¡Últimas unidades!</div>' : ''}
     </div>
     <div class="product-info">
       <h3 class="product-name">${product.name}</h3>
@@ -191,9 +191,9 @@ function createProductCard(product) {
       <div class="product-stock">${stockStatus}</div>
       <div class="product-actions">
         <a href="https://wa.me/${product.whatsapp.replace(/[^0-9]/g, '')}?text=Hola, me interesa el perfume ${product.name}" 
-           class="btn-whatsapp ${product.stock <= 0 ? 'disabled' : ''}" 
+           class="btn-whatsapp ${(typeof product.stock === 'number' && product.stock <= 0) || product.stock === 'Sin stock' ? 'disabled' : ''}" 
            target="_blank"
-           ${product.stock <= 0 ? 'onclick="return false;"' : ''}>
+           ${(typeof product.stock === 'number' && product.stock <= 0) || product.stock === 'Sin stock' ? 'onclick="return false;"' : ''}>
           <i class="fab fa-whatsapp"></i> WhatsApp
         </a>
         <a href="https://instagram.com/${product.instagram.replace('@', '')}" 
