@@ -113,11 +113,20 @@ function applyInitialFilter() {
   if (allButton) {
     allButton.classList.add('active');
   }
+  
+  console.log('Filtro inicial aplicado:', { currentFilter, filteredProducts: filteredProducts.length });
 }
 
 // Cargar productos en el grid
 function loadProducts(animate = false) {
   const productsGrid = document.getElementById('products-grid');
+  
+  console.log('loadProducts llamado:', { 
+    animate, 
+    filteredProducts: filteredProducts.length, 
+    productsData: productsData.length,
+    currentFilter 
+  });
   
   if (animate) {
     productsGrid.style.opacity = '0';
@@ -404,9 +413,8 @@ async function loadProductsFromGoogleSheets() {
     }
   } finally {
     hideLoadingState();
-    // Aplicar filtro inicial (mostrar todos)
+    // Aplicar filtro inicial (mostrar todos) y cargar productos
     applyInitialFilter();
-    // Cargar productos en la interfaz
     loadProducts();
   }
 }
