@@ -13,6 +13,10 @@
   --text-light: #6B5B73;
   --bg-light: #F8F6F0;
   --bg-white: #FFFFFF;
+  --bg-normal: #f7e3c8;
+  --bg-catalogo: #fceedb;
+  --bg-producto: #fdead2;
+  --bg-header: #dda356e7;
   --gradient-primary: linear-gradient(135deg, #8B4513 0%, #D4AF37 100%);
   --gradient-secondary: linear-gradient(135deg, #2C1810 0%, #8B4513 100%);
   --shadow-light: 0 4px 20px rgba(0, 0, 0, 0.1);
@@ -27,7 +31,7 @@ body {
   font-family: 'Inter', sans-serif;
   line-height: 1.6;
   color: var(--text-dark);
-  background-color: var(--bg-white);
+  background-color: var(--bg-normal);
   overflow-x: hidden;
 }
 
@@ -50,10 +54,9 @@ h1, h2, h3, h4, h5, h6 {
   top: 0;
   left: 0;
   right: 0;
-  background: rgba(255, 255, 255, 0.95);
+  background: var(--bg-header);
   backdrop-filter: blur(10px);
   z-index: 1000;
-  transition: var(--transition);
 }
 
 .nav-container {
@@ -73,7 +76,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .logo-image {
-  height: 50px;
+  height: 70px;
   width: auto;
   object-fit: contain;
 }
@@ -139,7 +142,7 @@ h1, h2, h3, h4, h5, h6 {
 
 /* Hero Section */
 .hero {
-  height: 100vh;
+  height: 80vh;
   position: relative;
   overflow: hidden;
 }
@@ -152,9 +155,9 @@ h1, h2, h3, h4, h5, h6 {
 .hero-image-left,
 .hero-image-right {
   flex: 1;
-  height: 100%;
+  height: 100%;  
   background-size: cover;
-  background-position: center;
+  background-position-y: 20%;
   background-repeat: no-repeat;
   position: relative;
   cursor: pointer;
@@ -162,11 +165,11 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .hero-image-left {
-  background-image: url('img/IMG-9593.webp');
+  background-image: url('img/elixir.jpg');
 }
 
 .hero-image-right {
-  background-image: url('img/yara pink}.webp');
+  background-image: url('img/yara pink.webp');
 }
 
 .hero-overlay {
@@ -183,10 +186,13 @@ h1, h2, h3, h4, h5, h6 {
   transition: var(--transition);
 }
 
-.hero-image-left:hover .hero-overlay,
-.hero-image-right:hover .hero-overlay {
+.hero-image-left:hover .hero-overlay{
   opacity: 1;
   background: rgba(139, 69, 19, 0.8);
+}
+.hero-image-right:hover .hero-overlay {
+  opacity: 1;
+  background: rgba(201, 62, 69, 0.8);
 }
 
 .hero-content-overlay {
@@ -338,7 +344,7 @@ h1, h2, h3, h4, h5, h6 {
 /* Features Section */
 .features {
   padding: 100px 0;
-  background: var(--bg-white);
+  background: var(--bg-normal);
 }
 
 .features-grid {
@@ -386,7 +392,7 @@ h1, h2, h3, h4, h5, h6 {
 /* Catalog Section */
 .catalog {
   padding: 100px 0;
-  background: var(--bg-light);
+  background: var(--bg-catalogo);
 }
 
 .section-header {
@@ -459,7 +465,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .product-card {
-  background: var(--bg-white);
+  background: var(--bg-producto);
   border-radius: var(--border-radius);
   overflow: hidden;
   box-shadow: var(--shadow-light);
@@ -857,7 +863,7 @@ h1, h2, h3, h4, h5, h6 {
     left: -100%;
     width: 100%;
     height: calc(100vh - 80px);
-    background: var(--bg-white);
+    background: var(--bg-header);
     flex-direction: column;
     justify-content: flex-start;
     align-items: center;
