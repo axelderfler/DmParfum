@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Catálogo de Perfumes | Dm Parfum</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+</head>
+<body>
+  <header class="header">
+    <div class="nav-container">
+      <div class="logo">
+        <img src="img/logo.png" alt="Dm Parfum Logo" class="logo-image">
+        <div class="logo-text">
+          <h1>Dm Parfum</h1>
+          <span class="tagline">Fragancias Originales</span>
+        </div>
+      </div>
+      <nav>
+        <ul class="nav-menu">
+          <li><a href="index.html" class="nav-link">Inicio</a></li>
+          <li><a href="#catalogo" class="nav-link">Catálogo</a></li>
+          <li><a href="#contacto" class="nav-link">Contacto</a></li>
+        </ul>
+        <div class="hamburger">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <main style="margin-top:100px;">
+    <section class="section-header">
+      <h2>Catálogo de Perfumes</h2>
+      <p>Descubrí todas las fragancias disponibles</p>
+    </section>
+
+    <div class="catalog-filters">
+      <button class="filter-btn active" data-filter="all">Todos</button>
+      <button class="filter-btn" data-filter="masculino">Masculinos</button>
+      <button class="filter-btn" data-filter="femenino">Femeninos</button>
+      <button class="filter-btn" data-filter="unisex">Unisex</button>
+      <button class="refresh-btn" onclick="DmParfum.refreshProducts()"><i class="fas fa-sync-alt"></i> Actualizar</button>
+    </div>
+
+    <div class="container">
+      <div id="products-grid" class="products-grid"></div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-content">
+      <div class="footer-section">
+        <h3>Dm Parfum</h3>
+        <p>Fragancias originales, atención personalizada y entrega rápida.</p>
+      </div>
+      <div class="footer-section">
+        <h4>Contacto</h4>
+        <p>Instagram: <a href="https://instagram.com/dm.parfum_" target="_blank">@dm.parfum_</a></p>
+        <p>WhatsApp: <a href="https://wa.me/5491123456789" target="_blank">+54 9 11 2345-6789</a></p>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      &copy; 2024 Dm Parfum. Todos los derechos reservados.
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Forzar carga de productos desde Google Sheets al entrar
+      if (window.DmParfum && typeof window.DmParfum.refreshProducts === 'function') {
+        window.DmParfum.refreshProducts();
+      }
+      // Aplicar filtro inicial y cargar productos
+      if (typeof applyInitialFilter === 'function') {
+        applyInitialFilter();
+      }
+      if (typeof loadProducts === 'function') {
+        loadProducts();
+      }
+    });
+  </script>
+</body>
+</html>
