@@ -15,8 +15,11 @@
     <nav class="nav">
       <div class="nav-container">
         <div class="logo">
-          <h1>Dm Parfum</h1>
-          <span class="tagline">Perfumes Árabes</span>
+          <img src="Logo PNG.png" alt="Dm Parfum Logo" class="logo-image">
+          <div class="logo-text">
+            <h1>Dm Parfum</h1>
+            <span class="tagline">Perfumes Árabes</span>
+          </div>
         </div>
         <ul class="nav-menu">
           <li><a href="#inicio" class="nav-link">Inicio</a></li>
@@ -35,22 +38,22 @@
 
   <!-- Hero Section -->
   <section id="inicio" class="hero">
-    <div class="hero-content">
-      <div class="hero-text">
-        <h1 class="hero-title">Descubre la Elegancia de los Perfumes Árabes</h1>
-        <p class="hero-subtitle">Fragancias auténticas y exclusivas que capturan la esencia del lujo oriental</p>
-        <div class="hero-buttons">
-          <a href="#catalogo" class="btn btn-primary">Ver Catálogo</a>
-          <a href="#contacto" class="btn btn-secondary">Contactar</a>
+    <div class="hero-images">
+      <div class="hero-image-left">
+        <div class="hero-overlay">
+          <div class="hero-content-overlay">
+            <h2>Perfumes Masculinos</h2>
+            <p>Descubre fragancias únicas para el hombre moderno</p>
+            <a href="#catalogo" class="btn btn-primary" data-filter="masculino">Ver Colección</a>
+          </div>
         </div>
       </div>
-      <div class="hero-image">
-        <div class="perfume-showcase">
-          <div class="perfume-bottle"></div>
-          <div class="floating-elements">
-            <div class="element element-1"></div>
-            <div class="element element-2"></div>
-            <div class="element element-3"></div>
+      <div class="hero-image-right">
+        <div class="hero-overlay">
+          <div class="hero-content-overlay">
+            <h2>Perfumes Femeninos</h2>
+            <p>Elegancia y sofisticación en cada fragancia</p>
+            <a href="#catalogo" class="btn btn-primary" data-filter="femenino">Ver Colección</a>
           </div>
         </div>
       </div>
@@ -99,7 +102,7 @@
         <button class="filter-btn" data-filter="masculino">Masculino</button>
         <button class="filter-btn" data-filter="femenino">Femenino</button>
         <button class="filter-btn" data-filter="unisex">Unisex</button>
-        <button class="refresh-btn" onclick="DmParfum.refreshProducts()">
+        <button class="refresh-btn" onclick="dm.parfum_.refreshProducts()">
           <i class="fas fa-sync-alt"></i> Actualizar
         </button>
       </div>
@@ -169,8 +172,8 @@
             </div>
             <div class="contact-details">
               <h3>Instagram</h3>
-              <p>@dmparfum</p>
-              <a href="https://instagram.com/dmparfum" class="contact-link">Seguir</a>
+              <p>@dm.parfum_</p>
+              <a href="https://instagram.com/dm.parfum_" class="contact-link">Seguir</a>
             </div>
           </div>
           
@@ -180,8 +183,8 @@
             </div>
             <div class="contact-details">
               <h3>Email</h3>
-              <p>info@dmparfum.com</p>
-              <a href="mailto:info@dmparfum.com" class="contact-link">Enviar email</a>
+              <p>axelvalentinder@gmail.com</p>
+              <a href="mailto:axelvalentinder@gmail.com" class="contact-link">Enviar email</a>
             </div>
           </div>
         </div>
@@ -212,7 +215,7 @@
           <h3>Dm Parfum</h3>
           <p>Perfumes árabes auténticos para una experiencia única</p>
           <div class="social-links">
-            <a href="https://instagram.com/dmparfum"><i class="fab fa-instagram"></i></a>
+            <a href="https://instagram.com/dm.parfum_"><i class="fab fa-instagram"></i></a>
             <a href="https://wa.me/573001234567"><i class="fab fa-whatsapp"></i></a>
           </div>
         </div>

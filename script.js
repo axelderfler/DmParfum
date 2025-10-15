@@ -40,6 +40,7 @@ document.addEventListener('DOMContentLoaded', function() {
   initializeContactForm();
   initializeScrollEffects();
   initializeMobileMenu();
+  initializeHeroButtons();
   
   // Cargar productos desde Google Sheets
   loadProductsFromGoogleSheets();
@@ -312,6 +313,46 @@ function initializeMobileMenu() {
     link.addEventListener('click', function() {
       navMenu.classList.remove('active');
       hamburger.classList.remove('active');
+    });
+  });
+}
+
+// Botones del hero
+function initializeHeroButtons() {
+  const heroButtons = document.querySelectorAll('.hero-content-overlay .btn');
+  
+  heroButtons.forEach(button => {
+    button.addEventListener('click', function(e) {
+      e.preventDefault();
+      const filter = this.getAttribute('data-filter');
+      
+      if (filter) {
+        // Cambiar filtro
+        currentFilter = filter;
+        
+        // Actualizar botones de filtro
+        const filterButtons = document.querySelectorAll('.filter-btn');
+        filterButtons.forEach(btn => btn.classList.remove('active'));
+        const activeButton = document.querySelector(`[data-filter="${filter}"]`);
+        if (activeButton) {
+          activeButton.classList.add('active');
+        }
+        
+        // Filtrar productos
+        filterProducts();
+        
+        // Scroll suave al catálogo
+        const catalogSection = document.getElementById('catalogo');
+        if (catalogSection) {
+          const headerHeight = document.querySelector('.header').offsetHeight;
+          const targetPosition = catalogSection.offsetTop - headerHeight;
+          
+          window.scrollTo({
+            top: targetPosition,
+            behavior: 'smooth'
+          });
+        }
+      }
     });
   });
 }
