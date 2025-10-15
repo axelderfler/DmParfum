@@ -459,7 +459,7 @@ function parseCSVToProducts(csvText) {
         category: fields[4] ? fields[4].toLowerCase().trim() : 'unisex',
         description: fields[5] || 'Sin descripción',
         image: fields[6] || 'https://via.placeholder.com/300x400/8B4513/FFFFFF?text=Sin+Imagen',
-        stock: parseInt(fields[7]), // Cambiar default a 1 en lugar de 0
+        stock: parseInt(fields[7]) || 'Sin stock', // Cambiar default a 1 en lugar de 0
         whatsapp: fields[8] || '+573001234567',
         instagram: fields[9] || '@dmparfum'
       };
@@ -467,7 +467,7 @@ function parseCSVToProducts(csvText) {
       console.log('Producto creado:', product); // Debug
       
       // Solo agregar productos con stock > 0
-      if (product.stock > 0) {
+      if (product.stock > 0 || product.stock === 'Sin stock') {
         products.push(product);
       }
     }
