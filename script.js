@@ -33,6 +33,11 @@ const fallbackProducts = [];
 let currentFilter = 'all';
 let filteredProducts = [];
 
+// Variables del carrusel
+let currentCarouselIndex = 0;
+let carouselItems = [];
+let itemsPerView = 3;
+
 // Inicialización cuando se carga la página
 document.addEventListener('DOMContentLoaded', function() {
   initializeNavigation();
@@ -454,9 +459,8 @@ async function loadProductsFromGoogleSheets() {
     }
   } finally {
     hideLoadingState();
-    // Aplicar filtro inicial (mostrar todos) y cargar productos
-    applyInitialFilter();
-    loadProducts();
+    // Inicializar carrusel con productos destacados
+    initializeCarousel();
   }
 }
 
@@ -628,6 +632,128 @@ function showNoProductsMessage() {
   }
 }
 
+// Funciones del carrusel
+function initializeCarousel() {
+  // Filtrar productos con stock > 0 para el carrusel
+  carouselItems = productsData.filter(product => 
+    (typeof product.stock === 'number' && product.stock > 0) || 
+    product.stock === 'Sin stock'
+  );
+  
+  // Limitar a 6 productos para el carrusel
+  carouselItems = carouselItems.slice(0, 6);
+  
+  loadCarouselItems();
+  createCarouselDots();
+}
+
+function loadCarouselItems() {
+  const carouselTrack = document.getElementById('carousel-track');
+  if (!carouselTrack) return;
+  
+  carouselTrack.innerHTML = '';
+  
+  carouselItems.forEach(product => {
+    const carouselItem = createCarouselItem(product);
+    carouselTrack.appendChild(carouselItem);
+  });
+  
+  updateCarouselPosition();
+}
+
+function createCarouselItem(product) {
+  const item = document.createElement('div');
+  item.className = 'carousel-item';
+  
+  const formattedPrice = new Intl.NumberFormat('es-CO', {
+    style: 'currency',
+    currency: 'COP',
+    minimumFractionDigits: 0
+  }).format(product.price);
+  
+  const stockStatus = (typeof product.stock === 'number' && product.stock > 0) ? 
+    `<span class="stock-available">Disponible (${product.stock})</span>` : 
+    `<span class="stock-unavailable">Sin stock</span>`;
+  
+  item.innerHTML = `
+    <div class="carousel-item-image" style="background-image: url('${product.image}')">
+      ${(typeof product.stock === 'number' && product.stock <= 3 && product.stock > 0) ? 
+        '<div class="stock-warning">¡Últimas unidades!</div>' : ''}
+    </div>
+    <div class="carousel-item-info">
+      <h3 class="carousel-item-name">${product.name}</h3>
+      <p class="carousel-item-brand">${product.brand}</p>
+      <p class="carousel-item-price">${formattedPrice}</p>
+      <div class="carousel-item-stock">${stockStatus}</div>
+      <div class="carousel-item-actions">
+        <a href="https://wa.me/${product.whatsapp.replace(/[^0-9]/g, '')}?text=Hola, me interesa el perfume ${product.name}" 
+           class="btn btn-whatsapp ${(typeof product.stock === 'number' && product.stock <= 0) || product.stock === 'Sin stock' ? 'disabled' : ''}" 
+           target="_blank"
+           ${(typeof product.stock === 'number' && product.stock <= 0) || product.stock === 'Sin stock' ? 'onclick="return false;"' : ''}>
+          <i class="fab fa-whatsapp"></i>
+        </a>
+        <a href="${product.instagram}" 
+           class="btn btn-instagram" target="_blank">
+          <i class="fab fa-instagram"></i>
+        </a>
+      </div>
+    </div>
+  `;
+  
+  return item;
+}
+
+function createCarouselDots() {
+  const dotsContainer = document.getElementById('carousel-dots');
+  if (!dotsContainer) return;
+  
+  dotsContainer.innerHTML = '';
+  const totalSlides = Math.ceil(carouselItems.length / itemsPerView);
+  
+  for (let i = 0; i < totalSlides; i++) {
+    const dot = document.createElement('button');
+    dot.className = `carousel-dot ${i === 0 ? 'active' : ''}`;
+    dot.onclick = () => goToSlide(i);
+    dotsContainer.appendChild(dot);
+  }
+}
+
+function moveCarousel(direction) {
+  const totalSlides = Math.ceil(carouselItems.length / itemsPerView);
+  currentCarouselIndex += direction;
+  
+  if (currentCarouselIndex < 0) {
+    currentCarouselIndex = totalSlides - 1;
+  } else if (currentCarouselIndex >= totalSlides) {
+    currentCarouselIndex = 0;
+  }
+  
+  updateCarouselPosition();
+  updateCarouselDots();
+}
+
+function goToSlide(slideIndex) {
+  currentCarouselIndex = slideIndex;
+  updateCarouselPosition();
+  updateCarouselDots();
+}
+
+function updateCarouselPosition() {
+  const carouselTrack = document.getElementById('carousel-track');
+  if (!carouselTrack) return;
+  
+  const itemWidth = 300 + 32; // 300px + 32px gap
+  const translateX = -currentCarouselIndex * itemWidth * itemsPerView;
+  carouselTrack.style.transform = `translateX(${translateX}px)`;
+}
+
+function updateCarouselDots() {
+  const dots = document.querySelectorAll('.carousel-dot');
+  dots.forEach((dot, index) => {
+    dot.classList.toggle('active', index === currentCarouselIndex);
+  });
+}
+
 // Función para actualizar configuración de Google Sheets
 function updateGoogleSheetsConfig(newConfig) {
   Object.assign(GOOGLE_SHEETS_CONFIG, newConfig);
@@ -648,5 +774,7 @@ window.DmParfum = {
   loadProductsFromGoogleSheets,
   updateGoogleSheetsConfig,
   refreshProducts,
+  initializeCarousel,
+  moveCarousel,
   GOOGLE_SHEETS_CONFIG
 };

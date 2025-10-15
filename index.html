@@ -89,26 +89,36 @@
     </div>
   </section>
 
-  <!-- Catalog Section -->
-  <section id="catalogo" class="catalog">
+  <!-- Featured Perfumes Carousel -->
+  <section id="catalogo" class="featured-perfumes">
     <div class="container">
       <div class="section-header">
-        <h2>Nuestro Catálogo</h2>
-        <p>Descubre nuestra selección de perfumes árabes más exclusivos</p>
+        <h2>Perfumes Destacados</h2>
+        <p>Nuestra selección de fragancias más exclusivas</p>
       </div>
       
-      <div class="catalog-filters">
-        <button class="filter-btn active" data-filter="all">Todos</button>
-        <button class="filter-btn" data-filter="masculino">Masculino</button>
-        <button class="filter-btn" data-filter="femenino">Femenino</button>
-        <button class="filter-btn" data-filter="unisex">Unisex</button>
-        <button class="refresh-btn" onclick="dm.parfum_.refreshProducts()">
-          <i class="fas fa-sync-alt"></i> Actualizar
+      <div class="carousel-container">
+        <button class="carousel-btn carousel-prev" onclick="moveCarousel(-1)">
+          <i class="fas fa-chevron-left"></i>
+        </button>
+        
+        <div class="carousel-wrapper">
+          <div class="carousel-track" id="carousel-track">
+            <!-- Los productos destacados se cargarán aquí -->
+          </div>
+        </div>
+        
+        <button class="carousel-btn carousel-next" onclick="moveCarousel(1)">
+          <i class="fas fa-chevron-right"></i>
         </button>
       </div>
-
-      <div class="products-grid" id="products-grid">
-        <!-- Los productos se cargarán dinámicamente aquí -->
+      
+      <div class="carousel-dots" id="carousel-dots">
+        <!-- Los puntos indicadores se generarán dinámicamente -->
+      </div>
+      
+      <div class="view-all-container">
+        <a href="catalogo.html" class="btn btn-primary">Ver Catálogo Completo</a>
       </div>
     </div>
   </section>

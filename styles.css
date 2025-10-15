@@ -389,10 +389,153 @@ h1, h2, h3, h4, h5, h6 {
   line-height: 1.6;
 }
 
-/* Catalog Section */
-.catalog {
+/* Featured Perfumes Carousel */
+.featured-perfumes {
   padding: 100px 0;
   background: var(--bg-catalogo);
+}
+
+.carousel-container {
+  position: relative;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 60px;
+}
+
+.carousel-wrapper {
+  overflow: hidden;
+  border-radius: var(--border-radius);
+}
+
+.carousel-track {
+  display: flex;
+  transition: transform 0.5s ease;
+  gap: 2rem;
+}
+
+.carousel-item {
+  flex: 0 0 300px;
+  background: var(--bg-producto);
+  border-radius: var(--border-radius);
+  overflow: hidden;
+  box-shadow: var(--shadow-medium);
+  transition: var(--transition);
+}
+
+.carousel-item:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-heavy);
+}
+
+.carousel-item-image {
+  width: 100%;
+  height: 200px;
+  background-size: cover;
+  background-position: center;
+  position: relative;
+}
+
+.carousel-item-info {
+  padding: 1.5rem;
+}
+
+.carousel-item-name {
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: var(--text-dark);
+}
+
+.carousel-item-brand {
+  color: var(--text-light);
+  font-size: 0.9rem;
+  margin-bottom: 1rem;
+}
+
+.carousel-item-price {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--primary-color);
+  margin-bottom: 1rem;
+}
+
+.carousel-item-stock {
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+
+.carousel-item-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.carousel-item-actions .btn {
+  flex: 1;
+  padding: 10px 15px;
+  font-size: 0.9rem;
+}
+
+.carousel-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 50px;
+  height: 50px;
+  background: var(--primary-color);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  transition: var(--transition);
+  z-index: 10;
+}
+
+.carousel-btn:hover {
+  background: var(--secondary-color);
+  transform: translateY(-50%) scale(1.1);
+}
+
+.carousel-prev {
+  left: 0;
+}
+
+.carousel-next {
+  right: 0;
+}
+
+.carousel-dots {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-top: 2rem;
+}
+
+.carousel-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: rgba(139, 69, 19, 0.3);
+  border: none;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.carousel-dot.active {
+  background: var(--primary-color);
+}
+
+.carousel-dot:hover {
+  background: var(--secondary-color);
+}
+
+.view-all-container {
+  text-align: center;
+  margin-top: 3rem;
 }
 
 .section-header {
