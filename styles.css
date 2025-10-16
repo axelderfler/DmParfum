@@ -815,16 +815,12 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .image-placeholder {
-  width: 300px;
-  height: 300px;
-  background: var(--gradient-primary);
+  width: 500px;
+  height: 500px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 4rem;
-  color: white;
-  box-shadow: var(--shadow-heavy);
 }
 
 /* Contact Section */
