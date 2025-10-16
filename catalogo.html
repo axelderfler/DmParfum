@@ -8,28 +8,29 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
 </head>
 <body>
+    <!-- Header -->
   <header class="header">
-    <div class="nav-container">
-      <div class="logo">
-        <img src="img/logo.png" alt="Dm Parfum Logo" class="logo-image">
-        <div class="logo-text">
-          <h1>Dm Parfum</h1>
-          <span class="tagline">Fragancias Originales</span>
-        </div>
-      </div>
-      <nav>
+    <nav class="header">
+      <div class="nav-container">
+        <a href="https://axelderfler.github.io/DmParfum/" style="text-decoration: none;">
+          <div class="logo">
+              <img src="/img/Logo PNG.png" alt="Dm Parfum Logo" class="logo-image">
+            <div class="logo-text">
+              <h1>Dm Parfum</h1>
+              <span class="tagline">Perfumes Árabes</span>
+            </div>
+          </div>
+        </a>
         <ul class="nav-menu">
-          <li><a href="index.html" class="nav-link">Inicio</a></li>
-          <li><a href="#catalogo" class="nav-link">Catálogo</a></li>
-          <li><a href="#contacto" class="nav-link">Contacto</a></li>
+          <li><a href="#inicio" class="nav-link">Inicio</a></li>
         </ul>
         <div class="hamburger">
           <span></span>
           <span></span>
           <span></span>
         </div>
-      </nav>
-    </div>
+      </div>
+    </nav>
   </header>
 
   <main style="margin-top:100px;">
@@ -38,16 +39,36 @@
       <p>Descubrí todas las fragancias disponibles</p>
     </section>
 
-    <div class="catalog-filters">
-      <button class="filter-btn active" data-filter="all">Todos</button>
-      <button class="filter-btn" data-filter="masculino">Masculinos</button>
-      <button class="filter-btn" data-filter="femenino">Femeninos</button>
-      <button class="filter-btn" data-filter="unisex">Unisex</button>
-      <button class="refresh-btn" onclick="DmParfum.refreshProducts()"><i class="fas fa-sync-alt"></i> Actualizar</button>
-    </div>
-
-    <div class="container">
-      <div id="products-grid" class="products-grid"></div>
+    <div class="catalog-layout">
+      <aside class="sidebar-filtros">
+        <div class="filtros-group">
+          <h3>Filtrar por categoría</h3>
+          <button class="filter-btn active" data-filter="all">Todos</button>
+          <button class="filter-btn" data-filter="masculino">Masculinos</button>
+          <button class="filter-btn" data-filter="femenino">Femeninos</button>
+          <button class="filter-btn" data-filter="unisex">Unisex</button>
+        </div>
+        <div class="filtros-group" id="filtro-marca">
+          <h3>Marca</h3>
+          <!-- Aquí se llenarán las marcas dinámicamente -->
+        </div>
+        <div class="filtros-group">
+          <h3>Stock</h3>
+          <label><input type="checkbox" id="filtro-stock"> Solo con stock</label>
+        </div>
+        <div class="filtros-group">
+          <h3>Precio</h3>
+          <div style="display:flex; gap:8px; align-items:center;">
+            <input type="number" id="precio-min" placeholder="Min" style="width:60px;">
+            <span>-</span>
+            <input type="number" id="precio-max" placeholder="Max" style="width:60px;">
+          </div>
+        </div>
+        <button class="refresh-btn" style="margin-top:1rem;" onclick="DmParfum.refreshProducts()"><i class="fas fa-sync-alt"></i> Actualizar</button>
+      </aside>
+      <div class="container catalogo-main">
+        <div id="products-grid" class="products-grid"></div>
+      </div>
     </div>
   </main>
 
@@ -71,16 +92,13 @@
   <script src="script.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded', function() {
-      // Forzar carga de productos desde Google Sheets al entrar
-      if (window.DmParfum && typeof window.DmParfum.refreshProducts === 'function') {
-        window.DmParfum.refreshProducts();
-      }
-      // Aplicar filtro inicial y cargar productos
-      if (typeof applyInitialFilter === 'function') {
-        applyInitialFilter();
-      }
-      if (typeof loadProducts === 'function') {
-        loadProducts();
+      // Inicialización correcta para que los filtros y marcas funcionen SIEMPRE
+      if (typeof loadProductsFromGoogleSheets === 'function') {
+        loadProductsFromGoogleSheets().then(() => {
+          if (typeof initializeFilters === 'function') initializeFilters();
+          if (typeof applyInitialFilter === 'function') applyInitialFilter();
+          if (typeof loadProducts === 'function') loadProducts();
+        });
       }
     });
   </script>

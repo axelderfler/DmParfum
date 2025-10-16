@@ -41,14 +41,15 @@ let itemsPerView = 3;
 // Inicialización cuando se carga la página
 document.addEventListener('DOMContentLoaded', function() {
   initializeNavigation();
-  initializeFilters();
   initializeContactForm();
   initializeScrollEffects();
   initializeMobileMenu();
   initializeHeroButtons();
-  
-  // Cargar productos desde Google Sheets
-  loadProductsFromGoogleSheets();
+
+  // Cargar productos desde Google Sheets y luego inicializar filtros (para que existan las marcas)
+  loadProductsFromGoogleSheets().then(() => {
+    initializeFilters();
+  });
 });
 
 // Navegación suave
@@ -77,32 +78,79 @@ function initializeNavigation() {
 // Filtros del catálogo
 function initializeFilters() {
   const filterButtons = document.querySelectorAll('.filter-btn');
-  
+  const filtroStock = document.getElementById('filtro-stock');
+  const precioMin = document.getElementById('precio-min');
+  const precioMax = document.getElementById('precio-max');
+  const filtroMarca = document.getElementById('filtro-marca');
+
+  // --- Rellenar marcas dinámicamente SIEMPRE que cambian los datos ---
+  if (filtroMarca) {
+    const marcas = [...new Set(productsData.map(p => p.brand).filter(Boolean))].sort();
+    filtroMarca.innerHTML = '<h3>Marca</h3>' + marcas.map(marca => `\
+      <label style="display:block;margin-bottom:4px;">
+        <input type="checkbox" class="marca-checkbox" value="${marca}"> ${marca}
+      </label>
+    `).join('');
+    // Volver a agregar evento después de regenerar el HTML
+    filtroMarca.querySelectorAll('.marca-checkbox').forEach(cb => {
+      cb.addEventListener('change', filterProducts);
+    });
+  }
+
+  // Eventos de filtro de categoría
   filterButtons.forEach(button => {
     button.addEventListener('click', function() {
-      // Remover clase active de todos los botones
       filterButtons.forEach(btn => btn.classList.remove('active'));
-      
-      // Agregar clase active al botón clickeado
       this.classList.add('active');
-      
-      // Obtener el filtro seleccionado
       currentFilter = this.getAttribute('data-filter');
-      
-      // Filtrar productos
       filterProducts();
     });
   });
+
+  // Evento filtro stock
+  if (filtroStock) {
+    filtroStock.addEventListener('change', filterProducts);
+  }
+  // Evento filtro precio
+  if (precioMin) precioMin.addEventListener('input', filterProducts);
+  if (precioMax) precioMax.addEventListener('input', filterProducts);
+  // Evento filtro marca
+  filtroMarca && filtroMarca.addEventListener('change', filterProducts);
 }
 
 // Filtrar productos
 function filterProducts() {
-  if (currentFilter === 'all') {
-    filteredProducts = productsData;
-  } else {
-    filteredProducts = productsData.filter(product => product.category === currentFilter);
+  let result = productsData;
+
+  // Filtro de categoría
+  if (currentFilter !== 'all') {
+    result = result.filter(product => product.category === currentFilter);
   }
-  
+
+  // Filtro de marcas
+  const marcaChecks = document.querySelectorAll('.marca-checkbox:checked');
+  if (marcaChecks.length > 0) {
+    const marcasSel = Array.from(marcaChecks).map(cb => cb.value);
+    result = result.filter(product => marcasSel.includes(product.brand));
+  }
+
+  // Filtro de stock
+  const filtroStock = document.getElementById('filtro-stock');
+  if (filtroStock && filtroStock.checked) {
+    result = result.filter(product => typeof product.stock === 'number' && product.stock > 0);
+  }
+
+  // Filtro de precio
+  const precioMin = parseFloat(document.getElementById('precio-min')?.value) || null;
+  const precioMax = parseFloat(document.getElementById('precio-max')?.value) || null;
+  if (precioMin !== null) {
+    result = result.filter(product => product.price >= precioMin);
+  }
+  if (precioMax !== null) {
+    result = result.filter(product => product.price <= precioMax);
+  }
+
+  filteredProducts = result;
   // Recargar productos con animación
   loadProducts(true);
 }

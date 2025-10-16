@@ -997,6 +997,50 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 /* Responsive Design */
+/* --- Sidebar y layout catálogo --- */
+.catalog-layout {
+  display: flex;
+  gap: 2rem;
+  align-items: flex-start;
+}
+
+.sidebar-filtros {
+  width: 25%;
+  min-width: 220px;
+  max-width: 320px;
+  background: var(--bg-white);
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow-light);
+  padding: 2rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.filtros-group {
+  margin-bottom: 1.5rem;
+}
+
+.filtros-group h3 {
+  font-size: 1.1rem;
+  margin-bottom: 0.7rem;
+  color: var(--primary-color);
+}
+
+.catalogo-main {
+  width: 75%;
+}
+
+@media (max-width: 900px) {
+  .catalog-layout {
+    flex-direction: column;
+  }
+  .sidebar-filtros, .catalogo-main {
+    width: 100%;
+    max-width: 100%;
+  }
+}
+
 @media (max-width: 768px) {
   .hamburger {
     display: flex;
