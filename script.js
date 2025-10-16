@@ -82,6 +82,7 @@ function initializeFilters() {
   const precioMin = document.getElementById('precio-min');
   const precioMax = document.getElementById('precio-max');
   const filtroMarca = document.getElementById('filtro-marca');
+  const ordenarSelect = document.getElementById('ordenar-select');
 
   // --- Rellenar marcas dinámicamente SIEMPRE que cambian los datos ---
   if (filtroMarca) {
@@ -116,6 +117,8 @@ function initializeFilters() {
   if (precioMax) precioMax.addEventListener('input', filterProducts);
   // Evento filtro marca
   filtroMarca && filtroMarca.addEventListener('change', filterProducts);
+  // Evento ordenar
+  if (ordenarSelect) ordenarSelect.addEventListener('change', filterProducts);
 }
 
 // Filtrar productos
@@ -149,6 +152,18 @@ function filterProducts() {
   if (precioMax !== null) {
     result = result.filter(product => product.price <= precioMax);
   }
+
+  // Ordenamiento
+  const ordenar = document.getElementById('ordenar-select')?.value;
+  if (ordenar === 'precio-desc') {
+    result = result.slice().sort((a, b) => b.price - a.price);
+  } else if (ordenar === 'precio-asc') {
+    result = result.slice().sort((a, b) => a.price - b.price);
+  } else if (ordenar === 'nombre-az') {
+    result = result.slice().sort((a, b) => a.name.localeCompare(b.name));
+  } else if (ordenar === 'nombre-za') {
+    result = result.slice().sort((a, b) => b.name.localeCompare(a.name));
+  } // 'Más relevantes' mantiene el orden original del Excel/Google Sheets
 
   filteredProducts = result;
   // Recargar productos con animación
