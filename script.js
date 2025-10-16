@@ -435,10 +435,8 @@ function removeProduct(id) {
 async function loadProductsFromGoogleSheets() {
   try {
     showLoadingState();
-    
     // Intentar cargar desde Google Sheets
     const sheetData = await fetchGoogleSheetsData();
-    
     if (sheetData && sheetData.length > 0) {
       productsData = sheetData;
       console.log('Productos cargados desde Google Sheets:', productsData.length);
@@ -446,11 +444,9 @@ async function loadProductsFromGoogleSheets() {
     } else {
       throw new Error('No se encontraron datos en Google Sheets');
     }
-    
   } catch (error) {
     console.warn('Error cargando desde Google Sheets, usando datos de respaldo:', error);
     productsData = fallbackProducts;
-    
     if (fallbackProducts.length === 0) {
       showNotification('No se pudieron cargar los productos. Verifica la configuración de Google Sheets.', 'info');
       showNoProductsMessage();
@@ -461,6 +457,9 @@ async function loadProductsFromGoogleSheets() {
     hideLoadingState();
     // Inicializar carrusel con productos destacados
     initializeCarousel();
+    // FIX: Aplicar filtro inicial y recargar productos cuando se refresca
+    applyInitialFilter();
+    loadProducts(true);
   }
 }
 
