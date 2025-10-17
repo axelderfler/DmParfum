@@ -45,7 +45,7 @@ document.addEventListener('DOMContentLoaded', function() {
   initializeScrollEffects();
   initializeMobileMenu();
   initializeHeroButtons();
-
+  initializeScroll();
   // Cargar productos desde Google Sheets y luego inicializar filtros (para que existan las marcas)
   loadProductsFromGoogleSheets().then(() => {
     initializeFilters();
@@ -54,9 +54,31 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // Navegación suave
 function initializeNavigation() {
-  const navLinks = document.querySelectorAll('.nav-link');
+  const navLinks = document.querySelectorAll('.nav-link', '.scroll');
   
   navLinks.forEach(link => {
+    link.addEventListener('click', function(e) {
+      e.preventDefault();
+      const targetId = this.getAttribute('href').substring(1);
+      const targetSection = document.getElementById(targetId);
+      
+      if (targetSection) {
+        const headerHeight = document.querySelector('.header').offsetHeight;
+        const targetPosition = targetSection.offsetTop - headerHeight;
+        
+        window.scrollTo({
+          top: targetPosition,
+          behavior: 'smooth'
+        });
+      }
+    });
+  });
+}
+// Scroll suave
+function initializeScroll() {
+  const scrollLinks = document.querySelectorAll('.scroll');
+  
+  scrollLinks.forEach(link => {
     link.addEventListener('click', function(e) {
       e.preventDefault();
       const targetId = this.getAttribute('href').substring(1);
