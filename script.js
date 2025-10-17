@@ -109,15 +109,19 @@ function initializeFilters() {
   // --- Rellenar marcas dinámicamente SIEMPRE que cambian los datos ---
   if (filtroMarca) {
     const marcas = [...new Set(productsData.map(p => p.brand).filter(Boolean))].sort();
-    filtroMarca.innerHTML = '<h3>Marca</h3>' + marcas.map(marca => `\
-      <label style="display:block;margin-bottom:4px;">
-        <input type="checkbox" class="marca-checkbox" value="${marca}"> ${marca}
-      </label>
-    `).join('');
-    // Volver a agregar evento después de regenerar el HTML
-    filtroMarca.querySelectorAll('.marca-checkbox').forEach(cb => {
-      cb.addEventListener('change', filterProducts);
-    });
+    const brandFilters = document.getElementById('brand-filters');
+    if (brandFilters) {
+      brandFilters.innerHTML = marcas.map(marca => `
+        <div class="brand-filter-item">
+          <input type="checkbox" class="marca-checkbox" value="${marca}" id="marca-${marca.replace(/\s+/g, '-')}">
+          <label for="marca-${marca.replace(/\s+/g, '-')}">${marca}</label>
+        </div>
+      `).join('');
+      // Volver a agregar evento después de regenerar el HTML
+      brandFilters.querySelectorAll('.marca-checkbox').forEach(cb => {
+        cb.addEventListener('change', filterProducts);
+      });
+    }
   }
 
   // Eventos de filtro de categoría
@@ -190,6 +194,13 @@ function filterProducts() {
   filteredProducts = result;
   // Recargar productos con animación
   loadProducts(true);
+  
+  // Actualizar contador después de filtrar
+  setTimeout(() => {
+    if (typeof updateProductsCount === 'function') {
+      updateProductsCount(result.length);
+    }
+  }, 100);
 }
 
 // Función para aplicar filtro inicial (mostrar todos por defecto)

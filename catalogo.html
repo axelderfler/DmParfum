@@ -33,54 +33,148 @@
     </nav>
   </header>
 
-  <main style="margin-top:100px;">
-    <section class="section-header">
-      <h2>Catálogo de Perfumes</h2>
-      <p>Descubrí todas las fragancias disponibles</p>
-    </section>
-
-    <div style="max-width:1200px;margin:0 auto 2rem auto;padding:0 20px;display:flex;align-items:center;justify-content:flex-end;">
-      <label style="font-weight:600;margin-right:10px;">Ordenar por:</label>
-      <select id="ordenar-select" style="padding:7px 15px;border-radius:8px;border:1px solid #ccc;">
-        <option value="relevantes" selected>Más relevantes</option>
-        <option value="precio-desc">Mayor precio</option>
-        <option value="precio-asc">Menor precio</option>
-        <option value="nombre-az">Nombre A-Z</option>
-        <option value="nombre-za">Nombre Z-A</option>
-      </select>
-    </div>
-    <div class="catalog-layout">
-      <aside class="sidebar-filtros">
-        <div class="filtros-group">
-          <h3>Filtrar por categoría</h3>
-          <button class="filter-btn active" data-filter="all">Todos</button>
-          <button class="filter-btn" data-filter="masculino">Masculinos</button>
-          <button class="filter-btn" data-filter="femenino">Femeninos</button>
-          <button class="filter-btn" data-filter="unisex">Unisex</button>
+  <!-- Hero Section del Catálogo -->
+  <main class="catalog-hero" style="margin-top:80px;">
+    <div class="catalog-hero-content">
+      <div class="catalog-hero-text">
+        <h1>Catálogo Dm Parfum</h1>
+        <p>Descubre nuestra exclusiva colección de perfumes árabes auténticos</p>
+      </div>
+      <div class="catalog-hero-visual">
+        <div class="floating-perfume">
+          <i class="fas fa-gem"></i>
         </div>
-        <div class="filtros-group" id="filtro-marca">
-          <h3>Marca</h3>
-          <!-- Aquí se llenarán las marcas dinámicamente -->
-        </div>
-        <div class="filtros-group">
-          <h3>Stock</h3>
-          <label><input type="checkbox" id="filtro-stock"> Solo con stock</label>
-        </div>
-        <div class="filtros-group">
-          <h3>Precio</h3>
-          <div style="display:flex; gap:8px; align-items:center;">
-            <input type="number" id="precio-min" placeholder="Min" style="width:60px;">
-            <span>-</span>
-            <input type="number" id="precio-max" placeholder="Max" style="width:60px;">
-          </div>
-        </div>
-        <button class="refresh-btn" style="margin-top:1rem;" onclick="DmParfum.refreshProducts()"><i class="fas fa-sync-alt"></i> Actualizar</button>
-      </aside>
-      <div class="container catalogo-main">
-        <div id="products-grid" class="products-grid"></div>
       </div>
     </div>
   </main>
+
+  <!-- Barra de herramientas -->
+  <section class="catalog-toolbar">
+    <div class="container">
+      <div class="toolbar-content">
+        <div class="toolbar-left">
+          <div class="results-info">
+            <span id="results-count">Mostrando todos los productos</span>
+          </div>
+        </div>
+        <div class="toolbar-right">
+          <div class="sort-controls">
+            <label for="ordenar-select">Ordenar por:</label>
+            <select id="ordenar-select" class="sort-select">
+              <option value="relevantes" selected>Más relevantes</option>
+              <option value="precio-desc">Mayor precio</option>
+              <option value="precio-asc">Menor precio</option>
+              <option value="nombre-az">Nombre A-Z</option>
+              <option value="nombre-za">Nombre Z-A</option>
+            </select>
+          </div>
+          <div class="view-controls">
+            <button class="view-btn active" data-view="grid" title="Vista de cuadrícula">
+              <i class="fas fa-th"></i>
+            </button>
+            <button class="view-btn" data-view="list" title="Vista de lista">
+              <i class="fas fa-list"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <!-- Layout principal -->
+  <section class="catalog-main">
+    <div class="container">
+      <div class="catalog-layout">
+        <aside class="sidebar-filtros">
+          <div class="filters-header">
+            <h3><i class="fas fa-filter"></i> Filtros</h3>
+            <button class="clear-filters-btn" onclick="clearAllFilters()">
+              <i class="fas fa-times"></i> Limpiar
+            </button>
+          </div>
+          
+          <div class="filtros-group">
+            <h4><i class="fas fa-tags"></i> Categoría</h4>
+            <div class="filter-buttons">
+              <button class="filter-btn active" data-filter="all">
+                <i class="fas fa-layer-group"></i> Todos
+              </button>
+              <button class="filter-btn" data-filter="masculino">
+                <i class="fas fa-male"></i> Masculinos
+              </button>
+              <button class="filter-btn" data-filter="femenino">
+                <i class="fas fa-female"></i> Femeninos
+              </button>
+              <button class="filter-btn" data-filter="unisex">
+                <i class="fas fa-venus-mars"></i> Unisex
+              </button>
+            </div>
+          </div>
+
+          <div class="filtros-group" id="filtro-marca">
+            <h4><i class="fas fa-crown"></i> Marca</h4>
+            <div class="brand-filters" id="brand-filters">
+              <!-- Las marcas se cargarán dinámicamente -->
+            </div>
+          </div>
+
+          <div class="filtros-group">
+            <h4><i class="fas fa-warehouse"></i> Disponibilidad</h4>
+            <div class="checkbox-filter">
+              <label class="checkbox-label">
+                <input type="checkbox" id="filtro-stock">
+                <span class="checkmark"></span>
+                <span class="label-text">Solo con stock</span>
+              </label>
+            </div>
+          </div>
+
+          <div class="filtros-group">
+            <h4><i class="fas fa-dollar-sign"></i> Precio</h4>
+            <div class="price-range">
+              <div class="price-inputs">
+                <input type="number" id="precio-min" placeholder="Mín" class="price-input">
+                <span class="price-separator">-</span>
+                <input type="number" id="precio-max" placeholder="Máx" class="price-input">
+              </div>
+              <button class="apply-price-btn" onclick="applyPriceFilter()">
+                <i class="fas fa-check"></i> Aplicar
+              </button>
+            </div>
+          </div>
+
+          <div class="filters-footer">
+            <button class="refresh-btn" onclick="DmParfum.refreshProducts()">
+              <i class="fas fa-sync-alt"></i> Actualizar Catálogo
+            </button>
+          </div>
+        </aside>
+        
+        <div class="catalogo-main">
+          <div class="products-header">
+            <div class="products-count">
+              <span id="products-count-text">0 productos encontrados</span>
+            </div>
+            <div class="loading-indicator" id="loading-indicator" style="display: none;">
+              <i class="fas fa-spinner fa-spin"></i> Cargando productos...
+            </div>
+          </div>
+          
+          <div id="products-grid" class="products-grid"></div>
+          
+          <div class="no-products" id="no-products" style="display: none;">
+            <div class="no-products-content">
+              <i class="fas fa-search"></i>
+              <h3>No se encontraron productos</h3>
+              <p>Intenta ajustar los filtros para ver más opciones</p>
+              <button class="btn btn-primary" onclick="clearAllFilters()">
+                <i class="fas fa-refresh"></i> Limpiar filtros
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
 
   <footer class="footer">
     <div class="footer-content">
@@ -101,15 +195,130 @@
 
   <script src="script.js"></script>
   <script>
+    // Funciones adicionales para el catálogo mejorado
+    function clearAllFilters() {
+      // Limpiar filtros de categoría
+      document.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.classList.remove('active');
+      });
+      document.querySelector('[data-filter="all"]').classList.add('active');
+      
+      // Limpiar filtros de marca
+      document.querySelectorAll('#brand-filters input[type="checkbox"]').forEach(checkbox => {
+        checkbox.checked = false;
+      });
+      
+      // Limpiar filtro de stock
+      document.getElementById('filtro-stock').checked = false;
+      
+      // Limpiar filtros de precio
+      document.getElementById('precio-min').value = '';
+      document.getElementById('precio-max').value = '';
+      
+      // Aplicar filtros
+      if (typeof applyInitialFilter === 'function') {
+        applyInitialFilter();
+      }
+    }
+
+    function applyPriceFilter() {
+      const minPrice = document.getElementById('precio-min').value;
+      const maxPrice = document.getElementById('precio-max').value;
+      
+      if (minPrice || maxPrice) {
+        // Aplicar filtro de precio
+        if (typeof filterProducts === 'function') {
+          filterProducts();
+        }
+      }
+    }
+
+    function updateProductsCount(count) {
+      const countElement = document.getElementById('products-count-text');
+      const resultsElement = document.getElementById('results-count');
+      
+      if (countElement) {
+        countElement.textContent = `${count} producto${count !== 1 ? 's' : ''} encontrado${count !== 1 ? 's' : ''}`;
+      }
+      
+      if (resultsElement) {
+        resultsElement.textContent = `Mostrando ${count} producto${count !== 1 ? 's' : ''}`;
+      }
+    }
+
+    function showLoadingIndicator() {
+      document.getElementById('loading-indicator').style.display = 'flex';
+    }
+
+    function hideLoadingIndicator() {
+      document.getElementById('loading-indicator').style.display = 'none';
+    }
+
+    function showNoProducts() {
+      document.getElementById('no-products').style.display = 'block';
+      document.getElementById('products-grid').style.display = 'none';
+    }
+
+    function hideNoProducts() {
+      document.getElementById('no-products').style.display = 'none';
+      document.getElementById('products-grid').style.display = 'grid';
+    }
+
+    // Inicialización mejorada del catálogo
     document.addEventListener('DOMContentLoaded', function() {
       // Inicialización correcta para que los filtros y marcas funcionen SIEMPRE
       if (typeof loadProductsFromGoogleSheets === 'function') {
+        showLoadingIndicator();
+        
         loadProductsFromGoogleSheets().then(() => {
+          hideLoadingIndicator();
+          
           if (typeof initializeFilters === 'function') initializeFilters();
           if (typeof applyInitialFilter === 'function') applyInitialFilter();
           if (typeof loadProducts === 'function') loadProducts();
+          
+          // Esperar un poco para que se rendericen los productos
+          setTimeout(() => {
+            // Actualizar contador de productos
+            const products = document.querySelectorAll('.product-card');
+            updateProductsCount(products.length);
+            
+            // Mostrar/ocultar mensaje de no productos
+            if (products.length === 0) {
+              showNoProducts();
+            } else {
+              hideNoProducts();
+            }
+          }, 100);
+        }).catch(error => {
+          hideLoadingIndicator();
+          console.error('Error cargando productos:', error);
         });
       }
+
+      // Control de vista (grid/list)
+      document.querySelectorAll('.view-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+          document.querySelectorAll('.view-btn').forEach(b => b.classList.remove('active'));
+          this.classList.add('active');
+          
+          const view = this.dataset.view;
+          const productsGrid = document.getElementById('products-grid');
+          
+          if (view === 'list') {
+            productsGrid.classList.add('list-view');
+          } else {
+            productsGrid.classList.remove('list-view');
+          }
+        });
+      });
+
+      // Control de ordenamiento
+      document.getElementById('ordenar-select').addEventListener('change', function() {
+        if (typeof sortProducts === 'function') {
+          sortProducts(this.value);
+        }
+      });
     });
   </script>
 </body>
