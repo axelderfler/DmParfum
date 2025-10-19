@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title id="page-title">Producto | Dm Parfum</title>
+  <meta name="description" content="Descubre los detalles de este perfume árabe auténtico en Dm Parfum">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+</head>
+<body>
+  <!-- Header -->
+  <header class="header">
+    <nav class="header">
+      <div class="nav-container">
+        <a href="index.html" style="text-decoration: none;">
+          <div class="logo">
+            <img src="img/Logo PNG.png" alt="Dm Parfum Logo" class="logo-image">
+            <div class="logo-text">
+              <h1>Dm Parfum</h1>
+              <span class="tagline">Perfumes Árabes</span>
+            </div>
+          </div>
+        </a>
+        <ul class="nav-menu">
+          <li><a href="index.html" class="nav-link">Inicio</a></li>
+          <li><a href="catalogo.html" class="nav-link">Catálogo</a></li>
+          <li><a href="index.html#sobre-nosotros" class="nav-link">Nosotros</a></li>
+          <li><a href="index.html#contacto" class="nav-link">Contacto</a></li>
+        </ul>
+        <!-- Carrito de compras -->
+        <div class="cart-icon" onclick="toggleCart()">
+          <i class="fas fa-shopping-cart"></i>
+          <span class="cart-count" id="cart-count">0</span>
+        </div>
+        <div class="hamburger">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <!-- Breadcrumb -->
+  <nav class="breadcrumb">
+    <div class="container">
+      <a href="index.html">Inicio</a>
+      <span class="separator">/</span>
+      <a href="catalogo.html">Catálogo</a>
+      <span class="separator">/</span>
+      <span id="breadcrumb-product">Producto</span>
+    </div>
+  </nav>
+
+  <!-- Producto Principal -->
+  <main class="product-main">
+    <div class="container">
+      <div class="product-detail">
+        <!-- Imagen del producto -->
+        <div class="product-image-section">
+          <div class="product-image-container">
+            <img id="product-image" src="" alt="" class="product-main-image">
+            <div class="image-overlay">
+              <button class="zoom-btn" onclick="zoomImage()">
+                <i class="fas fa-search-plus"></i>
+              </button>
+            </div>
+          </div>
+          <div class="product-badges" id="product-badges">
+            <!-- Badges se generarán dinámicamente -->
+          </div>
+        </div>
+
+        <!-- Información del producto -->
+        <div class="product-info-section">
+          <div class="product-header">
+            <h1 id="product-name" class="product-title">Cargando...</h1>
+            <p id="product-brand" class="product-brand">Cargando...</p>
+          </div>
+
+          <div class="product-price-section">
+            <span id="product-price" class="product-price">Cargando...</span>
+            <div class="price-details">
+              <span class="price-label">Precio final</span>
+              <span class="price-note">Incluye envío</span>
+            </div>
+          </div>
+
+          <div class="product-description">
+            <h3>Descripción</h3>
+            <p id="product-description">Cargando descripción...</p>
+          </div>
+
+          <div class="product-details">
+            <h3>Detalles del Producto</h3>
+            <div class="details-grid">
+              <div class="detail-item">
+                <span class="detail-label">Marca:</span>
+                <span id="detail-brand" class="detail-value">-</span>
+              </div>
+              <div class="detail-item">
+                <span class="detail-label">Categoría:</span>
+                <span id="detail-category" class="detail-value">-</span>
+              </div>
+              <div class="detail-item">
+                <span class="detail-label">Origen:</span>
+                <span class="detail-value">Emiratos Árabes Unidos</span>
+              </div>
+              <div class="detail-item">
+                <span class="detail-label">Autenticidad:</span>
+                <span class="detail-value">100% Original</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="product-stock-section">
+            <div class="stock-info">
+              <i class="fas fa-box"></i>
+              <span id="stock-status" class="stock-text">Verificando disponibilidad...</span>
+            </div>
+          </div>
+
+          <div class="product-actions">
+            <button id="add-to-cart-btn" class="btn btn-primary btn-add-cart" onclick="addToCart()">
+              <i class="fas fa-shopping-cart"></i>
+              <span>Agregar al Carrito</span>
+            </button>
+            <button class="btn btn-secondary btn-whatsapp" onclick="contactWhatsApp()">
+              <i class="fab fa-whatsapp"></i>
+              <span>Consultar por WhatsApp</span>
+            </button>
+          </div>
+
+          <div class="product-features">
+            <div class="feature-item">
+              <i class="fas fa-shipping-fast"></i>
+              <span>Envío rápido y seguro</span>
+            </div>
+            <div class="feature-item">
+              <i class="fas fa-shield-alt"></i>
+              <span>Autenticidad garantizada</span>
+            </div>
+            <div class="feature-item">
+              <i class="fas fa-headset"></i>
+              <span>Atención personalizada</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Productos Relacionados -->
+  <section class="related-products">
+    <div class="container">
+      <h2>Productos Relacionados</h2>
+      <div class="related-grid" id="related-products">
+        <!-- Los productos relacionados se cargarán dinámicamente -->
+      </div>
+    </div>
+  </section>
+
+  <!-- Modal de imagen ampliada -->
+  <div id="image-modal" class="image-modal">
+    <div class="modal-content">
+      <span class="close-modal" onclick="closeImageModal()">&times;</span>
+      <img id="modal-image" src="" alt="">
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-section">
+          <h3>Dm Parfum</h3>
+          <p>Perfumes árabes auténticos para una experiencia única</p>
+          <div class="social-links">
+            <a href="https://instagram.com/dm.parfum_"><i class="fab fa-instagram"></i></a>
+            <a href="https://wa.me/541162634332"><i class="fab fa-whatsapp"></i></a>
+          </div>
+        </div>
+        <div class="footer-section">
+          <h4>Enlaces Rápidos</h4>
+          <ul>
+            <li><a href="index.html">Inicio</a></li>
+            <li><a href="catalogo.html">Catálogo</a></li>
+            <li><a href="index.html#sobre-nosotros">Nosotros</a></li>
+            <li><a href="index.html#contacto">Contacto</a></li>
+          </ul>
+        </div>
+        <div class="footer-section">
+          <h4>Información</h4>
+          <ul>
+            <li><a href="#">Política de Privacidad</a></li>
+            <li><a href="#">Términos y Condiciones</a></li>
+            <li><a href="#">Envíos y Devoluciones</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2024 Dm Parfum. Todos los derechos reservados.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+  <script src="cart.js"></script>
+  <script>
+    // Variables globales para el producto
+    let currentProduct = null;
+    let relatedProducts = [];
+
+    // Inicialización cuando se carga la página
+    document.addEventListener('DOMContentLoaded', function() {
+      initializeNavigation();
+      initializeMobileMenu();
+      loadProductFromURL();
+      updateCartCount();
+    });
+
+    // Cargar producto desde la URL
+    function loadProductFromURL() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const productId = urlParams.get('id');
+      
+      if (productId) {
+        loadProduct(productId);
+      } else {
+        showError('Producto no encontrado');
+      }
+    }
+
+    // Cargar producto específico
+    async function loadProduct(productId) {
+      try {
+        // Cargar productos desde Google Sheets si no están cargados
+        if (typeof productsData === 'undefined' || productsData.length === 0) {
+          await loadProductsFromGoogleSheets();
+        }
+
+        // Buscar el producto por ID
+        currentProduct = productsData.find(product => product.id == productId);
+        
+        if (currentProduct) {
+          displayProduct(currentProduct);
+          loadRelatedProducts(currentProduct);
+        } else {
+          showError('Producto no encontrado');
+        }
+      } catch (error) {
+        console.error('Error cargando producto:', error);
+        showError('Error al cargar el producto');
+      }
+    }
+
+    // Mostrar información del producto
+    function displayProduct(product) {
+      // Actualizar título de la página
+      document.getElementById('page-title').textContent = `${product.name} | Dm Parfum`;
+      document.getElementById('breadcrumb-product').textContent = product.name;
+
+      // Imagen del producto
+      const productImage = document.getElementById('product-image');
+      productImage.src = product.image;
+      productImage.alt = product.name;
+
+      // Información básica
+      document.getElementById('product-name').textContent = product.name;
+      document.getElementById('product-brand').textContent = product.brand;
+      document.getElementById('product-description').textContent = product.description;
+
+      // Precio
+      const formattedPrice = new Intl.NumberFormat('es-CO', {
+        style: 'currency',
+        currency: 'COP',
+        minimumFractionDigits: 0
+      }).format(product.price);
+      document.getElementById('product-price').textContent = formattedPrice;
+
+      // Detalles
+      document.getElementById('detail-brand').textContent = product.brand;
+      document.getElementById('detail-category').textContent = 
+        product.category === 'masculino' ? 'Masculino' :
+        product.category === 'femenino' ? 'Femenino' : 'Unisex';
+
+      // Stock
+      const stockStatus = document.getElementById('stock-status');
+      const addToCartBtn = document.getElementById('add-to-cart-btn');
+      
+      if (typeof product.stock === 'number' && product.stock > 0) {
+        stockStatus.innerHTML = `<i class="fas fa-check-circle"></i> Disponible (${product.stock} unidades)`;
+        stockStatus.className = 'stock-text available';
+        addToCartBtn.disabled = false;
+        addToCartBtn.innerHTML = '<i class="fas fa-shopping-cart"></i><span>Agregar al Carrito</span>';
+      } else {
+        stockStatus.innerHTML = '<i class="fas fa-times-circle"></i> Sin stock';
+        stockStatus.className = 'stock-text unavailable';
+        addToCartBtn.disabled = true;
+        addToCartBtn.innerHTML = '<i class="fas fa-times"></i><span>Sin Stock</span>';
+      }
+
+      // Badges
+      const badgesContainer = document.getElementById('product-badges');
+      badgesContainer.innerHTML = '';
+      
+      if (typeof product.stock === 'number' && product.stock <= 3 && product.stock > 0) {
+        badgesContainer.innerHTML += '<span class="product-badge limited">¡Últimas unidades!</span>';
+      }
+      
+      if (product.category === 'masculino') {
+        badgesContainer.innerHTML += '<span class="product-badge">Masculino</span>';
+      } else if (product.category === 'femenino') {
+        badgesContainer.innerHTML += '<span class="product-badge">Femenino</span>';
+      } else {
+        badgesContainer.innerHTML += '<span class="product-badge">Unisex</span>';
+      }
+    }
+
+    // Cargar productos relacionados
+    function loadRelatedProducts(currentProduct) {
+      // Filtrar productos de la misma categoría o marca, excluyendo el actual
+      relatedProducts = productsData.filter(product => 
+        product.id !== currentProduct.id && 
+        (product.category === currentProduct.category || product.brand === currentProduct.brand)
+      ).slice(0, 4);
+
+      const relatedGrid = document.getElementById('related-products');
+      relatedGrid.innerHTML = '';
+
+      if (relatedProducts.length === 0) {
+        relatedGrid.innerHTML = '<p>No hay productos relacionados disponibles.</p>';
+        return;
+      }
+
+      relatedProducts.forEach(product => {
+        const productCard = createRelatedProductCard(product);
+        relatedGrid.appendChild(productCard);
+      });
+    }
+
+    // Crear tarjeta de producto relacionado
+    function createRelatedProductCard(product) {
+      const card = document.createElement('div');
+      card.className = 'related-product-card';
+      
+      const formattedPrice = new Intl.NumberFormat('es-CO', {
+        style: 'currency',
+        currency: 'COP',
+        minimumFractionDigits: 0
+      }).format(product.price);
+
+      card.innerHTML = `
+        <div class="related-product-image">
+          <img src="${product.image}" alt="${product.name}" loading="lazy">
+        </div>
+        <div class="related-product-info">
+          <h4>${product.name}</h4>
+          <p class="related-product-brand">${product.brand}</p>
+          <p class="related-product-price">${formattedPrice}</p>
+          <a href="productos.html?id=${product.id}" class="btn btn-primary btn-sm">Ver Detalles</a>
+        </div>
+      `;
+
+      return card;
+    }
+
+    // Agregar al carrito
+    function addToCart() {
+      if (!currentProduct) return;
+      
+      if (typeof addProductToCart === 'function') {
+        addProductToCart(currentProduct);
+        showNotification('Producto agregado al carrito', 'success');
+        updateCartCount();
+      } else {
+        showNotification('Funcionalidad de carrito no disponible', 'error');
+      }
+    }
+
+    // Contactar por WhatsApp
+    function contactWhatsApp() {
+      if (!currentProduct) return;
+      
+      const message = `Hola! Me interesa el perfume ${currentProduct.name} de ${currentProduct.brand}. ¿Podrías darme más información?`;
+      const whatsappUrl = `https://wa.me/${currentProduct.whatsapp.replace(/[^0-9]/g, '')}?text=${encodeURIComponent(message)}`;
+      
+      window.open(whatsappUrl, '_blank');
+    }
+
+    // Zoom de imagen
+    function zoomImage() {
+      const modal = document.getElementById('image-modal');
+      const modalImage = document.getElementById('modal-image');
+      const productImage = document.getElementById('product-image');
+      
+      modalImage.src = productImage.src;
+      modalImage.alt = productImage.alt;
+      modal.style.display = 'flex';
+    }
+
+    // Cerrar modal de imagen
+    function closeImageModal() {
+      document.getElementById('image-modal').style.display = 'none';
+    }
+
+    // Mostrar error
+    function showError(message) {
+      document.querySelector('.product-main').innerHTML = `
+        <div class="error-container">
+          <div class="error-content">
+            <i class="fas fa-exclamation-triangle"></i>
+            <h2>Error</h2>
+            <p>${message}</p>
+            <a href="catalogo.html" class="btn btn-primary">Volver al Catálogo</a>
+          </div>
+        </div>
+      `;
+    }
+
+    // Actualizar contador del carrito
+    function updateCartCount() {
+      if (typeof getCartCount === 'function') {
+        const count = getCartCount();
+        document.getElementById('cart-count').textContent = count;
+      }
+    }
+
+    // Cerrar modal al hacer click fuera
+    window.onclick = function(event) {
+      const modal = document.getElementById('image-modal');
+      if (event.target === modal) {
+        closeImageModal();
+      }
+    }
+  </script>
+</body>
+</html>

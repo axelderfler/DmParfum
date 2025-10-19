@@ -22,8 +22,16 @@
           </div>
         </a>
         <ul class="nav-menu">
-          <li><a href="#inicio" class="nav-link">Inicio</a></li>
+          <li><a href="index.html" class="nav-link">Inicio</a></li>
+          <li><a href="catalogo.html" class="nav-link">Catálogo</a></li>
+          <li><a href="index.html#sobre-nosotros" class="nav-link">Nosotros</a></li>
+          <li><a href="index.html#contacto" class="nav-link">Contacto</a></li>
         </ul>
+        <!-- Carrito de compras -->
+        <div class="cart-icon" onclick="toggleCart()">
+          <i class="fas fa-shopping-cart"></i>
+          <span class="cart-count" id="cart-count">0</span>
+        </div>
         <div class="hamburger">
           <span></span>
           <span></span>
@@ -141,12 +149,6 @@
               </button>
             </div>
           </div>
-
-          <div class="filters-footer">
-            <button class="refresh-btn" onclick="DmParfum.refreshProducts()">
-              <i class="fas fa-sync-alt"></i> Actualizar Catálogo
-            </button>
-          </div>
         </aside>
         
         <div class="catalogo-main">
@@ -194,6 +196,7 @@
   </footer>
 
   <script src="script.js"></script>
+  <script src="cart.js"></script>
   <script>
     // Funciones adicionales para el catálogo mejorado
     function clearAllFilters() {

@@ -230,6 +230,12 @@ function loadProducts(animate = false) {
     currentFilter 
   });
   
+  // Si no existe el products-grid, no hacer nada (estamos en otra página)
+  if (!productsGrid) {
+    console.log('products-grid no encontrado, saltando loadProducts');
+    return;
+  }
+  
   if (animate) {
     productsGrid.style.opacity = '0';
     productsGrid.style.transform = 'translateY(20px)';
@@ -315,16 +321,14 @@ function createProductCard(product) {
       <p class="product-description">${product.description}</p>
       <div class="product-stock">${stockStatus}</div>
       <div class="product-actions">
-        <a href="https://wa.me/${product.whatsapp.replace(/[^0-9]/g, '')}?text=Hola, me interesa el perfume ${product.name}" 
-           class="btn-whatsapp ${(typeof product.stock === 'number' && product.stock <= 0) || product.stock === 'Sin stock' ? 'disabled' : ''}" 
-           target="_blank"
-           ${(typeof product.stock === 'number' && product.stock <= 0) || product.stock === 'Sin stock' ? 'onclick="return false;"' : ''}>
-          <i class="fab fa-whatsapp"></i> WhatsApp
+        <a href="productos.html?id=${product.id}" class="btn btn-secondary">
+          <i class="fas fa-info-circle"></i> Ver Información
         </a>
-        <a href="https://instagram.com/${product.instagram.replace('@', '')}" 
-           class="btn-instagram" target="_blank">
-          <i class="fab fa-instagram"></i> Instagram
-        </a>
+        <button class="btn btn-primary ${(typeof product.stock === 'number' && product.stock <= 0) || product.stock === 'Sin stock' ? 'disabled' : ''}" 
+                onclick="addToCart(${product.id})"
+                ${(typeof product.stock === 'number' && product.stock <= 0) || product.stock === 'Sin stock' ? 'disabled' : ''}>
+          <i class="fas fa-shopping-cart"></i> Agregar al Carrito
+        </button>
       </div>
     </div>
   `;
@@ -545,7 +549,10 @@ async function loadProductsFromGoogleSheets() {
     productsData = fallbackProducts;
     if (fallbackProducts.length === 0) {
       showNotification('No se pudieron cargar los productos. Verifica la configuración de Google Sheets.', 'info');
-      showNoProductsMessage();
+      // Solo mostrar mensaje de no productos si estamos en la página del catálogo
+      if (document.getElementById('products-grid')) {
+        showNoProductsMessage();
+      }
     } else {
       showNotification('Usando datos de respaldo. Verifica la configuración de Google Sheets.', 'info');
     }
@@ -555,7 +562,10 @@ async function loadProductsFromGoogleSheets() {
     initializeCarousel();
     // FIX: Aplicar filtro inicial y recargar productos cuando se refresca
     applyInitialFilter();
-    loadProducts(true);
+    // Solo cargar productos si estamos en la página del catálogo
+    if (document.getElementById('products-grid')) {
+      loadProducts(true);
+    }
   }
 }
 
@@ -695,6 +705,8 @@ function showLoadingState() {
       `;
       document.head.appendChild(style);
     }
+  } else {
+    console.log('products-grid no encontrado, saltando showLoadingState');
   }
 }
 
@@ -724,6 +736,8 @@ function showNoProductsMessage() {
         </button>
       </div>
     `;
+  } else {
+    console.log('products-grid no encontrado, saltando showNoProductsMessage');
   }
 }
 
@@ -781,16 +795,14 @@ function createCarouselItem(product) {
       <p class="carousel-item-price">${formattedPrice}</p>
       <div class="carousel-item-stock">${stockStatus}</div>
       <div class="carousel-item-actions">
-        <a href="https://wa.me/${product.whatsapp.replace(/[^0-9]/g, '')}?text=Hola, me interesa el perfume ${product.name}" 
-           class="btn btn-whatsapp ${(typeof product.stock === 'number' && product.stock <= 0) || product.stock === 'Sin stock' ? 'disabled' : ''}" 
-           target="_blank"
-           ${(typeof product.stock === 'number' && product.stock <= 0) || product.stock === 'Sin stock' ? 'onclick="return false;"' : ''}>
-          <i class="fab fa-whatsapp"></i>
+        <a href="productos.html?id=${product.id}" class="btn btn-secondary">
+          <i class="fas fa-info-circle"></i>
         </a>
-        <a href="${product.instagram}" 
-           class="btn btn-instagram" target="_blank">
-          <i class="fab fa-instagram"></i>
-        </a>
+        <button class="btn btn-primary ${(typeof product.stock === 'number' && product.stock <= 0) || product.stock === 'Sin stock' ? 'disabled' : ''}" 
+                onclick="addToCart(${product.id})"
+                ${(typeof product.stock === 'number' && product.stock <= 0) || product.stock === 'Sin stock' ? 'disabled' : ''}>
+          <i class="fas fa-shopping-cart"></i>
+        </button>
       </div>
     </div>
   `;
@@ -860,6 +872,17 @@ function refreshProducts() {
   loadProductsFromGoogleSheets();
 }
 
+// Función para agregar producto al carrito desde el catálogo
+function addToCart(productId) {
+  const product = productsData.find(p => p.id === productId);
+  if (product && typeof addProductToCart === 'function') {
+    addProductToCart(product);
+    showNotification('Producto agregado al carrito', 'success');
+  } else {
+    showNotification('Error al agregar producto al carrito', 'error');
+  }
+}
+
 // Exportar funciones para uso global
 window.DmParfum = {
   addProduct,
@@ -871,5 +894,6 @@ window.DmParfum = {
   refreshProducts,
   initializeCarousel,
   moveCarousel,
+  addToCart,
   GOOGLE_SHEETS_CONFIG
 };

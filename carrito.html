@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Carrito de Compras | Dm Parfum</title>
+  <meta name="description" content="Revisa tu carrito de compras en Dm Parfum y finaliza tu pedido">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+</head>
+<body>
+  <!-- Header -->
+  <header class="header">
+    <nav class="header">
+      <div class="nav-container">
+        <a href="index.html" style="text-decoration: none;">
+          <div class="logo">
+            <img src="img/Logo PNG.png" alt="Dm Parfum Logo" class="logo-image">
+            <div class="logo-text">
+              <h1>Dm Parfum</h1>
+              <span class="tagline">Perfumes Árabes</span>
+            </div>
+          </div>
+        </a>
+        <ul class="nav-menu">
+          <li><a href="index.html" class="nav-link">Inicio</a></li>
+          <li><a href="catalogo.html" class="nav-link">Catálogo</a></li>
+          <li><a href="index.html#sobre-nosotros" class="nav-link">Nosotros</a></li>
+          <li><a href="index.html#contacto" class="nav-link">Contacto</a></li>
+        </ul>
+        <!-- Carrito de compras -->
+        <div class="cart-icon" onclick="toggleCart()">
+          <i class="fas fa-shopping-cart"></i>
+          <span class="cart-count" id="cart-count">0</span>
+        </div>
+        <div class="hamburger">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <!-- Breadcrumb -->
+  <nav class="breadcrumb">
+    <div class="container">
+      <a href="index.html">Inicio</a>
+      <span class="separator">/</span>
+      <a href="catalogo.html">Catálogo</a>
+      <span class="separator">/</span>
+      <span>Carrito de Compras</span>
+    </div>
+  </nav>
+
+  <!-- Contenido Principal -->
+  <main class="cart-main">
+    <div class="container">
+      <div class="cart-header">
+        <h1>Carrito de Compras</h1>
+        <p>Revisa tus productos seleccionados y finaliza tu pedido</p>
+      </div>
+
+      <!-- Carrito vacío -->
+      <div id="empty-cart" class="empty-cart" style="display: none;">
+        <div class="empty-cart-content">
+          <i class="fas fa-shopping-cart"></i>
+          <h2>Tu carrito está vacío</h2>
+          <p>Agrega algunos perfumes increíbles a tu carrito para comenzar tu compra</p>
+          <a href="catalogo.html" class="btn btn-primary">
+            <i class="fas fa-shopping-bag"></i>
+            Explorar Catálogo
+          </a>
+        </div>
+      </div>
+
+      <!-- Carrito con productos -->
+      <div id="cart-content" class="cart-content">
+        <div class="cart-layout">
+          <!-- Lista de productos -->
+          <div class="cart-items">
+            <div class="cart-items-header">
+              <h2>Productos Seleccionados</h2>
+              <button class="clear-cart-btn" onclick="clearCart()">
+                <i class="fas fa-trash"></i>
+                Vaciar Carrito
+              </button>
+            </div>
+            <div id="cart-items-list" class="cart-items-list">
+              <!-- Los productos se cargarán dinámicamente -->
+            </div>
+          </div>
+
+          <!-- Resumen del pedido -->
+          <div class="cart-summary">
+            <div class="summary-card">
+              <h3>Resumen del Pedido</h3>
+              
+              <div class="summary-details">
+                <div class="summary-row">
+                  <span>Subtotal:</span>
+                  <span id="subtotal">$0</span>
+                </div>
+                <div class="summary-row">
+                  <span>Envío:</span>
+                  <span class="free-shipping">Gratis</span>
+                </div>
+                <div class="summary-row total">
+                  <span>Total:</span>
+                  <span id="total">$0</span>
+                </div>
+              </div>
+
+              <div class="summary-info">
+                <div class="info-item">
+                  <i class="fas fa-shipping-fast"></i>
+                  <span>Envío gratis en toda la ciudad</span>
+                </div>
+                <div class="info-item">
+                  <i class="fas fa-shield-alt"></i>
+                  <span>Productos 100% auténticos</span>
+                </div>
+                <div class="info-item">
+                  <i class="fas fa-headset"></i>
+                  <span>Atención personalizada</span>
+                </div>
+              </div>
+
+              <button id="checkout-btn" class="btn btn-primary btn-checkout" onclick="proceedToCheckout()">
+                <i class="fab fa-whatsapp"></i>
+                Finalizar Compra por WhatsApp
+              </button>
+
+              <div class="checkout-note">
+                <p><i class="fas fa-info-circle"></i> Al finalizar la compra, se abrirá WhatsApp con tu pedido listo para enviar</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Productos Recomendados -->
+  <section class="recommended-products">
+    <div class="container">
+      <h2>También te puede interesar</h2>
+      <div class="recommended-grid" id="recommended-products">
+        <!-- Los productos recomendados se cargarán dinámicamente -->
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-section">
+          <h3>Dm Parfum</h3>
+          <p>Perfumes árabes auténticos para una experiencia única</p>
+          <div class="social-links">
+            <a href="https://instagram.com/dm.parfum_"><i class="fab fa-instagram"></i></a>
+            <a href="https://wa.me/541162634332"><i class="fab fa-whatsapp"></i></a>
+          </div>
+        </div>
+        <div class="footer-section">
+          <h4>Enlaces Rápidos</h4>
+          <ul>
+            <li><a href="index.html">Inicio</a></li>
+            <li><a href="catalogo.html">Catálogo</a></li>
+            <li><a href="index.html#sobre-nosotros">Nosotros</a></li>
+            <li><a href="index.html#contacto">Contacto</a></li>
+          </ul>
+        </div>
+        <div class="footer-section">
+          <h4>Información</h4>
+          <ul>
+            <li><a href="#">Política de Privacidad</a></li>
+            <li><a href="#">Términos y Condiciones</a></li>
+            <li><a href="#">Envíos y Devoluciones</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2024 Dm Parfum. Todos los derechos reservados.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+  <script src="cart.js"></script>
+  <script>
+    // Inicialización cuando se carga la página
+    document.addEventListener('DOMContentLoaded', function() {
+      initializeNavigation();
+      initializeMobileMenu();
+      loadCart();
+      loadRecommendedProducts();
+      updateCartCount();
+    });
+
+    // Cargar carrito
+    function loadCart() {
+      const cart = getCart();
+      
+      if (cart.length === 0) {
+        showEmptyCart();
+      } else {
+        showCartContent();
+        displayCartItems(cart);
+        updateCartSummary(cart);
+      }
+    }
+
+    // Mostrar carrito vacío
+    function showEmptyCart() {
+      document.getElementById('empty-cart').style.display = 'block';
+      document.getElementById('cart-content').style.display = 'none';
+    }
+
+    // Mostrar contenido del carrito
+    function showCartContent() {
+      document.getElementById('empty-cart').style.display = 'none';
+      document.getElementById('cart-content').style.display = 'block';
+    }
+
+    // Mostrar productos del carrito
+    function displayCartItems(cart) {
+      const cartItemsList = document.getElementById('cart-items-list');
+      cartItemsList.innerHTML = '';
+
+      cart.forEach((item, index) => {
+        const cartItem = createCartItem(item, index);
+        cartItemsList.appendChild(cartItem);
+      });
+    }
+
+    // Crear elemento del carrito
+    function createCartItem(item, index) {
+      const cartItem = document.createElement('div');
+      cartItem.className = 'cart-item';
+      cartItem.setAttribute('data-index', index);
+
+      const formattedPrice = new Intl.NumberFormat('es-CO', {
+        style: 'currency',
+        currency: 'COP',
+        minimumFractionDigits: 0
+      }).format(item.price);
+
+      const totalPrice = new Intl.NumberFormat('es-CO', {
+        style: 'currency',
+        currency: 'COP',
+        minimumFractionDigits: 0
+      }).format(item.price * item.quantity);
+
+      cartItem.innerHTML = `
+        <div class="cart-item-image">
+          <img src="${item.image}" alt="${item.name}" loading="lazy">
+        </div>
+        <div class="cart-item-info">
+          <h3 class="cart-item-name">${item.name}</h3>
+          <p class="cart-item-brand">${item.brand}</p>
+          <p class="cart-item-price">${formattedPrice}</p>
+        </div>
+        <div class="cart-item-quantity">
+          <label>Cantidad:</label>
+          <div class="quantity-controls">
+            <button class="quantity-btn" onclick="updateQuantity(${index}, -1)">
+              <i class="fas fa-minus"></i>
+            </button>
+            <span class="quantity-value">${item.quantity}</span>
+            <button class="quantity-btn" onclick="updateQuantity(${index}, 1)">
+              <i class="fas fa-plus"></i>
+            </button>
+          </div>
+        </div>
+        <div class="cart-item-total">
+          <span class="total-label">Total:</span>
+          <span class="total-value">${totalPrice}</span>
+        </div>
+        <div class="cart-item-actions">
+          <button class="remove-btn" onclick="removeFromCart(${index})" title="Eliminar producto">
+            <i class="fas fa-trash"></i>
+          </button>
+        </div>
+      `;
+
+      return cartItem;
+    }
+
+    // Actualizar cantidad
+    function updateQuantity(index, change) {
+      const cart = getCart();
+      const newQuantity = cart[index].quantity + change;
+      
+      if (newQuantity <= 0) {
+        removeFromCart(index);
+        return;
+      }
+      
+      updateCartItemQuantity(index, newQuantity);
+      loadCart(); // Recargar carrito
+    }
+
+    // Eliminar del carrito
+    function removeFromCart(index) {
+      removeCartItem(index);
+      showNotification('Producto eliminado del carrito', 'info');
+      loadCart(); // Recargar carrito
+      updateCartCount();
+    }
+
+    // Vaciar carrito
+    function clearCart() {
+      if (confirm('¿Estás seguro de que quieres vaciar el carrito?')) {
+        clearCartItems();
+        showNotification('Carrito vaciado', 'info');
+        loadCart();
+        updateCartCount();
+      }
+    }
+
+    // Actualizar resumen del carrito
+    function updateCartSummary(cart) {
+      const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+      const total = subtotal; // Envío gratis
+
+      const formattedSubtotal = new Intl.NumberFormat('es-CO', {
+        style: 'currency',
+        currency: 'COP',
+        minimumFractionDigits: 0
+      }).format(subtotal);
+
+      const formattedTotal = new Intl.NumberFormat('es-CO', {
+        style: 'currency',
+        currency: 'COP',
+        minimumFractionDigits: 0
+      }).format(total);
+
+      document.getElementById('subtotal').textContent = formattedSubtotal;
+      document.getElementById('total').textContent = formattedTotal;
+    }
+
+    // Proceder al checkout
+    function proceedToCheckout() {
+      const cart = getCart();
+      
+      if (cart.length === 0) {
+        showNotification('Tu carrito está vacío', 'error');
+        return;
+      }
+
+      // Crear mensaje para WhatsApp
+      const message = createWhatsAppMessage(cart);
+      const whatsappUrl = `https://wa.me/541127120295?text=${encodeURIComponent(message)}`;
+      
+      // Abrir WhatsApp
+      window.open(whatsappUrl, '_blank');
+      
+      showNotification('Redirigiendo a WhatsApp...', 'success');
+    }
+
+    // Crear mensaje para WhatsApp
+    function createWhatsAppMessage(cart) {
+      const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+      const formattedTotal = new Intl.NumberFormat('es-CO', {
+        style: 'currency',
+        currency: 'COP',
+        minimumFractionDigits: 0
+      }).format(total);
+
+      let message = `🛍️ *PEDIDO DM PARFUM*\n\n`;
+      message += `Hola! Me gustaría realizar el siguiente pedido:\n\n`;
+      
+      cart.forEach((item, index) => {
+        const itemTotal = new Intl.NumberFormat('es-CO', {
+          style: 'currency',
+          currency: 'COP',
+          minimumFractionDigits: 0
+        }).format(item.price * item.quantity);
+        
+        message += `${index + 1}. *${item.name}* - ${item.brand}\n`;
+        message += `   Cantidad: ${item.quantity}\n`;
+        message += `   Precio unitario: $${item.price.toLocaleString()}\n`;
+        message += `   Subtotal: ${itemTotal}\n\n`;
+      });
+      
+      message += `💰 *TOTAL: ${formattedTotal}*\n\n`;
+      message += `📦 Envío: Gratis\n`;
+      message += `📍 Dirección de entrega: [Por confirmar]\n\n`;
+      message += `¡Gracias por elegir Dm Parfum! 🌟`;
+
+      return message;
+    }
+
+    // Cargar productos recomendados
+    async function loadRecommendedProducts() {
+      try {
+        // Cargar productos desde Google Sheets si no están cargados
+        if (typeof productsData === 'undefined' || productsData.length === 0) {
+          await loadProductsFromGoogleSheets();
+        }
+
+        // Obtener productos aleatorios (excluyendo los del carrito)
+        const cart = getCart();
+        const cartProductIds = cart.map(item => item.id);
+        
+        const availableProducts = productsData.filter(product => 
+          !cartProductIds.includes(product.id) && 
+          (typeof product.stock === 'number' && product.stock > 0)
+        );
+
+        // Seleccionar 4 productos aleatorios
+        const recommended = availableProducts
+          .sort(() => 0.5 - Math.random())
+          .slice(0, 4);
+
+        displayRecommendedProducts(recommended);
+      } catch (error) {
+        console.error('Error cargando productos recomendados:', error);
+      }
+    }
+
+    // Mostrar productos recomendados
+    function displayRecommendedProducts(products) {
+      const recommendedGrid = document.getElementById('recommended-products');
+      recommendedGrid.innerHTML = '';
+
+      if (products.length === 0) {
+        recommendedGrid.innerHTML = '<p>No hay productos recomendados disponibles.</p>';
+        return;
+      }
+
+      products.forEach(product => {
+        const productCard = createRecommendedProductCard(product);
+        recommendedGrid.appendChild(productCard);
+      });
+    }
+
+    // Crear tarjeta de producto recomendado
+    function createRecommendedProductCard(product) {
+      const card = document.createElement('div');
+      card.className = 'recommended-product-card';
+      
+      const formattedPrice = new Intl.NumberFormat('es-CO', {
+        style: 'currency',
+        currency: 'COP',
+        minimumFractionDigits: 0
+      }).format(product.price);
+
+      card.innerHTML = `
+        <div class="recommended-product-image">
+          <img src="${product.image}" alt="${product.name}" loading="lazy">
+        </div>
+        <div class="recommended-product-info">
+          <h4>${product.name}</h4>
+          <p class="recommended-product-brand">${product.brand}</p>
+          <p class="recommended-product-price">${formattedPrice}</p>
+          <div class="recommended-product-actions">
+            <a href="productos.html?id=${product.id}" class="btn btn-secondary btn-sm">Ver</a>
+            <button class="btn btn-primary btn-sm" onclick="addToCartFromRecommended(${product.id})">
+              <i class="fas fa-shopping-cart"></i>
+            </button>
+          </div>
+        </div>
+      `;
+
+      return card;
+    }
+
+    // Agregar al carrito desde recomendados
+    function addToCartFromRecommended(productId) {
+      const product = productsData.find(p => p.id === productId);
+      if (product && typeof addProductToCart === 'function') {
+        addProductToCart(product);
+        showNotification('Producto agregado al carrito', 'success');
+        loadCart();
+        updateCartCount();
+      }
+    }
+
+    // Actualizar contador del carrito
+    function updateCartCount() {
+      if (typeof getCartCount === 'function') {
+        const count = getCartCount();
+        document.getElementById('cart-count').textContent = count;
+      }
+    }
+  </script>
+</body>
+</html>
