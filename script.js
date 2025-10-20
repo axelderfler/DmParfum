@@ -46,6 +46,8 @@ document.addEventListener('DOMContentLoaded', function() {
   initializeMobileMenu();
   initializeHeroButtons();
   initializeScroll();
+  initializeMobileFilters();
+  initializeTouchOptimizations();
   // Cargar productos desde Google Sheets y luego inicializar filtros (para que existan las marcas)
   loadProductsFromGoogleSheets().then(() => {
     initializeFilters();
@@ -200,6 +202,8 @@ function filterProducts() {
     if (typeof updateProductsCount === 'function') {
       updateProductsCount(result.length);
     }
+    // Actualizar contador de filtros activos
+    updateFilterCount();
   }, 100);
 }
 
@@ -407,18 +411,298 @@ function initializeMobileMenu() {
   const hamburger = document.querySelector('.hamburger');
   const navMenu = document.querySelector('.nav-menu');
   
-  hamburger.addEventListener('click', function() {
-    navMenu.classList.toggle('active');
-    hamburger.classList.toggle('active');
+  if (hamburger && navMenu) {
+    hamburger.addEventListener('click', function() {
+      navMenu.classList.toggle('active');
+      hamburger.classList.toggle('active');
+    });
+    
+    // Cerrar menú al hacer click en un enlace
+    const navLinks = document.querySelectorAll('.nav-link');
+    navLinks.forEach(link => {
+      link.addEventListener('click', function() {
+        navMenu.classList.remove('active');
+        hamburger.classList.remove('active');
+      });
+    });
+  }
+}
+
+// Filtros móviles
+function initializeMobileFilters() {
+  const mobileFiltersBtn = document.getElementById('mobile-filters-btn');
+  const mobileFiltersModal = document.getElementById('mobile-filters-modal');
+  const closeMobileFilters = document.getElementById('close-mobile-filters');
+  const applyMobileFilters = document.getElementById('apply-mobile-filters');
+  if (!mobileFiltersBtn || !mobileFiltersModal) return;
+
+  function openModal() {
+    copyFiltersToMobile();
+    mobileFiltersModal.classList.add('active');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeModal() {
+    mobileFiltersModal.classList.remove('active');
+    document.body.style.overflow = '';
+  }
+
+  mobileFiltersBtn.onclick = openModal;
+  if (closeMobileFilters) closeMobileFilters.onclick = closeModal;
+  if (applyMobileFilters) applyMobileFilters.onclick = function() {
+    copyFiltersFromMobile();
+    filterProducts();
+    updateFilterCount();
+    closeModal();
+  };
+
+  // Cierra al hacer click en el fondo gris oscuro
+  mobileFiltersModal.onclick = function(e) {
+    if (e.target === mobileFiltersModal) closeModal();
+  };
+  // Evita el cierre si el click es dentro del contenido
+  const modalContent = mobileFiltersModal.querySelector('.mobile-filters-content');
+  if (modalContent) {
+    modalContent.onclick = function(e) { e.stopPropagation(); };
+  }
+  // Escape
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && mobileFiltersModal.classList.contains('active'))
+      closeModal();
+  });
+  // Forza el cierre al salir/refrescar por seguridad extrema en móviles
+  window.addEventListener('beforeunload', closeModal);
+}
+
+// Copiar filtros del sidebar al modal móvil
+function copyFiltersToMobile() {
+  const sidebarFilters = document.querySelector('.sidebar-filtros');
+  const mobileFiltersContent = document.getElementById('mobile-filters-content');
+  
+  if (sidebarFilters && mobileFiltersContent) {
+    // Clonar el contenido del sidebar
+    const clonedFilters = sidebarFilters.cloneNode(true);
+    
+    // Remover el header del sidebar clonado
+    const clonedHeader = clonedFilters.querySelector('.filters-header');
+    if (clonedHeader) {
+      clonedHeader.remove();
+    }
+    
+    // Limpiar y agregar el contenido clonado
+    mobileFiltersContent.innerHTML = '';
+    mobileFiltersContent.appendChild(clonedFilters);
+    
+    // Reagregar eventos a los elementos clonados
+    reattachFilterEvents(mobileFiltersContent);
+  }
+}
+
+// Copiar filtros del modal móvil al sidebar
+function copyFiltersFromMobile() {
+  const mobileFiltersContent = document.getElementById('mobile-filters-content');
+  const sidebarFilters = document.querySelector('.sidebar-filtros');
+  
+  if (mobileFiltersContent && sidebarFilters) {
+    // Obtener valores de los filtros móviles
+    const mobileFilterButtons = mobileFiltersContent.querySelectorAll('.filter-btn');
+    const mobileBrandCheckboxes = mobileFiltersContent.querySelectorAll('.marca-checkbox');
+    const mobileStockCheckbox = mobileFiltersContent.querySelector('#filtro-stock');
+    const mobilePriceMin = mobileFiltersContent.querySelector('#precio-min');
+    const mobilePriceMax = mobileFiltersContent.querySelector('#precio-max');
+    
+    // Aplicar valores al sidebar
+    mobileFilterButtons.forEach(mobileBtn => {
+      const filterValue = mobileBtn.getAttribute('data-filter');
+      const sidebarBtn = sidebarFilters.querySelector(`[data-filter="${filterValue}"]`);
+      if (sidebarBtn) {
+        sidebarBtn.classList.toggle('active', mobileBtn.classList.contains('active'));
+      }
+    });
+    
+    mobileBrandCheckboxes.forEach(mobileCheckbox => {
+      const brandValue = mobileCheckbox.value;
+      const sidebarCheckbox = sidebarFilters.querySelector(`input[value="${brandValue}"]`);
+      if (sidebarCheckbox) {
+        sidebarCheckbox.checked = mobileCheckbox.checked;
+      }
+    });
+    
+    if (mobileStockCheckbox) {
+      const sidebarStockCheckbox = sidebarFilters.querySelector('#filtro-stock');
+      if (sidebarStockCheckbox) {
+        sidebarStockCheckbox.checked = mobileStockCheckbox.checked;
+      }
+    }
+    
+    if (mobilePriceMin) {
+      const sidebarPriceMin = sidebarFilters.querySelector('#precio-min');
+      if (sidebarPriceMin) {
+        sidebarPriceMin.value = mobilePriceMin.value;
+      }
+    }
+    
+    if (mobilePriceMax) {
+      const sidebarPriceMax = sidebarFilters.querySelector('#precio-max');
+      if (sidebarPriceMax) {
+        sidebarPriceMax.value = mobilePriceMax.value;
+      }
+    }
+  }
+}
+
+// Reagregar eventos a los filtros clonados
+function reattachFilterEvents(container) {
+  // Eventos para botones de filtro
+  const filterButtons = container.querySelectorAll('.filter-btn');
+  filterButtons.forEach(button => {
+    button.addEventListener('click', function() {
+      filterButtons.forEach(btn => btn.classList.remove('active'));
+      this.classList.add('active');
+    });
   });
   
-  // Cerrar menú al hacer click en un enlace
-  const navLinks = document.querySelectorAll('.nav-link');
-  navLinks.forEach(link => {
-    link.addEventListener('click', function() {
-      navMenu.classList.remove('active');
-      hamburger.classList.remove('active');
+  // Eventos para checkboxes de marca
+  const brandCheckboxes = container.querySelectorAll('.marca-checkbox');
+  brandCheckboxes.forEach(checkbox => {
+    checkbox.addEventListener('change', function() {
+      // No hacer nada aquí, se aplicará cuando se presione "Aplicar Filtros"
     });
+  });
+  
+  // Eventos para checkbox de stock
+  const stockCheckbox = container.querySelector('#filtro-stock');
+  if (stockCheckbox) {
+    stockCheckbox.addEventListener('change', function() {
+      // No hacer nada aquí, se aplicará cuando se presione "Aplicar Filtros"
+    });
+  }
+}
+
+// Actualizar contador de filtros activos
+function updateFilterCount() {
+  const filterCount = document.getElementById('filter-count');
+  if (!filterCount) return;
+  
+  let activeFilters = 0;
+  
+  // Contar filtros de categoría activos (excluyendo "all")
+  const activeCategoryFilter = document.querySelector('.filter-btn.active:not([data-filter="all"])');
+  if (activeCategoryFilter) activeFilters++;
+  
+  // Contar marcas seleccionadas
+  const selectedBrands = document.querySelectorAll('.marca-checkbox:checked');
+  activeFilters += selectedBrands.length;
+  
+  // Contar filtro de stock
+  const stockFilter = document.getElementById('filtro-stock');
+  if (stockFilter && stockFilter.checked) activeFilters++;
+  
+  // Contar filtros de precio
+  const priceMin = document.getElementById('precio-min');
+  const priceMax = document.getElementById('precio-max');
+  if (priceMin && priceMin.value) activeFilters++;
+  if (priceMax && priceMax.value) activeFilters++;
+  
+  filterCount.textContent = activeFilters;
+  filterCount.style.display = activeFilters > 0 ? 'flex' : 'none';
+}
+
+// Optimizaciones táctiles para móviles
+function initializeTouchOptimizations() {
+  // Prevenir zoom en inputs en iOS
+  const inputs = document.querySelectorAll('input, select, textarea');
+  inputs.forEach(input => {
+    input.addEventListener('focus', function() {
+      if (window.innerWidth <= 768) {
+        const viewport = document.querySelector('meta[name="viewport"]');
+        if (viewport) {
+          viewport.setAttribute('content', 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no');
+        }
+      }
+    });
+    
+    input.addEventListener('blur', function() {
+      if (window.innerWidth <= 768) {
+        const viewport = document.querySelector('meta[name="viewport"]');
+        if (viewport) {
+          viewport.setAttribute('content', 'width=device-width, initial-scale=1.0');
+        }
+      }
+    });
+  });
+  
+  // Mejorar la experiencia de scroll en móviles
+  let isScrolling = false;
+  window.addEventListener('scroll', function() {
+    if (!isScrolling) {
+      window.requestAnimationFrame(function() {
+        // Aquí se pueden agregar efectos de scroll optimizados
+        isScrolling = false;
+      });
+      isScrolling = true;
+    }
+  });
+  
+  // Prevenir el comportamiento de pull-to-refresh en móviles
+  document.addEventListener('touchstart', function(e) {
+    if (e.touches.length > 1) {
+      e.preventDefault();
+    }
+  }, { passive: false });
+  
+  let lastTouchEnd = 0;
+  document.addEventListener('touchend', function(e) {
+    const now = (new Date()).getTime();
+    if (now - lastTouchEnd <= 300) {
+      e.preventDefault();
+    }
+    lastTouchEnd = now;
+  }, false);
+  
+  // Optimizar el carrusel para touch
+  const carouselTrack = document.getElementById('carousel-track');
+  if (carouselTrack) {
+    let startX = 0;
+    let currentX = 0;
+    let isDragging = false;
+    
+    carouselTrack.addEventListener('touchstart', function(e) {
+      startX = e.touches[0].clientX;
+      isDragging = true;
+    }, { passive: true });
+    
+    carouselTrack.addEventListener('touchmove', function(e) {
+      if (!isDragging) return;
+      currentX = e.touches[0].clientX;
+    }, { passive: true });
+    
+    carouselTrack.addEventListener('touchend', function(e) {
+      if (!isDragging) return;
+      isDragging = false;
+      
+      const diffX = startX - currentX;
+      const threshold = 50;
+      
+      if (Math.abs(diffX) > threshold) {
+        if (diffX > 0) {
+          // Swipe left - next
+          moveCarousel(1);
+        } else {
+          // Swipe right - previous
+          moveCarousel(-1);
+        }
+      }
+    }, { passive: true });
+  }
+  
+  // Listener para redimensionar ventana
+  window.addEventListener('resize', function() {
+    if (typeof updateCarouselItemsPerView === 'function') {
+      updateCarouselItemsPerView();
+      if (typeof updateCarouselPosition === 'function') {
+        updateCarouselPosition();
+      }
+    }
   });
 }
 
@@ -749,11 +1033,25 @@ function initializeCarousel() {
     product.stock === 'Sin stock'
   );
   
-  // Limitar a 6 productos para el carrusel
-  carouselItems = carouselItems.slice(0, 6);
+  // Limitar a 4 productos para el carrusel
+  carouselItems = carouselItems.slice(0, 4);
+  
+  // Ajustar itemsPerView según el tamaño de pantalla
+  updateCarouselItemsPerView();
   
   loadCarouselItems();
   createCarouselDots();
+}
+
+// Función para actualizar itemsPerView según el tamaño de pantalla
+function updateCarouselItemsPerView() {
+  if (window.innerWidth <= 480) {
+    itemsPerView = 1;
+  } else if (window.innerWidth <= 768) {
+    itemsPerView = 2;
+  } else {
+    itemsPerView = 3;
+  }
 }
 
 function loadCarouselItems() {
