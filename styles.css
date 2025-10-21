@@ -67,8 +67,8 @@ h1, h2, h3, h4, h5, h6 {
 
 /* Contenedor */
 .container {
-  max-width: 1200px;
-  margin: 0 auto;
+  max-width: 1400px;
+  margin: 0;
   padding: 0 20px;
 }
 
@@ -278,16 +278,6 @@ h1, h2, h3, h4, h5, h6 {
   justify-content: center;
   opacity: 0;
   transition: var(--transition);
-}
-@media (max-width: 768px) {
-  .hero-image-left {
-    height: 100%;
-    background-position-y: 0%;
-  }
-  .hero-image-right {
-    height: 100%;
-    background-position-y: 0%;
-  }
 }
 
 .hero-image-left:hover .hero-overlay{
@@ -2071,13 +2061,12 @@ h1, h2, h3, h4, h5, h6 {
   }
   
   .hero {
-    height: 90vh;
-    min-height: 450px;
+    height: 70vh;
+    min-height: 400px;
   }
   
   .hero-images {
     flex-direction: column;
-    height: 100%;
   }
   
   .hero-image-left,
