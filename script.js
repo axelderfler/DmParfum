@@ -322,7 +322,6 @@ function createProductCard(product) {
       <h3 class="product-name">${product.name}</h3>
       <p class="product-brand">${product.brand}</p>
       <p class="product-price">${formattedPrice}</p>
-      <p class="product-description">${product.description}</p>
       <div class="product-stock">${stockStatus}</div>
       <div class="product-actions">
         <a href="productos.html?id=${product.id}" class="btn btn-secondary">
@@ -354,7 +353,7 @@ function initializeContactForm() {
     
     // Crear mensaje para WhatsApp
     const whatsappMessage = `Hola! Soy ${name} (${email}). ${message}`;
-    const whatsappUrl = `https://wa.me/573001234567?text=${encodeURIComponent(whatsappMessage)}`;
+    const whatsappUrl = `https://wa.me/541162634332?text=${encodeURIComponent(whatsappMessage)}`;
     
     // Abrir WhatsApp
     window.open(whatsappUrl, '_blank');
@@ -1034,7 +1033,7 @@ function initializeCarousel() {
   );
   
   // Limitar a 4 productos para el carrusel
-  carouselItems = carouselItems.slice(0, 4);
+  carouselItems = carouselItems.slice(0, 9);
   
   // Ajustar itemsPerView según el tamaño de pantalla
   updateCarouselItemsPerView();
