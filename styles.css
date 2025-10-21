@@ -72,6 +72,12 @@ h1, h2, h3, h4, h5, h6 {
   padding: 0 20px;
 }
 
+.container-info {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
 /* Header */
 .header {
   position: fixed;
@@ -603,7 +609,8 @@ h1, h2, h3, h4, h5, h6 {
 .carousel-item-actions .btn {
   flex: 1;
   padding: 10px 15px;
-  font-size: 0.9rem;
+  align-items: center;
+  text-align: center;
 }
 
 .carousel-btn {
@@ -743,7 +750,7 @@ h1, h2, h3, h4, h5, h6 {
 
 .products-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(280px, 300px));
   gap: 2rem;
   transition: var(--transition);
 }
