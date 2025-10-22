@@ -161,6 +161,33 @@ h1, h2, h3, h4, h5, h6 {
   width: 100%;
 }
 
+.nav-link-catalogo {
+  text-decoration: none;
+  color: var(--text-dark);
+  font-weight: 500;
+  transition: var(--transition);
+  position: relative;
+}
+
+.nav-link-catalogo:hover {
+  color: var(--primary-color);
+}
+
+.nav-link-catalogo::after {
+  content: '';
+  position: absolute;
+  bottom: -5px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: var(--gradient-primary);
+  transition: var(--transition);
+}
+
+.nav-link-catalogo:hover::after {
+  width: 100%;
+}
+
 .hamburger {
   display: none;
   flex-direction: column;
@@ -375,6 +402,7 @@ h1, h2, h3, h4, h5, h6 {
   background: transparent;
   color: var(--primary-color);
   border: 2px solid var(--primary-color);
+  text-align: center;
 }
 
 .btn-secondary:hover {
