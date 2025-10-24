@@ -382,6 +382,60 @@ h1, h2, h3, h4, h5, h6 {
   overflow: hidden;
 }
 
+.btn-catalogo{
+  padding: 15px 60px; /* antes: 15px 30px */
+  font-size: 1.5rem; /* antes: 1rem */
+  min-height: 60px; /* antes: 60px */
+  min-width: 70px; /* antes: 60px */
+  border: none;
+  border-radius: var(--border-radius);
+  font-weight: 600;
+  text-decoration: none;
+  display: inline-block;
+  transition: var(--transition);
+  cursor: pointer;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  background: var(--gradient-primary);
+  color: white;
+  box-shadow: var(--shadow-light);
+  position: relative;
+  overflow: hidden;
+}
+
+@media(max-width: 480px){
+  .btn-catalogo{
+    padding: 10px 20px; /* antes: 15px 30px */
+    font-size: 1.2rem; /* antes: 1rem */
+    min-height: 50px; /* antes: 60px */
+    min-width: 60px; /* antes: 60px */
+  }
+}
+.btn-catalogo::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.5s;
+}
+
+.btn-catalogo:hover::before {
+  left: 100%;
+}
+
+.btn-catalogo:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-medium);
+}
+
+.btn-catalogo:active {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-light);
+}
+
 .btn-primary::before {
   content: '';
   position: absolute;
