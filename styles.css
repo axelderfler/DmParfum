@@ -651,7 +651,8 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .carousel-item {
-  flex: 0 0 300px;
+  /* 3 items per view on desktop: gap is 2rem, so total gap between 3 items = 4rem */
+  flex: 0 0 calc((100% - 4rem) / 3);
   background: var(--bg-producto);
   border-radius: var(--border-radius);
   overflow: hidden;
@@ -2412,45 +2413,47 @@ h1, h2, h3, h4, h5, h6 {
   }
   
   .carousel-container {
-    padding: 0 20px;
+  }
+  
+  .carousel-track {
+    gap: 0.5rem;
   }
   
   .carousel-item {
-    flex: 0 0 250px;
+    flex: 0 0 100%;
   }
   
   .carousel-item-image {
-    height: 150px;
+    height: 120px;
   }
   
   .carousel-item-info {
-    padding: 1rem;
+    padding: 0.8rem;
   }
   
   .carousel-item-name {
-    font-size: 1rem;
+    font-size: 0.9rem;
   }
   
   .carousel-item-price {
-    font-size: 1.1rem;
-  }
-  
-  .carousel-btn {
-    width: 40px;
-    height: 40px;
     font-size: 1rem;
   }
   
+  .carousel-btn {
+    width: 30px;
+    height: 30px;
+    font-size: 0.8rem;
+  }
+  
   .carousel-prev {
-    left: 10px;
+    left: 6px;
   }
   
   .carousel-next {
-    right: 10px;
+    right: 6px;
   }
 }
 
-/* Estilos adicionales para móviles muy pequeños */
 @media (max-width: 360px) {
   .container {
     padding: 0 10px;
@@ -2516,11 +2519,11 @@ h1, h2, h3, h4, h5, h6 {
   }
   
   .carousel-item {
-    flex: 0 0 220px;
+    flex: 0 0 100%;
   }
   
   .carousel-item-image {
-    height: 130px;
+    height: 100px;
   }
   
   .carousel-item-info {

@@ -663,16 +663,25 @@ function initializeTouchOptimizations() {
   if (carouselTrack) {
     let startX = 0;
     let currentX = 0;
+    let moved = false;
+    let startY = 0;
+    let currentY = 0;
     let isDragging = false;
     
     carouselTrack.addEventListener('touchstart', function(e) {
       startX = e.touches[0].clientX;
+      startY = e.touches[0].clientY;
+      currentX = startX;
+      currentY = startY;
+      moved = false;
       isDragging = true;
     }, { passive: true });
     
     carouselTrack.addEventListener('touchmove', function(e) {
       if (!isDragging) return;
       currentX = e.touches[0].clientX;
+      currentY = e.touches[0].clientY;
+      if (Math.abs(currentX - startX) > 5 || Math.abs(currentY - startY) > 5) moved = true;
     }, { passive: true });
     
     carouselTrack.addEventListener('touchend', function(e) {
@@ -680,9 +689,11 @@ function initializeTouchOptimizations() {
       isDragging = false;
       
       const diffX = startX - currentX;
-      const threshold = 50;
+      const diffY = startY - currentY;
+      const threshold = 70; // umbral mayor para evitar falsos positivos
+      const isHorizontal = Math.abs(diffX) > Math.abs(diffY);
       
-      if (Math.abs(diffX) > threshold) {
+      if (moved && isHorizontal && Math.abs(diffX) > threshold) {
         if (diffX > 0) {
           // Swipe left - next
           moveCarousel(1);
@@ -1032,14 +1043,16 @@ function initializeCarousel() {
     product.stock === 'Sin stock'
   );
   
-  // Limitar a 4 productos para el carrusel
-  carouselItems = carouselItems.slice(0, 9);
+  // Limitar a 9 productos para el carrusel
+  carouselItems = carouselItems.slice(0, 12);
   
   // Ajustar itemsPerView según el tamaño de pantalla
   updateCarouselItemsPerView();
   
   loadCarouselItems();
   createCarouselDots();
+  // Recalcular al redimensionar para evitar cortes y páginas en blanco
+  window.addEventListener('resize', handleCarouselResize, { passive: true });
 }
 
 // Función para actualizar itemsPerView según el tamaño de pantalla
@@ -1112,7 +1125,7 @@ function createCarouselDots() {
   if (!dotsContainer) return;
   
   dotsContainer.innerHTML = '';
-  const totalSlides = Math.ceil(carouselItems.length / itemsPerView);
+  const totalSlides = getTotalSlides();
   
   for (let i = 0; i < totalSlides; i++) {
     const dot = document.createElement('button');
@@ -1123,7 +1136,7 @@ function createCarouselDots() {
 }
 
 function moveCarousel(direction) {
-  const totalSlides = Math.ceil(carouselItems.length / itemsPerView);
+  const totalSlides = getTotalSlides();
   currentCarouselIndex += direction;
   
   if (currentCarouselIndex < 0) {
@@ -1145,10 +1158,12 @@ function goToSlide(slideIndex) {
 function updateCarouselPosition() {
   const carouselTrack = document.getElementById('carousel-track');
   if (!carouselTrack) return;
-  
-  const itemWidth = 300 + 32; // 300px + 32px gap
-  const translateX = -currentCarouselIndex * itemWidth * itemsPerView;
-  carouselTrack.style.transform = `translateX(${translateX}px)`;
+  const items = carouselTrack.querySelectorAll('.carousel-item');
+  if (!items.length) return;
+  const startIndex = Math.min(currentCarouselIndex * itemsPerView, Math.max(0, items.length - itemsPerView));
+  const targetItem = items[startIndex];
+  const translateX = -Math.round(targetItem.offsetLeft);
+  carouselTrack.style.transform = `translate3d(${translateX}px, 0, 0)`;
 }
 
 function updateCarouselDots() {
@@ -1156,6 +1171,38 @@ function updateCarouselDots() {
   dots.forEach((dot, index) => {
     dot.classList.toggle('active', index === currentCarouselIndex);
   });
+}
+
+// Manejo de redimensionamiento para mantener el carrusel alineado a página completa
+function handleCarouselResize() {
+  const previousItemsPerView = itemsPerView;
+  updateCarouselItemsPerView();
+  const totalSlides = getTotalSlides() || 1;
+  // Asegurar que el índice no quede fuera de rango al cambiar itemsPerView
+  if (currentCarouselIndex > totalSlides - 1) {
+    currentCarouselIndex = totalSlides - 1;
+  }
+  // Regenerar puntos si cambia la cantidad de páginas
+  if (previousItemsPerView !== itemsPerView) {
+    createCarouselDots();
+  }
+  updateCarouselPosition();
+}
+
+// Cálculo consistente del total de páginas usando el ancho de página (itemWidth * itemsPerView + gaps)
+function getTotalSlides() {
+  const carouselTrack = document.getElementById('carousel-track');
+  if (!carouselTrack) return 1;
+  const count = carouselTrack.querySelectorAll('.carousel-item').length;
+  return Math.max(1, Math.ceil(count / Math.max(1, itemsPerView)));
+}
+
+// Obtiene el ancho exacto de una "página" del carrusel usando el ancho del ítem y el gap
+function getCarouselPageWidth() {
+  const wrapper = document.querySelector('.carousel-wrapper');
+  if (!wrapper) return 0;
+  // Usar el ancho visible del wrapper elimina errores de redondeo acumulados
+  return wrapper.clientWidth;
 }
 
 // Función para actualizar configuración de Google Sheets
