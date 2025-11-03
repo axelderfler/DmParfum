@@ -694,7 +694,6 @@ h1, h2, h3, h4, h5, h6 {
   position: relative;
   max-width: 1200px;
   margin: 0 auto;
-  padding: 0 60px;
 }
 
 .carousel-wrapper {
@@ -798,11 +797,14 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .carousel-btn:hover {
-  background: var(--secondary-color);
-  transform: translateY(-50%) scale(1.1);
+  background: #e9a6163c;
+  color: #3a3a3a;
+  transform: translateY(-50%) scale(0.8);
 }
 
 .carousel-btn:active {
+  background: #e9a6163c;
+  color: #3a3a3a;
   transform: translateY(-50%) scale(1.05);
 }
 
@@ -2552,7 +2554,7 @@ h1, h2, h3, h4, h5, h6 {
   }
   
   .carousel-item {
-    flex: 0 0 100%;
+    flex: 0 0 60%;
   }
   
   .carousel-item-image {
@@ -2572,18 +2574,14 @@ h1, h2, h3, h4, h5, h6 {
   }
   
   .carousel-btn {
+    color: #3a3a3a;
+    background: #e9a6163c;
     width: 30px;
     height: 30px;
     font-size: 0.8rem;
+    transform: translateY(-50%) scale(0.8);
   }
   
-  .carousel-prev {
-    left: 6px;
-  }
-  
-  .carousel-next {
-    right: 6px;
-  }
 }
 
 @media (max-width: 360px) {
