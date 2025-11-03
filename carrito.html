@@ -26,8 +26,8 @@
         <ul class="nav-menu">
           <li><a href="index.html" class="nav-link">Inicio</a></li>
           <li><a href="catalogo.html" class="nav-link">Catálogo</a></li>
-          <li><a href="index.html#sobre-nosotros" class="nav-link">Nosotros</a></li>
-          <li><a href="index.html#contacto" class="nav-link">Contacto</a></li>
+          <li><a href="index.html" class="nav-link">Nosotros</a></li>
+          <li><a href="index.html" class="nav-link">Contacto</a></li>
         </ul>
         <!-- Carrito de compras -->
         <div class="cart-icon" onclick="toggleCart()">
@@ -58,7 +58,7 @@
   <main class="cart-main">
     <div class="container-info">
       <div class="cart-header">
-        <h1>Carrito de Compras</h1>
+        <h1 class="titulo1-carrito">Carrito de Compras</h1>
         <p>Revisa tus productos seleccionados y finaliza tu pedido</p>
       </div>
 
@@ -66,10 +66,9 @@
       <div id="empty-cart" class="empty-cart" style="display: none;">
         <div class="empty-cart-content">
           <i class="fas fa-shopping-cart"></i>
-          <h2>Tu carrito está vacío</h2>
+          <h2 class="titulo-carrito">Tu carrito está vacío</h2>
           <p>Agrega algunos perfumes increíbles a tu carrito para comenzar tu compra</p>
-          <a href="catalogo.html" class="btn btn-primary">
-            <i class="fas fa-shopping-bag"></i>
+          <a href="catalogo.html" class="btn btn-carrito">
             Explorar Catálogo
           </a>
         </div>
