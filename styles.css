@@ -383,6 +383,60 @@ h1, h2, h3, h4, h5, h6 {
   overflow: hidden;
 }
 
+.btn-catalogo{
+  padding: 15px 60px; /* antes: 15px 30px */
+  font-size: 1.5rem; /* antes: 1rem */
+  min-height: 60px; /* antes: 60px */
+  min-width: 70px; /* antes: 60px */
+  border: none;
+  border-radius: var(--border-radius);
+  font-weight: 600;
+  text-decoration: none;
+  display: inline-block;
+  transition: var(--transition);
+  cursor: pointer;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  background: var(--gradient-primary);
+  color: white;
+  box-shadow: var(--shadow-light);
+  position: relative;
+  overflow: hidden;
+}
+
+@media(max-width: 480px){
+  .btn-catalogo{
+    padding: 10px 20px; /* antes: 15px 30px */
+    font-size: 1.2rem; /* antes: 1rem */
+    min-height: 50px; /* antes: 60px */
+    min-width: 60px; /* antes: 60px */
+  }
+}
+.btn-catalogo::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.5s;
+}
+
+.btn-catalogo:hover::before {
+  left: 100%;
+}
+
+.btn-catalogo:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-medium);
+}
+
+.btn-catalogo:active {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-light);
+}
+
 .btn-primary::before {
   content: '';
   position: absolute;
@@ -598,7 +652,8 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .carousel-item {
-  flex: 0 0 300px;
+  /* 3 items per view on desktop: gap is 2rem, so total gap between 3 items = 4rem */
+  flex: 0 0 calc((100% - 4rem) / 3);
   background: var(--bg-producto);
   border-radius: var(--border-radius);
   overflow: hidden;
@@ -2395,45 +2450,47 @@ h1, h2, h3, h4, h5, h6 {
   }
   
   .carousel-container {
-    padding: 0 20px;
+  }
+  
+  .carousel-track {
+    gap: 0.5rem;
   }
   
   .carousel-item {
-    flex: 0 0 250px;
+    flex: 0 0 100%;
   }
   
   .carousel-item-image {
-    height: 150px;
+    height: 120px;
   }
   
   .carousel-item-info {
-    padding: 1rem;
+    padding: 0.8rem;
   }
   
   .carousel-item-name {
-    font-size: 1rem;
+    font-size: 0.9rem;
   }
   
   .carousel-item-price {
-    font-size: 1.1rem;
-  }
-  
-  .carousel-btn {
-    width: 40px;
-    height: 40px;
     font-size: 1rem;
   }
   
+  .carousel-btn {
+    width: 30px;
+    height: 30px;
+    font-size: 0.8rem;
+  }
+  
   .carousel-prev {
-    left: 10px;
+    left: 6px;
   }
   
   .carousel-next {
-    right: 10px;
+    right: 6px;
   }
 }
 
-/* Estilos adicionales para móviles muy pequeños */
 @media (max-width: 360px) {
   .container {
     padding: 0 10px;
@@ -2499,11 +2556,11 @@ h1, h2, h3, h4, h5, h6 {
   }
   
   .carousel-item {
-    flex: 0 0 220px;
+    flex: 0 0 100%;
   }
   
   .carousel-item-image {
-    height: 130px;
+    height: 100px;
   }
   
   .carousel-item-info {
