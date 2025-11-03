@@ -427,49 +427,195 @@ function initializeMobileMenu() {
   }
 }
 
-// Filtros móviles
-function initializeMobileFilters() {
-  const mobileFiltersBtn = document.getElementById('mobile-filters-btn');
-  const mobileFiltersModal = document.getElementById('mobile-filters-modal');
-  const closeMobileFilters = document.getElementById('close-mobile-filters');
-  const applyMobileFilters = document.getElementById('apply-mobile-filters');
-  if (!mobileFiltersBtn || !mobileFiltersModal) return;
+// Variables globales para el modal de filtros móviles
+let mobileFiltersModal = null;
+let mobileFiltersBtn = null;
 
-  function openModal() {
-    copyFiltersToMobile();
+// Función para abrir el modal - global para debugging
+// Definida antes de DOMContentLoaded para que esté disponible en onclick inline
+window.openMobileFilters = function openMobileFilters() {
+  console.log('🔵 [DEBUG] openMobileFilters llamada');
+  
+  if (!mobileFiltersModal) {
+    mobileFiltersModal = document.getElementById('mobile-filters-modal');
+  }
+  
+  if (!mobileFiltersModal) {
+    console.error('❌ Modal no encontrado');
+    return;
+  }
+  
+  console.log('🔵 Abriendo modal de filtros móviles');
+  
+  // Forzar todas las propiedades necesarias directamente
+  mobileFiltersModal.style.display = 'block';
+  mobileFiltersModal.style.opacity = '1';
+  mobileFiltersModal.style.visibility = 'visible';
+  mobileFiltersModal.style.pointerEvents = 'auto';
+  
+  // Copiar filtros
+  copyFiltersToMobile();
+  
+  // Agregar clase active después de un pequeño delay para la animación
+  setTimeout(() => {
     mobileFiltersModal.classList.add('active');
     document.body.style.overflow = 'hidden';
+    
+    // Verificar que se aplicó correctamente
+    const computed = window.getComputedStyle(mobileFiltersModal);
+    console.log('✅ Modal abierto:', {
+      display: computed.display,
+      opacity: computed.opacity,
+      visibility: computed.visibility,
+      classList: mobileFiltersModal.classList.toString()
+    });
+  }, 50);
+}
+
+// Función para cerrar el modal - global para debugging
+window.closeMobileFilters = function closeMobileFilters() {
+  console.log('🔴 Cerrando modal de filtros móviles');
+  
+  if (!mobileFiltersModal) {
+    mobileFiltersModal = document.getElementById('mobile-filters-modal');
   }
-  function closeModal() {
-    mobileFiltersModal.classList.remove('active');
-    document.body.style.overflow = '';
+  
+  if (!mobileFiltersModal) return;
+  
+  mobileFiltersModal.classList.remove('active');
+  document.body.style.overflow = '';
+  
+  setTimeout(() => {
+    if (!mobileFiltersModal.classList.contains('active')) {
+      mobileFiltersModal.style.display = 'none';
+    }
+  }, 300);
+}
+
+// Filtros móviles
+function initializeMobileFilters() {
+  console.log('🚀 Inicializando filtros móviles...');
+  
+  // Usar variables globales
+  mobileFiltersBtn = document.getElementById('mobile-filters-btn');
+  mobileFiltersModal = document.getElementById('mobile-filters-modal');
+  const closeMobileFiltersBtn = document.getElementById('close-mobile-filters');
+  const applyMobileFilters = document.getElementById('apply-mobile-filters');
+  
+  console.log('Elementos encontrados:', {
+    boton: !!mobileFiltersBtn,
+    modal: !!mobileFiltersModal,
+    cerrar: !!closeMobileFiltersBtn,
+    aplicar: !!applyMobileFilters
+  });
+  
+  if (!mobileFiltersBtn) {
+    console.error('❌ Botón de filtros móviles no encontrado');
+    return;
+  }
+  
+  if (!mobileFiltersModal) {
+    console.error('❌ Modal de filtros móviles no encontrado');
+    return;
   }
 
-  mobileFiltersBtn.onclick = openModal;
-  if (closeMobileFilters) closeMobileFilters.onclick = closeModal;
-  if (applyMobileFilters) applyMobileFilters.onclick = function() {
-    copyFiltersFromMobile();
-    filterProducts();
-    updateFilterCount();
-    closeModal();
+  // Asegurar que el modal esté cerrado al inicio
+  mobileFiltersModal.classList.remove('active');
+  mobileFiltersModal.style.display = 'none';
+  document.body.style.overflow = '';
+  
+  console.log('✅ Filtros móviles inicializados correctamente');
+
+  // EVENTO CLICK - método más simple y directo
+  mobileFiltersBtn.onclick = function(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    console.log('🖱️ [ONCLICK] Click detectado en botón de filtros');
+    openMobileFilters();
+    return false;
   };
+  
+  // También usar addEventListener como respaldo
+  mobileFiltersBtn.addEventListener('click', function(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    console.log('🖱️ [ADD EVENT LISTENER] Click detectado en botón de filtros');
+    openMobileFilters();
+    return false;
+  }, false);
+  
+  // Evento touch para móviles
+  let touchHandled = false;
+  mobileFiltersBtn.addEventListener('touchstart', function(e) {
+    touchHandled = false;
+  }, { passive: true });
+  
+  mobileFiltersBtn.addEventListener('touchend', function(e) {
+    if (!touchHandled) {
+      e.preventDefault();
+      e.stopPropagation();
+      console.log('👆 Touch end en botón de filtros');
+      touchHandled = true;
+      openMobileFilters();
+      return false;
+    }
+  }, false);
+  
+  // Eventos para el botón de cerrar
+  if (closeMobileFiltersBtn) {
+    closeMobileFiltersBtn.onclick = function(e) {
+      e.preventDefault();
+      closeMobileFilters();
+    };
+  }
+  
+  // Evento para aplicar filtros
+  if (applyMobileFilters) {
+    applyMobileFilters.onclick = function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      console.log('Aplicando filtros móviles');
+      copyFiltersFromMobile();
+      filterProducts();
+      updateFilterCount();
+      closeMobileFilters();
+    };
+  }
 
   // Cierra al hacer click en el fondo gris oscuro
   mobileFiltersModal.onclick = function(e) {
-    if (e.target === mobileFiltersModal) closeModal();
+    if (e.target === mobileFiltersModal) {
+      closeMobileFilters();
+    }
   };
+  
   // Evita el cierre si el click es dentro del contenido
   const modalContent = mobileFiltersModal.querySelector('.mobile-filters-content');
   if (modalContent) {
-    modalContent.onclick = function(e) { e.stopPropagation(); };
+    modalContent.onclick = function(e) { 
+      e.stopPropagation(); 
+    };
   }
-  // Escape
+  
+  // Escape key para cerrar
   document.addEventListener('keydown', function(e) {
-    if (e.key === 'Escape' && mobileFiltersModal.classList.contains('active'))
-      closeModal();
+    if (e.key === 'Escape' && mobileFiltersModal.classList.contains('active')) {
+      closeMobileFilters();
+    }
   });
-  // Forza el cierre al salir/refrescar por seguridad extrema en móviles
-  window.addEventListener('beforeunload', closeModal);
+  
+  // Las funciones ya están expuestas globalmente arriba
+  console.log('✅ Eventos registrados. Prueba: window.openMobileFilters()');
+  
+  // Verificar que todo esté conectado
+  setTimeout(() => {
+    console.log('🔍 Verificación final:', {
+      boton: !!mobileFiltersBtn,
+      modal: !!mobileFiltersModal,
+      funcionAbierta: typeof window.openMobileFilters === 'function',
+      funcionCerrada: typeof window.closeMobileFilters === 'function'
+    });
+  }, 1000);
 }
 
 // Copiar filtros del sidebar al modal móvil
@@ -477,8 +623,25 @@ function copyFiltersToMobile() {
   const sidebarFilters = document.querySelector('.sidebar-filtros');
   const mobileFiltersContent = document.getElementById('mobile-filters-content');
   
-  if (sidebarFilters && mobileFiltersContent) {
-    // Clonar el contenido del sidebar
+  if (!sidebarFilters) {
+    console.warn('⚠️ Sidebar de filtros no encontrado');
+    if (mobileFiltersContent) {
+      mobileFiltersContent.innerHTML = '<div style="padding: 2rem; text-align: center; color: var(--text-medium);">Los filtros se están cargando...</div>';
+    }
+    return;
+  }
+  
+  if (!mobileFiltersContent) {
+    console.warn('⚠️ Contenedor móvil de filtros no encontrado');
+    return;
+  }
+  
+  console.log('📋 Copiando filtros al modal móvil...');
+  console.log('Sidebar encontrado:', !!sidebarFilters);
+  console.log('Contenido del sidebar:', sidebarFilters.innerHTML.substring(0, 200));
+  
+  try {
+    // Clonar el contenido del sidebar con todos sus hijos
     const clonedFilters = sidebarFilters.cloneNode(true);
     
     // Remover el header del sidebar clonado
@@ -487,12 +650,54 @@ function copyFiltersToMobile() {
       clonedHeader.remove();
     }
     
+    // Cambiar IDs duplicados para evitar conflictos
+    clonedFilters.querySelectorAll('[id]').forEach(el => {
+      const originalId = el.id;
+      if (originalId) {
+        el.id = 'mobile-' + originalId;
+        // Actualizar el atributo 'for' de los labels que apuntan a estos IDs
+        const label = clonedFilters.querySelector(`label[for="${originalId}"]`);
+        if (label) {
+          label.setAttribute('for', 'mobile-' + originalId);
+        }
+      }
+    });
+    
     // Limpiar y agregar el contenido clonado
     mobileFiltersContent.innerHTML = '';
     mobileFiltersContent.appendChild(clonedFilters);
     
+    console.log('✅ Contenido agregado al modal');
+    console.log('Contenido del modal:', mobileFiltersContent.innerHTML.substring(0, 300));
+    
+    // Verificar que se copiaron los elementos
+    const filterButtons = mobileFiltersContent.querySelectorAll('.filter-btn');
+    const brandFilters = mobileFiltersContent.querySelectorAll('.marca-checkbox, .brand-filter-item');
+    const stockCheckbox = mobileFiltersContent.querySelector('[id*="filtro-stock"]');
+    const priceInputs = mobileFiltersContent.querySelectorAll('[id*="precio"]');
+    
+    console.log('📊 Filtros copiados:', {
+      botonesCategoria: filterButtons.length,
+      marcas: brandFilters.length,
+      stock: !!stockCheckbox,
+      precio: priceInputs.length
+    });
+    
     // Reagregar eventos a los elementos clonados
     reattachFilterEvents(mobileFiltersContent);
+    
+    console.log('✅ Filtros copiados al modal móvil exitosamente');
+  } catch (error) {
+    console.error('❌ Error al copiar filtros al modal móvil:', error);
+    console.error('Stack:', error.stack);
+    if (mobileFiltersContent) {
+      mobileFiltersContent.innerHTML = `
+        <div style="padding: 2rem; text-align: center; color: var(--text-medium);">
+          <p>Error al cargar los filtros.</p>
+          <p style="font-size: 0.8rem; margin-top: 0.5rem;">Intenta recargar la página.</p>
+        </div>
+      `;
+    }
   }
 }
 
@@ -501,80 +706,141 @@ function copyFiltersFromMobile() {
   const mobileFiltersContent = document.getElementById('mobile-filters-content');
   const sidebarFilters = document.querySelector('.sidebar-filtros');
   
-  if (mobileFiltersContent && sidebarFilters) {
-    // Obtener valores de los filtros móviles
-    const mobileFilterButtons = mobileFiltersContent.querySelectorAll('.filter-btn');
-    const mobileBrandCheckboxes = mobileFiltersContent.querySelectorAll('.marca-checkbox');
-    const mobileStockCheckbox = mobileFiltersContent.querySelector('#filtro-stock');
-    const mobilePriceMin = mobileFiltersContent.querySelector('#precio-min');
-    const mobilePriceMax = mobileFiltersContent.querySelector('#precio-max');
-    
-    // Aplicar valores al sidebar
-    mobileFilterButtons.forEach(mobileBtn => {
-      const filterValue = mobileBtn.getAttribute('data-filter');
-      const sidebarBtn = sidebarFilters.querySelector(`[data-filter="${filterValue}"]`);
-      if (sidebarBtn) {
-        sidebarBtn.classList.toggle('active', mobileBtn.classList.contains('active'));
-      }
-    });
-    
-    mobileBrandCheckboxes.forEach(mobileCheckbox => {
-      const brandValue = mobileCheckbox.value;
-      const sidebarCheckbox = sidebarFilters.querySelector(`input[value="${brandValue}"]`);
-      if (sidebarCheckbox) {
-        sidebarCheckbox.checked = mobileCheckbox.checked;
-      }
-    });
-    
-    if (mobileStockCheckbox) {
-      const sidebarStockCheckbox = sidebarFilters.querySelector('#filtro-stock');
-      if (sidebarStockCheckbox) {
-        sidebarStockCheckbox.checked = mobileStockCheckbox.checked;
+  if (!mobileFiltersContent || !sidebarFilters) {
+    console.log('⚠️ Contenido móvil o sidebar no encontrado');
+    return;
+  }
+  
+  console.log('📋 Copiando filtros desde modal móvil al sidebar');
+  
+  // Obtener valores de los filtros móviles (usando selectores que funcionan con IDs con prefijo mobile-)
+  const mobileFilterButtons = mobileFiltersContent.querySelectorAll('.filter-btn');
+  const mobileBrandCheckboxes = mobileFiltersContent.querySelectorAll('.marca-checkbox, input[type="checkbox"][id*="marca"]');
+  const mobileStockCheckbox = mobileFiltersContent.querySelector('[id*="filtro-stock"]');
+  const mobilePriceMin = mobileFiltersContent.querySelector('[id*="precio-min"]');
+  const mobilePriceMax = mobileFiltersContent.querySelector('[id*="precio-max"]');
+  
+  // Aplicar valores al sidebar
+  mobileFilterButtons.forEach(mobileBtn => {
+    const filterValue = mobileBtn.getAttribute('data-filter');
+    const sidebarBtn = sidebarFilters.querySelector(`[data-filter="${filterValue}"]`);
+    if (sidebarBtn) {
+      sidebarBtn.classList.toggle('active', mobileBtn.classList.contains('active'));
+      // Actualizar currentFilter si es necesario
+      if (mobileBtn.classList.contains('active')) {
+        currentFilter = filterValue;
       }
     }
-    
-    if (mobilePriceMin) {
-      const sidebarPriceMin = sidebarFilters.querySelector('#precio-min');
-      if (sidebarPriceMin) {
-        sidebarPriceMin.value = mobilePriceMin.value;
-      }
+  });
+  
+  mobileBrandCheckboxes.forEach(mobileCheckbox => {
+    const brandValue = mobileCheckbox.value;
+    const sidebarCheckbox = sidebarFilters.querySelector(`input[value="${brandValue}"]`);
+    if (sidebarCheckbox) {
+      sidebarCheckbox.checked = mobileCheckbox.checked;
     }
-    
-    if (mobilePriceMax) {
-      const sidebarPriceMax = sidebarFilters.querySelector('#precio-max');
-      if (sidebarPriceMax) {
-        sidebarPriceMax.value = mobilePriceMax.value;
-      }
+  });
+  
+  if (mobileStockCheckbox) {
+    const sidebarStockCheckbox = sidebarFilters.querySelector('#filtro-stock');
+    if (sidebarStockCheckbox) {
+      sidebarStockCheckbox.checked = mobileStockCheckbox.checked;
     }
   }
+  
+  if (mobilePriceMin) {
+    const sidebarPriceMin = sidebarFilters.querySelector('#precio-min');
+    if (sidebarPriceMin) {
+      sidebarPriceMin.value = mobilePriceMin.value;
+    }
+  }
+  
+  if (mobilePriceMax) {
+    const sidebarPriceMax = sidebarFilters.querySelector('#precio-max');
+    if (sidebarPriceMax) {
+      sidebarPriceMax.value = mobilePriceMax.value;
+    }
+  }
+  
+  console.log('Filtros copiados desde modal móvil al sidebar');
 }
 
 // Reagregar eventos a los filtros clonados
 function reattachFilterEvents(container) {
+  console.log('🔗 Reagregando eventos a filtros móviles...');
+  
   // Eventos para botones de filtro
   const filterButtons = container.querySelectorAll('.filter-btn');
+  console.log('Botones de filtro encontrados:', filterButtons.length);
+  
   filterButtons.forEach(button => {
-    button.addEventListener('click', function() {
-      filterButtons.forEach(btn => btn.classList.remove('active'));
-      this.classList.add('active');
+    // Remover listeners anteriores clonando el botón
+    const newButton = button.cloneNode(true);
+    button.parentNode.replaceChild(newButton, button);
+    
+    newButton.addEventListener('click', function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      filterButtons.forEach(btn => {
+        if (btn !== newButton) btn.classList.remove('active');
+      });
+      newButton.classList.add('active');
+      console.log('Botón de filtro activado:', newButton.getAttribute('data-filter'));
+    });
+    
+    // Soporte para touch
+    newButton.addEventListener('touchend', function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      filterButtons.forEach(btn => {
+        if (btn !== newButton) btn.classList.remove('active');
+      });
+      newButton.classList.add('active');
+      console.log('Botón de filtro activado (touch):', newButton.getAttribute('data-filter'));
     });
   });
   
   // Eventos para checkboxes de marca
-  const brandCheckboxes = container.querySelectorAll('.marca-checkbox');
+  const brandCheckboxes = container.querySelectorAll('.marca-checkbox, input[type="checkbox"][id*="marca"]');
+  console.log('Checkboxes de marca encontrados:', brandCheckboxes.length);
+  
   brandCheckboxes.forEach(checkbox => {
-    checkbox.addEventListener('change', function() {
+    checkbox.addEventListener('change', function(e) {
+      e.stopPropagation();
+      console.log('Checkbox de marca cambiado:', checkbox.value, checkbox.checked);
       // No hacer nada aquí, se aplicará cuando se presione "Aplicar Filtros"
     });
   });
   
-  // Eventos para checkbox de stock
-  const stockCheckbox = container.querySelector('#filtro-stock');
+  // Eventos para checkbox de stock (usar selector flexible para IDs con prefijo mobile-)
+  const stockCheckbox = container.querySelector('[id*="filtro-stock"]');
+  console.log('Checkbox de stock encontrado:', !!stockCheckbox);
+  
   if (stockCheckbox) {
-    stockCheckbox.addEventListener('change', function() {
+    stockCheckbox.addEventListener('change', function(e) {
+      e.stopPropagation();
+      console.log('Checkbox de stock cambiado:', stockCheckbox.checked);
       // No hacer nada aquí, se aplicará cuando se presione "Aplicar Filtros"
     });
   }
+  
+  // Eventos para los inputs de precio (usar selectores flexibles)
+  const priceMin = container.querySelector('[id*="precio-min"]');
+  const priceMax = container.querySelector('[id*="precio-max"]');
+  console.log('Inputs de precio encontrados:', !!priceMin, !!priceMax);
+  
+  if (priceMin) {
+    priceMin.addEventListener('input', function(e) {
+      e.stopPropagation();
+    });
+  }
+  if (priceMax) {
+    priceMax.addEventListener('input', function(e) {
+      e.stopPropagation();
+    });
+  }
+  
+  console.log('✅ Eventos reagregados correctamente');
 }
 
 // Actualizar contador de filtros activos
@@ -663,16 +929,25 @@ function initializeTouchOptimizations() {
   if (carouselTrack) {
     let startX = 0;
     let currentX = 0;
+    let moved = false;
+    let startY = 0;
+    let currentY = 0;
     let isDragging = false;
     
     carouselTrack.addEventListener('touchstart', function(e) {
       startX = e.touches[0].clientX;
+      startY = e.touches[0].clientY;
+      currentX = startX;
+      currentY = startY;
+      moved = false;
       isDragging = true;
     }, { passive: true });
     
     carouselTrack.addEventListener('touchmove', function(e) {
       if (!isDragging) return;
       currentX = e.touches[0].clientX;
+      currentY = e.touches[0].clientY;
+      if (Math.abs(currentX - startX) > 5 || Math.abs(currentY - startY) > 5) moved = true;
     }, { passive: true });
     
     carouselTrack.addEventListener('touchend', function(e) {
@@ -680,9 +955,11 @@ function initializeTouchOptimizations() {
       isDragging = false;
       
       const diffX = startX - currentX;
-      const threshold = 50;
+      const diffY = startY - currentY;
+      const threshold = 70; // umbral mayor para evitar falsos positivos
+      const isHorizontal = Math.abs(diffX) > Math.abs(diffY);
       
-      if (Math.abs(diffX) > threshold) {
+      if (moved && isHorizontal && Math.abs(diffX) > threshold) {
         if (diffX > 0) {
           // Swipe left - next
           moveCarousel(1);
@@ -1032,14 +1309,16 @@ function initializeCarousel() {
     product.stock === 'Sin stock'
   );
   
-  // Limitar a 4 productos para el carrusel
-  carouselItems = carouselItems.slice(0, 9);
+  // Limitar a 9 productos para el carrusel
+  carouselItems = carouselItems.slice(0, 12);
   
   // Ajustar itemsPerView según el tamaño de pantalla
   updateCarouselItemsPerView();
   
   loadCarouselItems();
   createCarouselDots();
+  // Recalcular al redimensionar para evitar cortes y páginas en blanco
+  window.addEventListener('resize', handleCarouselResize, { passive: true });
 }
 
 // Función para actualizar itemsPerView según el tamaño de pantalla
@@ -1112,7 +1391,7 @@ function createCarouselDots() {
   if (!dotsContainer) return;
   
   dotsContainer.innerHTML = '';
-  const totalSlides = Math.ceil(carouselItems.length / itemsPerView);
+  const totalSlides = getTotalSlides();
   
   for (let i = 0; i < totalSlides; i++) {
     const dot = document.createElement('button');
@@ -1123,7 +1402,7 @@ function createCarouselDots() {
 }
 
 function moveCarousel(direction) {
-  const totalSlides = Math.ceil(carouselItems.length / itemsPerView);
+  const totalSlides = getTotalSlides();
   currentCarouselIndex += direction;
   
   if (currentCarouselIndex < 0) {
@@ -1145,10 +1424,12 @@ function goToSlide(slideIndex) {
 function updateCarouselPosition() {
   const carouselTrack = document.getElementById('carousel-track');
   if (!carouselTrack) return;
-  
-  const itemWidth = 300 + 32; // 300px + 32px gap
-  const translateX = -currentCarouselIndex * itemWidth * itemsPerView;
-  carouselTrack.style.transform = `translateX(${translateX}px)`;
+  const items = carouselTrack.querySelectorAll('.carousel-item');
+  if (!items.length) return;
+  const startIndex = Math.min(currentCarouselIndex * itemsPerView, Math.max(0, items.length - itemsPerView));
+  const targetItem = items[startIndex];
+  const translateX = -Math.round(targetItem.offsetLeft);
+  carouselTrack.style.transform = `translate3d(${translateX}px, 0, 0)`;
 }
 
 function updateCarouselDots() {
@@ -1156,6 +1437,38 @@ function updateCarouselDots() {
   dots.forEach((dot, index) => {
     dot.classList.toggle('active', index === currentCarouselIndex);
   });
+}
+
+// Manejo de redimensionamiento para mantener el carrusel alineado a página completa
+function handleCarouselResize() {
+  const previousItemsPerView = itemsPerView;
+  updateCarouselItemsPerView();
+  const totalSlides = getTotalSlides() || 1;
+  // Asegurar que el índice no quede fuera de rango al cambiar itemsPerView
+  if (currentCarouselIndex > totalSlides - 1) {
+    currentCarouselIndex = totalSlides - 1;
+  }
+  // Regenerar puntos si cambia la cantidad de páginas
+  if (previousItemsPerView !== itemsPerView) {
+    createCarouselDots();
+  }
+  updateCarouselPosition();
+}
+
+// Cálculo consistente del total de páginas usando el ancho de página (itemWidth * itemsPerView + gaps)
+function getTotalSlides() {
+  const carouselTrack = document.getElementById('carousel-track');
+  if (!carouselTrack) return 1;
+  const count = carouselTrack.querySelectorAll('.carousel-item').length;
+  return Math.max(1, Math.ceil(count / Math.max(1, itemsPerView)));
+}
+
+// Obtiene el ancho exacto de una "página" del carrusel usando el ancho del ítem y el gap
+function getCarouselPageWidth() {
+  const wrapper = document.querySelector('.carousel-wrapper');
+  if (!wrapper) return 0;
+  // Usar el ancho visible del wrapper elimina errores de redondeo acumulados
+  return wrapper.clientWidth;
 }
 
 // Función para actualizar configuración de Google Sheets
