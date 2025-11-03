@@ -68,7 +68,7 @@
         </div>
         <div class="toolbar-right">
           <!-- Botón de filtros para móvil -->
-          <button class="mobile-filters-btn" id="mobile-filters-btn">
+          <button class="mobile-filters-btn" id="mobile-filters-btn" onclick="if(typeof openMobileFilters === 'function') { openMobileFilters(); } else { console.error('openMobileFilters no está disponible'); } return false;">
             <i class="fas fa-filter"></i>
             <span>Filtros</span>
             <span class="filter-count" id="filter-count">0</span>

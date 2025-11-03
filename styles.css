@@ -1951,11 +1951,18 @@ h1, h2, h3, h4, h5, h6 {
   font-weight: 500;
   transition: var(--transition);
   position: relative;
+  z-index: 10;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
 }
 
 .mobile-filters-btn:hover {
   transform: translateY(-2px);
   box-shadow: var(--shadow-medium);
+}
+
+.mobile-filters-btn:active {
+  transform: translateY(0);
 }
 
 .filter-count {
@@ -1977,41 +1984,40 @@ h1, h2, h3, h4, h5, h6 {
   display: none;
   position: fixed;
   top: 0; left: 0;
-  width: 100%; height: 100%;
+  width: 100%; 
+  height: 100%;
   z-index: 10000;
   background: rgba(0,0,0,0.3);
   opacity: 0;
   visibility: hidden;
   transition: opacity 0.3s ease, visibility 0.3s ease;
   pointer-events: none;
+  overflow: hidden;
 }
+
 .mobile-filters-modal.active {
-  display: block;
-  opacity: 1;
-  visibility: visible;
-  pointer-events: auto;
+  display: block !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  pointer-events: auto !important;
 }
 .mobile-filters-content {
   position: absolute;
   bottom: 0; left: 0; right: 0;
   background: var(--bg-white);
   border-radius: 20px 20px 0 0;
-  max-height: 80vh;
+  max-height: 85vh;
   width: 100%;
   display: flex;
   flex-direction: column;
   transform: translateY(100%);
-  transition: transform .3s;
+  transition: transform 0.3s ease-out;
   pointer-events: auto;
+  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.15);
+  will-change: transform;
 }
 .mobile-filters-modal.active .mobile-filters-content {
-  transform: translateY(0);
-}
-
-/* Asegurar que el modal no interfiera cuando no está activo */
-.mobile-filters-modal:not(.active) {
-  display: none !important;
-  pointer-events: none !important;
+  transform: translateY(0) !important;
 }
 
 .mobile-filters-header {
@@ -2052,6 +2058,39 @@ h1, h2, h3, h4, h5, h6 {
   flex: 1;
   overflow-y: auto;
   padding: 1rem;
+}
+
+/* Asegurar que los filtros se muestren correctamente dentro del modal móvil */
+.mobile-filters-body .sidebar-filtros,
+.mobile-filters-body > .sidebar-filtros {
+  padding: 0;
+  position: static;
+  box-shadow: none;
+  border-radius: 0;
+}
+
+.mobile-filters-body .filtros-group {
+  padding: 1rem;
+}
+
+.mobile-filters-body .filter-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.mobile-filters-body .filter-btn {
+  width: 100%;
+  justify-content: flex-start;
+}
+
+.mobile-filters-body .brand-filters {
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.mobile-filters-body .price-range {
+  width: 100%;
 }
 
 .mobile-filters-footer {
@@ -2158,8 +2197,9 @@ h1, h2, h3, h4, h5, h6 {
     gap: 0.8rem;
   }
   
-  .mobile-filters-modal {
-    display: none;
+  /* El modal debe poder mostrarse cuando está activo */
+  .mobile-filters-modal.active {
+    display: block !important;
   }
   
   .products-grid {
@@ -2404,7 +2444,7 @@ h1, h2, h3, h4, h5, h6 {
   }
   
   .btn {
-    font-size: 0.6rem;
+    font-size: 0.7rem;
     padding: 12px;
   }
   
@@ -2447,9 +2487,6 @@ h1, h2, h3, h4, h5, h6 {
   
   .feature h3 {
     font-size: 1.2rem;
-  }
-  
-  .carousel-container {
   }
   
   .carousel-track {

@@ -427,73 +427,195 @@ function initializeMobileMenu() {
   }
 }
 
+// Variables globales para el modal de filtros móviles
+let mobileFiltersModal = null;
+let mobileFiltersBtn = null;
+
+// Función para abrir el modal - global para debugging
+// Definida antes de DOMContentLoaded para que esté disponible en onclick inline
+window.openMobileFilters = function openMobileFilters() {
+  console.log('🔵 [DEBUG] openMobileFilters llamada');
+  
+  if (!mobileFiltersModal) {
+    mobileFiltersModal = document.getElementById('mobile-filters-modal');
+  }
+  
+  if (!mobileFiltersModal) {
+    console.error('❌ Modal no encontrado');
+    return;
+  }
+  
+  console.log('🔵 Abriendo modal de filtros móviles');
+  
+  // Forzar todas las propiedades necesarias directamente
+  mobileFiltersModal.style.display = 'block';
+  mobileFiltersModal.style.opacity = '1';
+  mobileFiltersModal.style.visibility = 'visible';
+  mobileFiltersModal.style.pointerEvents = 'auto';
+  
+  // Copiar filtros
+  copyFiltersToMobile();
+  
+  // Agregar clase active después de un pequeño delay para la animación
+  setTimeout(() => {
+    mobileFiltersModal.classList.add('active');
+    document.body.style.overflow = 'hidden';
+    
+    // Verificar que se aplicó correctamente
+    const computed = window.getComputedStyle(mobileFiltersModal);
+    console.log('✅ Modal abierto:', {
+      display: computed.display,
+      opacity: computed.opacity,
+      visibility: computed.visibility,
+      classList: mobileFiltersModal.classList.toString()
+    });
+  }, 50);
+}
+
+// Función para cerrar el modal - global para debugging
+window.closeMobileFilters = function closeMobileFilters() {
+  console.log('🔴 Cerrando modal de filtros móviles');
+  
+  if (!mobileFiltersModal) {
+    mobileFiltersModal = document.getElementById('mobile-filters-modal');
+  }
+  
+  if (!mobileFiltersModal) return;
+  
+  mobileFiltersModal.classList.remove('active');
+  document.body.style.overflow = '';
+  
+  setTimeout(() => {
+    if (!mobileFiltersModal.classList.contains('active')) {
+      mobileFiltersModal.style.display = 'none';
+    }
+  }, 300);
+}
+
 // Filtros móviles
 function initializeMobileFilters() {
-  const mobileFiltersBtn = document.getElementById('mobile-filters-btn');
-  const mobileFiltersModal = document.getElementById('mobile-filters-modal');
-  const closeMobileFilters = document.getElementById('close-mobile-filters');
+  console.log('🚀 Inicializando filtros móviles...');
+  
+  // Usar variables globales
+  mobileFiltersBtn = document.getElementById('mobile-filters-btn');
+  mobileFiltersModal = document.getElementById('mobile-filters-modal');
+  const closeMobileFiltersBtn = document.getElementById('close-mobile-filters');
   const applyMobileFilters = document.getElementById('apply-mobile-filters');
   
-  if (!mobileFiltersBtn || !mobileFiltersModal) {
-    console.log('Elementos de filtros móviles no encontrados');
+  console.log('Elementos encontrados:', {
+    boton: !!mobileFiltersBtn,
+    modal: !!mobileFiltersModal,
+    cerrar: !!closeMobileFiltersBtn,
+    aplicar: !!applyMobileFilters
+  });
+  
+  if (!mobileFiltersBtn) {
+    console.error('❌ Botón de filtros móviles no encontrado');
+    return;
+  }
+  
+  if (!mobileFiltersModal) {
+    console.error('❌ Modal de filtros móviles no encontrado');
     return;
   }
 
   // Asegurar que el modal esté cerrado al inicio
   mobileFiltersModal.classList.remove('active');
+  mobileFiltersModal.style.display = 'none';
   document.body.style.overflow = '';
+  
+  console.log('✅ Filtros móviles inicializados correctamente');
 
-  function openModal() {
-    console.log('Abriendo modal de filtros móviles');
-    copyFiltersToMobile();
-    mobileFiltersModal.classList.add('active');
-    document.body.style.overflow = 'hidden';
+  // EVENTO CLICK - método más simple y directo
+  mobileFiltersBtn.onclick = function(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    console.log('🖱️ [ONCLICK] Click detectado en botón de filtros');
+    openMobileFilters();
+    return false;
+  };
+  
+  // También usar addEventListener como respaldo
+  mobileFiltersBtn.addEventListener('click', function(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    console.log('🖱️ [ADD EVENT LISTENER] Click detectado en botón de filtros');
+    openMobileFilters();
+    return false;
+  }, false);
+  
+  // Evento touch para móviles
+  let touchHandled = false;
+  mobileFiltersBtn.addEventListener('touchstart', function(e) {
+    touchHandled = false;
+  }, { passive: true });
+  
+  mobileFiltersBtn.addEventListener('touchend', function(e) {
+    if (!touchHandled) {
+      e.preventDefault();
+      e.stopPropagation();
+      console.log('👆 Touch end en botón de filtros');
+      touchHandled = true;
+      openMobileFilters();
+      return false;
+    }
+  }, false);
+  
+  // Eventos para el botón de cerrar
+  if (closeMobileFiltersBtn) {
+    closeMobileFiltersBtn.onclick = function(e) {
+      e.preventDefault();
+      closeMobileFilters();
+    };
   }
   
-  function closeModal() {
-    console.log('Cerrando modal de filtros móviles');
-    mobileFiltersModal.classList.remove('active');
-    document.body.style.overflow = '';
-  }
-
-  mobileFiltersBtn.onclick = openModal;
-  
-  if (closeMobileFilters) {
-    closeMobileFilters.onclick = closeModal;
-  }
-  
+  // Evento para aplicar filtros
   if (applyMobileFilters) {
-    applyMobileFilters.onclick = function() {
+    applyMobileFilters.onclick = function(e) {
+      e.preventDefault();
+      e.stopPropagation();
       console.log('Aplicando filtros móviles');
       copyFiltersFromMobile();
       filterProducts();
       updateFilterCount();
-      closeModal();
+      closeMobileFilters();
     };
   }
 
   // Cierra al hacer click en el fondo gris oscuro
   mobileFiltersModal.onclick = function(e) {
-    if (e.target === mobileFiltersModal) closeModal();
+    if (e.target === mobileFiltersModal) {
+      closeMobileFilters();
+    }
   };
   
   // Evita el cierre si el click es dentro del contenido
   const modalContent = mobileFiltersModal.querySelector('.mobile-filters-content');
   if (modalContent) {
-    modalContent.onclick = function(e) { e.stopPropagation(); };
+    modalContent.onclick = function(e) { 
+      e.stopPropagation(); 
+    };
   }
   
-  // Escape
+  // Escape key para cerrar
   document.addEventListener('keydown', function(e) {
-    if (e.key === 'Escape' && mobileFiltersModal.classList.contains('active'))
-      closeModal();
+    if (e.key === 'Escape' && mobileFiltersModal.classList.contains('active')) {
+      closeMobileFilters();
+    }
   });
   
-  // Forza el cierre al salir/refrescar por seguridad extrema en móviles
-  window.addEventListener('beforeunload', closeModal);
+  // Las funciones ya están expuestas globalmente arriba
+  console.log('✅ Eventos registrados. Prueba: window.openMobileFilters()');
   
-  // Cerrar modal al cargar la página
-  window.addEventListener('load', closeModal);
+  // Verificar que todo esté conectado
+  setTimeout(() => {
+    console.log('🔍 Verificación final:', {
+      boton: !!mobileFiltersBtn,
+      modal: !!mobileFiltersModal,
+      funcionAbierta: typeof window.openMobileFilters === 'function',
+      funcionCerrada: typeof window.closeMobileFilters === 'function'
+    });
+  }, 1000);
 }
 
 // Copiar filtros del sidebar al modal móvil
@@ -501,30 +623,82 @@ function copyFiltersToMobile() {
   const sidebarFilters = document.querySelector('.sidebar-filtros');
   const mobileFiltersContent = document.getElementById('mobile-filters-content');
   
-  if (!sidebarFilters || !mobileFiltersContent) {
-    console.log('Sidebar o contenido móvil no encontrado');
+  if (!sidebarFilters) {
+    console.warn('⚠️ Sidebar de filtros no encontrado');
+    if (mobileFiltersContent) {
+      mobileFiltersContent.innerHTML = '<div style="padding: 2rem; text-align: center; color: var(--text-medium);">Los filtros se están cargando...</div>';
+    }
     return;
   }
   
-  console.log('Copiando filtros al modal móvil');
-  
-  // Clonar el contenido del sidebar
-  const clonedFilters = sidebarFilters.cloneNode(true);
-  
-  // Remover el header del sidebar clonado
-  const clonedHeader = clonedFilters.querySelector('.filters-header');
-  if (clonedHeader) {
-    clonedHeader.remove();
+  if (!mobileFiltersContent) {
+    console.warn('⚠️ Contenedor móvil de filtros no encontrado');
+    return;
   }
   
-  // Limpiar y agregar el contenido clonado
-  mobileFiltersContent.innerHTML = '';
-  mobileFiltersContent.appendChild(clonedFilters);
+  console.log('📋 Copiando filtros al modal móvil...');
+  console.log('Sidebar encontrado:', !!sidebarFilters);
+  console.log('Contenido del sidebar:', sidebarFilters.innerHTML.substring(0, 200));
   
-  // Reagregar eventos a los elementos clonados
-  reattachFilterEvents(mobileFiltersContent);
-  
-  console.log('Filtros copiados al modal móvil');
+  try {
+    // Clonar el contenido del sidebar con todos sus hijos
+    const clonedFilters = sidebarFilters.cloneNode(true);
+    
+    // Remover el header del sidebar clonado
+    const clonedHeader = clonedFilters.querySelector('.filters-header');
+    if (clonedHeader) {
+      clonedHeader.remove();
+    }
+    
+    // Cambiar IDs duplicados para evitar conflictos
+    clonedFilters.querySelectorAll('[id]').forEach(el => {
+      const originalId = el.id;
+      if (originalId) {
+        el.id = 'mobile-' + originalId;
+        // Actualizar el atributo 'for' de los labels que apuntan a estos IDs
+        const label = clonedFilters.querySelector(`label[for="${originalId}"]`);
+        if (label) {
+          label.setAttribute('for', 'mobile-' + originalId);
+        }
+      }
+    });
+    
+    // Limpiar y agregar el contenido clonado
+    mobileFiltersContent.innerHTML = '';
+    mobileFiltersContent.appendChild(clonedFilters);
+    
+    console.log('✅ Contenido agregado al modal');
+    console.log('Contenido del modal:', mobileFiltersContent.innerHTML.substring(0, 300));
+    
+    // Verificar que se copiaron los elementos
+    const filterButtons = mobileFiltersContent.querySelectorAll('.filter-btn');
+    const brandFilters = mobileFiltersContent.querySelectorAll('.marca-checkbox, .brand-filter-item');
+    const stockCheckbox = mobileFiltersContent.querySelector('[id*="filtro-stock"]');
+    const priceInputs = mobileFiltersContent.querySelectorAll('[id*="precio"]');
+    
+    console.log('📊 Filtros copiados:', {
+      botonesCategoria: filterButtons.length,
+      marcas: brandFilters.length,
+      stock: !!stockCheckbox,
+      precio: priceInputs.length
+    });
+    
+    // Reagregar eventos a los elementos clonados
+    reattachFilterEvents(mobileFiltersContent);
+    
+    console.log('✅ Filtros copiados al modal móvil exitosamente');
+  } catch (error) {
+    console.error('❌ Error al copiar filtros al modal móvil:', error);
+    console.error('Stack:', error.stack);
+    if (mobileFiltersContent) {
+      mobileFiltersContent.innerHTML = `
+        <div style="padding: 2rem; text-align: center; color: var(--text-medium);">
+          <p>Error al cargar los filtros.</p>
+          <p style="font-size: 0.8rem; margin-top: 0.5rem;">Intenta recargar la página.</p>
+        </div>
+      `;
+    }
+  }
 }
 
 // Copiar filtros del modal móvil al sidebar
@@ -533,18 +707,18 @@ function copyFiltersFromMobile() {
   const sidebarFilters = document.querySelector('.sidebar-filtros');
   
   if (!mobileFiltersContent || !sidebarFilters) {
-    console.log('Contenido móvil o sidebar no encontrado');
+    console.log('⚠️ Contenido móvil o sidebar no encontrado');
     return;
   }
   
-  console.log('Copiando filtros desde modal móvil al sidebar');
+  console.log('📋 Copiando filtros desde modal móvil al sidebar');
   
-  // Obtener valores de los filtros móviles
+  // Obtener valores de los filtros móviles (usando selectores que funcionan con IDs con prefijo mobile-)
   const mobileFilterButtons = mobileFiltersContent.querySelectorAll('.filter-btn');
-  const mobileBrandCheckboxes = mobileFiltersContent.querySelectorAll('.marca-checkbox');
-  const mobileStockCheckbox = mobileFiltersContent.querySelector('#filtro-stock');
-  const mobilePriceMin = mobileFiltersContent.querySelector('#precio-min');
-  const mobilePriceMax = mobileFiltersContent.querySelector('#precio-max');
+  const mobileBrandCheckboxes = mobileFiltersContent.querySelectorAll('.marca-checkbox, input[type="checkbox"][id*="marca"]');
+  const mobileStockCheckbox = mobileFiltersContent.querySelector('[id*="filtro-stock"]');
+  const mobilePriceMin = mobileFiltersContent.querySelector('[id*="precio-min"]');
+  const mobilePriceMax = mobileFiltersContent.querySelector('[id*="precio-max"]');
   
   // Aplicar valores al sidebar
   mobileFilterButtons.forEach(mobileBtn => {
@@ -593,30 +767,80 @@ function copyFiltersFromMobile() {
 
 // Reagregar eventos a los filtros clonados
 function reattachFilterEvents(container) {
+  console.log('🔗 Reagregando eventos a filtros móviles...');
+  
   // Eventos para botones de filtro
   const filterButtons = container.querySelectorAll('.filter-btn');
+  console.log('Botones de filtro encontrados:', filterButtons.length);
+  
   filterButtons.forEach(button => {
-    button.addEventListener('click', function() {
-      filterButtons.forEach(btn => btn.classList.remove('active'));
-      this.classList.add('active');
+    // Remover listeners anteriores clonando el botón
+    const newButton = button.cloneNode(true);
+    button.parentNode.replaceChild(newButton, button);
+    
+    newButton.addEventListener('click', function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      filterButtons.forEach(btn => {
+        if (btn !== newButton) btn.classList.remove('active');
+      });
+      newButton.classList.add('active');
+      console.log('Botón de filtro activado:', newButton.getAttribute('data-filter'));
+    });
+    
+    // Soporte para touch
+    newButton.addEventListener('touchend', function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      filterButtons.forEach(btn => {
+        if (btn !== newButton) btn.classList.remove('active');
+      });
+      newButton.classList.add('active');
+      console.log('Botón de filtro activado (touch):', newButton.getAttribute('data-filter'));
     });
   });
   
   // Eventos para checkboxes de marca
-  const brandCheckboxes = container.querySelectorAll('.marca-checkbox');
+  const brandCheckboxes = container.querySelectorAll('.marca-checkbox, input[type="checkbox"][id*="marca"]');
+  console.log('Checkboxes de marca encontrados:', brandCheckboxes.length);
+  
   brandCheckboxes.forEach(checkbox => {
-    checkbox.addEventListener('change', function() {
+    checkbox.addEventListener('change', function(e) {
+      e.stopPropagation();
+      console.log('Checkbox de marca cambiado:', checkbox.value, checkbox.checked);
       // No hacer nada aquí, se aplicará cuando se presione "Aplicar Filtros"
     });
   });
   
-  // Eventos para checkbox de stock
-  const stockCheckbox = container.querySelector('#filtro-stock');
+  // Eventos para checkbox de stock (usar selector flexible para IDs con prefijo mobile-)
+  const stockCheckbox = container.querySelector('[id*="filtro-stock"]');
+  console.log('Checkbox de stock encontrado:', !!stockCheckbox);
+  
   if (stockCheckbox) {
-    stockCheckbox.addEventListener('change', function() {
+    stockCheckbox.addEventListener('change', function(e) {
+      e.stopPropagation();
+      console.log('Checkbox de stock cambiado:', stockCheckbox.checked);
       // No hacer nada aquí, se aplicará cuando se presione "Aplicar Filtros"
     });
   }
+  
+  // Eventos para los inputs de precio (usar selectores flexibles)
+  const priceMin = container.querySelector('[id*="precio-min"]');
+  const priceMax = container.querySelector('[id*="precio-max"]');
+  console.log('Inputs de precio encontrados:', !!priceMin, !!priceMax);
+  
+  if (priceMin) {
+    priceMin.addEventListener('input', function(e) {
+      e.stopPropagation();
+    });
+  }
+  if (priceMax) {
+    priceMax.addEventListener('input', function(e) {
+      e.stopPropagation();
+    });
+  }
+  
+  console.log('✅ Eventos reagregados correctamente');
 }
 
 // Actualizar contador de filtros activos
