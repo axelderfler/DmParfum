@@ -43,7 +43,7 @@
   </header>
 
   <!-- Hero Section del Catálogo -->
-  <main class="catalog-hero" style="margin-top:80px;">
+  <main class="catalog-hero">
     <div class="catalog-hero-content">
       <div class="catalog-hero-text">
         <h1>Catálogo Dm Parfum</h1>
@@ -185,7 +185,28 @@
     </div>
   </section>
 
-
+  <!-- Modal de filtros móvil -->
+  <div class="mobile-filters-modal" id="mobile-filters-modal">
+    <div class="mobile-filters-content">
+      <div class="mobile-filters-header">
+        <h3><i class="fas fa-filter"></i> Filtros</h3>
+        <button class="close-mobile-filters" id="close-mobile-filters">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      <div class="mobile-filters-body" id="mobile-filters-content">
+        <!-- El contenido se copiará dinámicamente desde el sidebar -->
+      </div>
+      <div class="mobile-filters-footer">
+        <button class="btn btn-secondary" onclick="clearAllFilters()">
+          <i class="fas fa-times"></i> Limpiar
+        </button>
+        <button class="btn btn-primary" id="apply-mobile-filters">
+          <i class="fas fa-check"></i> Aplicar Filtros
+        </button>
+      </div>
+    </div>
+  </div>
 
   <footer class="footer">
     <div class="container-info">
