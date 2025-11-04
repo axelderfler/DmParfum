@@ -1138,7 +1138,6 @@ h1, h2, h3, h4, h5, h6 {
   display: flex;
   flex-direction: row;
   gap: 0.5rem;
-  margin-top: 1rem;
   padding: 0 1.5rem 1.5rem 1.5rem;
 }
 
@@ -1168,8 +1167,28 @@ h1, h2, h3, h4, h5, h6 {
 /* Cuando no hay stock en el catálogo, expandir el botón de información */
 .product-actions .btn-info-wide {
   flex: 1 1 100%;
-  padding: 0.75rem 1rem;
+  padding: 1rem 2rem;
   font-size: 0.95rem;
+}
+
+.product-actions .btn-info-wide::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.274), transparent);
+  transition: left 0.5s;
+}
+
+.product-actions .btn-info-wide:hover::before {
+  left: 50%;
+}
+
+.product-actions .btn-info-wide:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-medium);
 }
 
 @media(max-width: 480px){
