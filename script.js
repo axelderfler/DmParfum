@@ -358,11 +358,10 @@ function initializeContactForm() {
     
     const formData = new FormData(this);
     const name = formData.get('name');
-    const email = formData.get('email');
     const message = formData.get('message');
     
     // Crear mensaje para WhatsApp
-    const whatsappMessage = `Hola! Soy ${name} (${email}). ${message}`;
+    const whatsappMessage = `Hola! Soy ${name} ${message}`;
     const whatsappUrl = `https://wa.me/541162634332?text=${encodeURIComponent(whatsappMessage)}`;
     
     // Abrir WhatsApp
@@ -1393,8 +1392,7 @@ function showNoProductsMessage() {
 function initializeCarousel() {
   // Filtrar productos con stock > 0 para el carrusel
   carouselItems = productsData.filter(product => 
-    (typeof product.stock === 'number' && product.stock > 0) || 
-    product.stock === 'Sin stock'
+    typeof product.stock === 'number' && product.stock > 0
   );
   
   // Limitar a 9 productos para el carrusel
