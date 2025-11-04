@@ -32,6 +32,9 @@ const fallbackProducts = [];
 // Variables globales
 let currentFilter = 'all';
 let filteredProducts = [];
+let searchQuery = '';
+// Debounce para el buscador
+let searchDebounce = null;
 
 // Variables del carrusel
 let currentCarouselIndex = 0;
@@ -107,6 +110,9 @@ function initializeFilters() {
   const precioMax = document.getElementById('precio-max');
   const filtroMarca = document.getElementById('filtro-marca');
   const ordenarSelect = document.getElementById('ordenar-select');
+  const searchInput = document.getElementById('search-input');
+  const clearSearchBtn = document.getElementById('clear-search');
+  const searchbarEl = document.getElementById('searchbar');
 
   // --- Rellenar marcas dinámicamente SIEMPRE que cambian los datos ---
   if (filtroMarca) {
@@ -147,6 +153,32 @@ function initializeFilters() {
   filtroMarca && filtroMarca.addEventListener('change', filterProducts);
   // Evento ordenar
   if (ordenarSelect) ordenarSelect.addEventListener('change', filterProducts);
+
+  // Buscador por nombre
+  if (searchInput) {
+    // Estado inicial de la UI del buscador
+    searchbarEl && searchbarEl.classList.toggle('has-value', searchInput.value.trim().length > 0);
+    searchQuery = (searchInput.value || '').trim().toLowerCase();
+
+    searchInput.addEventListener('input', function() {
+      const val = this.value.trim();
+      if (searchbarEl) searchbarEl.classList.toggle('has-value', val.length > 0);
+      searchQuery = val.toLowerCase();
+      if (searchDebounce) clearTimeout(searchDebounce);
+      searchDebounce = setTimeout(() => {
+        filterProducts();
+      }, 200);
+    });
+  }
+  if (clearSearchBtn && searchInput) {
+    clearSearchBtn.addEventListener('click', function(e) {
+      e.preventDefault();
+      searchInput.value = '';
+      searchQuery = '';
+      searchbarEl && searchbarEl.classList.remove('has-value');
+      filterProducts();
+    });
+  }
 }
 
 // Filtrar productos
@@ -179,6 +211,15 @@ function filterProducts() {
   }
   if (precioMax !== null) {
     result = result.filter(product => product.price <= precioMax);
+  }
+
+  // Filtro por nombre (buscador)
+  {
+    const inputVal = document.getElementById('search-input')?.value || '';
+    const q = (inputVal ? inputVal : (typeof searchQuery === 'string' ? searchQuery : '')).trim().toLowerCase();
+    if (q) {
+      result = result.filter(product => (product.name || '').toLowerCase().includes(q));
+    }
   }
 
   // Ordenamiento
