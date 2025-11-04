@@ -1163,6 +1163,14 @@ h1, h2, h3, h4, h5, h6 {
   font-size: 0.95rem;
 }
 
+@media(max-width: 480px){
+  .product-actions .btn-info-wide {
+  flex: 1 1 100%;
+  padding: 0.75rem 1rem;
+  font-size: 0.95rem;
+}
+}
+
 .btn-whatsapp:hover {
   transform: translateY(-2px);
   box-shadow: 0 4px 15px rgba(37, 211, 102, 0.4);

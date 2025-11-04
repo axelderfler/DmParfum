@@ -315,7 +315,7 @@ function createProductCard(product) {
   const actionsHtml = isOutOfStock
     ? `<div class="product-actions">
          <a href="productos.html?id=${product.id}" class="btn btn-secondary btn-info btn-info-wide" onclick="event.stopPropagation()">
-           <i class="fas fa-info-circle"></i> <span class="btn-text">Ver información</span>
+           <i class="fas fa-info-circle"></i>
          </a>
        </div>`
     : `<div class="product-actions">
