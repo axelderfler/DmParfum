@@ -308,10 +308,24 @@ function createProductCard(product) {
     minimumFractionDigits: 0
   }).format(product.price);
   
-  // Determinar estado del stock
-  const stockStatus = product.stock > 0 ? 
-    `<span class="stock-available">Disponible (${product.stock})</span>` : 
-    `<span class="stock-unavailable">Sin stock</span>`;
+  const isOutOfStock = (typeof product.stock === 'number' && product.stock <= 0) || product.stock === 'Sin stock';
+  const stockStatus = isOutOfStock ?
+    `<span class="stock-unavailable">Sin stock</span>` :
+    `<span class="stock-available">Disponible (${product.stock})</span>`;
+  const actionsHtml = isOutOfStock
+    ? `<div class="product-actions">
+         <a href="productos.html?id=${product.id}" class="btn btn-secondary btn-info btn-info-wide" onclick="event.stopPropagation()">
+           <i class="fas fa-info-circle"></i> <span class="btn-text">Ver información</span>
+         </a>
+       </div>`
+    : `<div class="product-actions">
+         <button class="btn btn-primary btn-add-cart" onclick="event.stopPropagation(); addToCart(${product.id})">
+           <i class="fas fa-shopping-cart"></i> <span class="btn-text">Agregar</span>
+         </button>
+         <a href="productos.html?id=${product.id}" class="btn btn-secondary btn-info" onclick="event.stopPropagation()">
+           <i class="fas fa-info-circle"></i>
+         </a>
+       </div>`;
   
   card.innerHTML = `
     <div class="product-image" onclick="window.location.href='productos.html?id=${product.id}'" style="cursor: pointer;">
@@ -324,16 +338,7 @@ function createProductCard(product) {
       <p class="product-price">${formattedPrice}</p>
       <div class="product-stock">${stockStatus}</div>
     </div>
-    <div class="product-actions">
-      <button class="btn btn-primary btn-add-cart ${(typeof product.stock === 'number' && product.stock <= 0) || product.stock === 'Sin stock' ? 'disabled' : ''}" 
-              onclick="event.stopPropagation(); addToCart(${product.id})"
-              ${(typeof product.stock === 'number' && product.stock <= 0) || product.stock === 'Sin stock' ? 'disabled' : ''}>
-        <i class="fas fa-shopping-cart"></i> <span class="btn-text">Agregar</span>
-      </button>
-      <a href="productos.html?id=${product.id}" class="btn btn-secondary btn-info" onclick="event.stopPropagation()">
-        <i class="fas fa-info-circle"></i>
-      </a>
-    </div>
+    ${actionsHtml}
   `;
   // Hacer toda la tarjeta clickeable para ir al detalle
   card.style.cursor = 'pointer';

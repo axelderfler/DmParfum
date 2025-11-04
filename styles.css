@@ -1156,25 +1156,11 @@ h1, h2, h3, h4, h5, h6 {
   margin: 0;
 }
 
-.btn-whatsapp {
-  flex: 1;
-  background: linear-gradient(135deg, #25D366 0%, #128C7E 100%);
-  color: white;
+/* Cuando no hay stock en el catálogo, expandir el botón de información */
+.product-actions .btn-info-wide {
+  flex: 1 1 100%;
   padding: 0.75rem 1rem;
-  border-radius: var(--border-radius);
-  text-decoration: none;
-  text-align: center;
-  font-weight: 600;
-  font-size: 0.9rem;
-  transition: var(--transition);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  box-shadow: 0 2px 8px rgba(37, 211, 102, 0.3);
-  min-height: 44px;
-  touch-action: manipulation;
-  -webkit-tap-highlight-color: transparent;
+  font-size: 0.95rem;
 }
 
 .btn-whatsapp:hover {
@@ -3175,6 +3161,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .btn-whatsapp {
+  flex: 1;
   background: linear-gradient(135deg, #25D366 0%, #128C7E 100%);
   color: white;
   border: none;
@@ -3188,11 +3175,16 @@ h1, h2, h3, h4, h5, h6 {
   cursor: pointer;
   transition: var(--transition);
   text-decoration: none;
+  
+  box-shadow: 0 2px 8px rgba(37, 211, 102, 0.3);
+  min-height: 44px;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .btn-whatsapp:hover {
   transform: translateY(-2px);
-  box-shadow: var(--shadow-medium);
+  box-shadow: 0 4px 15px rgba(37, 211, 101, 0.87);
 }
 
 .product-features {
