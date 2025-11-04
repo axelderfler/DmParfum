@@ -87,7 +87,6 @@ h1, h2, h3, h4, h5, h6 {
 .container-info {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 0 20px;
 }
 
 @media (min-width: 1550px) {
@@ -706,6 +705,7 @@ h1, h2, h3, h4, h5, h6 {
   transition: transform 0.5s ease;
   gap: 2rem;
   background-color: var(--bg-catalogo);
+  padding:30px
 }
 
 .carousel-item {
@@ -779,8 +779,8 @@ h1, h2, h3, h4, h5, h6 {
   transform: translateY(-50%);
   width: 50px;
   height: 50px;
-  background: var(--primary-color);
-  color: white;
+  color: #3a3a3a;
+  background: #e9a6163c;
   border: none;
   border-radius: 50%;
   cursor: pointer;
