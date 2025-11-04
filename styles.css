@@ -117,6 +117,15 @@ h1, h2, h3, h4, h5, h6 {
   z-index: 1000;
   transition: transform 0.3s ease, background 0.3s ease, box-shadow 0.3s ease;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  will-change: transform;
+}
+
+@media (max-width: 768px) {
+  body.header-hidden .header {
+    transform: translateY(-100%);
+    box-shadow: none;
+    pointer-events: none;
+  }
 }
 
 .nav-container {
@@ -1607,6 +1616,48 @@ h1, h2, h3, h4, h5, h6 {
   top: 80px;
   z-index: 100;
   backdrop-filter: blur(10px);
+}
+
+@media (max-width: 768px) {
+  .catalog-toolbar {
+    padding: 0.4rem 0;
+  }
+
+  body.header-hidden .catalog-toolbar {
+    top: 0;
+  }
+
+  body.header-hidden .catalog-hero {
+    margin-top: 0;
+  }
+
+  .toolbar-right {
+    gap: 0.75rem;
+  }
+  .sort-select {
+    padding: 0.35rem 0.6rem;
+    font-size: 0.85rem;
+  }
+  .view-btn {
+    width: 36px;
+    height: 36px;
+  }
+}
+
+@media (max-width: 480px) {
+  .catalog-toolbar {
+    padding: 0.3rem 0;
+  }
+  .sort-controls label {
+    display: none;
+  }
+  .results-info {
+    font-size: 0.85rem;
+  }
+  .view-btn {
+    width: 34px;
+    height: 34px;
+  }
 }
 
 .toolbar-content {

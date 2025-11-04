@@ -382,40 +382,62 @@ function initializeScrollEffects() {
   let lastScrollTop = 0;
   let scrollTimeout;
   
-  window.addEventListener('scroll', function() {
-    // Clear previous timeout
-    clearTimeout(scrollTimeout);
-    
-    // Set new timeout to handle scroll end
-    scrollTimeout = setTimeout(function() {
-      const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-      
-      // Only apply hide/show on mobile
-      if (window.innerWidth <= 768) {
-        if (scrollTop > lastScrollTop && scrollTop > 100) {
-          // Scrolling down - hide header
-          header.style.transform = 'translateY(-100%)';
-        } else {
-          // Scrolling up - show header
-          header.style.transform = 'translateY(0)';
-        }
+  let lastKnownScrollY = 0;
+  let tickingRAF = false;
+
+  function onScroll() {
+    lastKnownScrollY = window.pageYOffset || document.documentElement.scrollTop;
+    requestTick();
+  }
+
+  function requestTick() {
+    if (tickingRAF) return;
+    tickingRAF = true;
+    requestAnimationFrame(updateHeaderOnScroll);
+  }
+
+  function updateHeaderOnScroll() {
+    const scrollTop = lastKnownScrollY;
+    if (window.innerWidth <= 768) {
+      if (scrollTop > lastScrollTop && scrollTop > 80) {
+        header.style.transform = 'translateY(-100%)';
+        document.body.classList.add('header-hidden');
       } else {
-        // Desktop - always show header
         header.style.transform = 'translateY(0)';
+        document.body.classList.remove('header-hidden');
       }
-      
-      // Background effect for all devices
-      if (scrollTop > 100) {
-        header.style.background = 'rgba(255, 255, 255, 0.98)';
-        header.style.boxShadow = '0 2px 20px rgba(0, 0, 0, 0.1)';
-      } else {
-        header.style.background = 'rgba(255, 255, 255, 0.95)';
-        header.style.boxShadow = 'none';
-      }
-      
-      lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
-    }, 10);
-  });
+    } else {
+      header.style.transform = 'translateY(0)';
+      document.body.classList.remove('header-hidden');
+    }
+
+    if (scrollTop > 100) {
+      header.style.background = 'rgba(255, 255, 255, 0.98)';
+      header.style.boxShadow = '0 2px 20px rgba(0, 0, 0, 0.1)';
+    } else {
+      header.style.background = 'rgba(255, 255, 255, 0.95)';
+      header.style.boxShadow = 'none';
+    }
+
+    lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
+    tickingRAF = false;
+  }
+
+  window.addEventListener('scroll', onScroll, { passive: true });
+  function onResize() {
+    if (window.innerWidth > 768) {
+      header.style.transform = 'translateY(0)';
+      document.body.classList.remove('header-hidden');
+    } else {
+      // Reaplicar estado en móvil según posición actual
+      lastKnownScrollY = window.pageYOffset || document.documentElement.scrollTop;
+      updateHeaderOnScroll();
+    }
+  }
+  window.addEventListener('resize', onResize);
+  window.addEventListener('orientationchange', onResize);
+  // Fijar estado inicial
+  updateHeaderOnScroll();
   
   // Animaciones de entrada para elementos
   const observerOptions = {
