@@ -314,27 +314,32 @@ function createProductCard(product) {
     `<span class="stock-unavailable">Sin stock</span>`;
   
   card.innerHTML = `
-    <div class="product-image">
+    <div class="product-image" onclick="window.location.href='productos.html?id=${product.id}'" style="cursor: pointer;">
       <img src="${product.image}" alt="${product.name}" loading="lazy">
       ${(typeof product.stock === 'number' && product.stock <= 3 && product.stock > 0) ? '<div class="stock-warning">¡Últimas unidades!</div>' : ''}
     </div>
-    <div class="product-info">
+    <div class="product-info" onclick="window.location.href='productos.html?id=${product.id}'" style="cursor: pointer;">
       <h3 class="product-name">${product.name}</h3>
       <p class="product-brand">${product.brand}</p>
       <p class="product-price">${formattedPrice}</p>
       <div class="product-stock">${stockStatus}</div>
-      <div class="product-actions">
-        <a href="productos.html?id=${product.id}" class="btn btn-secondary">
-          <i class="fas fa-info-circle"></i> Ver Información
-        </a>
-        <button class="btn btn-primary ${(typeof product.stock === 'number' && product.stock <= 0) || product.stock === 'Sin stock' ? 'disabled' : ''}" 
-                onclick="addToCart(${product.id})"
-                ${(typeof product.stock === 'number' && product.stock <= 0) || product.stock === 'Sin stock' ? 'disabled' : ''}>
-          <i class="fas fa-shopping-cart"></i> Agregar al Carrito
-        </button>
-      </div>
+    </div>
+    <div class="product-actions">
+      <button class="btn btn-primary btn-add-cart ${(typeof product.stock === 'number' && product.stock <= 0) || product.stock === 'Sin stock' ? 'disabled' : ''}" 
+              onclick="event.stopPropagation(); addToCart(${product.id})"
+              ${(typeof product.stock === 'number' && product.stock <= 0) || product.stock === 'Sin stock' ? 'disabled' : ''}>
+        <i class="fas fa-shopping-cart"></i> <span class="btn-text">Agregar</span>
+      </button>
+      <a href="productos.html?id=${product.id}" class="btn btn-secondary btn-info" onclick="event.stopPropagation()">
+        <i class="fas fa-info-circle"></i>
+      </a>
     </div>
   `;
+  // Hacer toda la tarjeta clickeable para ir al detalle
+  card.style.cursor = 'pointer';
+  card.addEventListener('click', function() {
+    window.location.href = `productos.html?id=${product.id}`;
+  });
   
   return card;
 }
@@ -369,15 +374,42 @@ function initializeContactForm() {
 // Efectos de scroll
 function initializeScrollEffects() {
   const header = document.querySelector('.header');
+  let lastScrollTop = 0;
+  let scrollTimeout;
   
   window.addEventListener('scroll', function() {
-    if (window.scrollY > 100) {
-      header.style.background = 'rgba(255, 255, 255, 0.98)';
-      header.style.boxShadow = '0 2px 20px rgba(0, 0, 0, 0.1)';
-    } else {
-      header.style.background = 'rgba(255, 255, 255, 0.95)';
-      header.style.boxShadow = 'none';
-    }
+    // Clear previous timeout
+    clearTimeout(scrollTimeout);
+    
+    // Set new timeout to handle scroll end
+    scrollTimeout = setTimeout(function() {
+      const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+      
+      // Only apply hide/show on mobile
+      if (window.innerWidth <= 768) {
+        if (scrollTop > lastScrollTop && scrollTop > 100) {
+          // Scrolling down - hide header
+          header.style.transform = 'translateY(-100%)';
+        } else {
+          // Scrolling up - show header
+          header.style.transform = 'translateY(0)';
+        }
+      } else {
+        // Desktop - always show header
+        header.style.transform = 'translateY(0)';
+      }
+      
+      // Background effect for all devices
+      if (scrollTop > 100) {
+        header.style.background = 'rgba(255, 255, 255, 0.98)';
+        header.style.boxShadow = '0 2px 20px rgba(0, 0, 0, 0.1)';
+      } else {
+        header.style.background = 'rgba(255, 255, 255, 0.95)';
+        header.style.boxShadow = 'none';
+      }
+      
+      lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
+    }, 10);
   });
   
   // Animaciones de entrada para elementos
@@ -411,9 +443,17 @@ function initializeMobileMenu() {
   const navMenu = document.querySelector('.nav-menu');
   
   if (hamburger && navMenu) {
-    hamburger.addEventListener('click', function() {
-      navMenu.classList.toggle('active');
+    hamburger.addEventListener('click', function(e) {
+      e.stopPropagation();
+      const isActive = navMenu.classList.toggle('active');
       hamburger.classList.toggle('active');
+      
+      // Lock/unlock body scroll
+      if (isActive) {
+        document.body.style.overflow = 'hidden';
+      } else {
+        document.body.style.overflow = '';
+      }
     });
     
     // Cerrar menú al hacer click en un enlace
@@ -422,7 +462,28 @@ function initializeMobileMenu() {
       link.addEventListener('click', function() {
         navMenu.classList.remove('active');
         hamburger.classList.remove('active');
+        document.body.style.overflow = '';
       });
+    });
+    
+    // Cerrar menú al hacer click fuera
+    document.addEventListener('click', function(e) {
+      if (navMenu.classList.contains('active') && 
+          !navMenu.contains(e.target) && 
+          !hamburger.contains(e.target)) {
+        navMenu.classList.remove('active');
+        hamburger.classList.remove('active');
+        document.body.style.overflow = '';
+      }
+    });
+    
+    // Cerrar menú con tecla ESC
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape' && navMenu.classList.contains('active')) {
+        navMenu.classList.remove('active');
+        hamburger.classList.remove('active');
+        document.body.style.overflow = '';
+      }
     });
   }
 }
