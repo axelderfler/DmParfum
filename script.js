@@ -330,7 +330,7 @@ function createProductCard(product) {
   card.innerHTML = `
     <div class="product-image" onclick="window.location.href='productos.html?id=${product.id}'" style="cursor: pointer;">
       <img src="${product.image}" alt="${product.name}" loading="lazy">
-      ${(typeof product.stock === 'number' && product.stock <= 3 && product.stock > 0) ? '<div class="stock-warning">¡Últimas unidades!</div>' : ''}
+      ${(typeof product.stock === 'number' && product.stock <= 2 && product.stock > 0) ? '<div class="stock-warning">¡Últimas unidades!</div>' : ''}
     </div>
     <div class="product-info" onclick="window.location.href='productos.html?id=${product.id}'" style="cursor: pointer;">
       <h3 class="product-name">${product.name}</h3>
@@ -1448,7 +1448,7 @@ function createCarouselItem(product) {
   
   item.innerHTML = `
     <div class="carousel-item-image" style="background-image: url('${product.image}')">
-      ${(typeof product.stock === 'number' && product.stock <= 3 && product.stock > 0) ? 
+      ${(typeof product.stock === 'number' && product.stock <= 2 && product.stock > 0) ? 
         '<div class="stock-warning">¡Últimas unidades!</div>' : ''}
     </div>
     <div class="carousel-item-info">

@@ -306,16 +306,8 @@
       const badgesContainer = document.getElementById('product-badges');
       badgesContainer.innerHTML = '';
       
-      if (typeof product.stock === 'number' && product.stock <= 3 && product.stock > 0) {
+      if (typeof product.stock === 'number' && product.stock <= 2 && product.stock > 0) {
         badgesContainer.innerHTML += '<span class="product-badge limited">¡Últimas unidades!</span>';
-      }
-      
-      if (product.category === 'masculino') {
-        badgesContainer.innerHTML += '<span class="product-badge">Masculino</span>';
-      } else if (product.category === 'femenino') {
-        badgesContainer.innerHTML += '<span class="product-badge">Femenino</span>';
-      } else {
-        badgesContainer.innerHTML += '<span class="product-badge">Unisex</span>';
       }
     }
 
