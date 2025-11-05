@@ -59,26 +59,51 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // Navegación suave
 function initializeNavigation() {
-  const navLinks = document.querySelectorAll('.nav-link', '.scroll');
-  
+  const navLinks = document.querySelectorAll('.nav-link, .scroll');
+
   navLinks.forEach(link => {
     link.addEventListener('click', function(e) {
-      e.preventDefault();
-      const targetId = this.getAttribute('href').substring(1);
-      const targetSection = document.getElementById(targetId);
-      
-      if (targetSection) {
-        const headerHeight = document.querySelector('.header').offsetHeight;
-        const targetPosition = targetSection.offsetTop - headerHeight;
-        
-        window.scrollTo({
-          top: targetPosition,
-          behavior: 'smooth'
-        });
+      const href = this.getAttribute('href') || '';
+      if (!href) return;
+
+      // Caso 1: ancla en la misma página (#seccion)
+      if (href.startsWith('#')) {
+        e.preventDefault();
+        const targetId = href.substring(1);
+        const targetSection = document.getElementById(targetId);
+        if (targetSection) {
+          const headerHeight = document.querySelector('.header')?.offsetHeight || 0;
+          const targetPosition = targetSection.offsetTop - headerHeight;
+          window.scrollTo({ top: targetPosition, behavior: 'smooth' });
+        }
+        return;
       }
+
+      // Caso 2: enlace con ruta + ancla (ej: index.html#contacto)
+      if (href.includes('#')) {
+        const [path, hash] = href.split('#');
+        const currentPage = (window.location.pathname.split('/').pop() || 'index.html');
+        // Si el path apunta a la página actual, hacer scroll suave sin recargar
+        if (path === '' || path === currentPage) {
+          e.preventDefault();
+          const targetId = hash;
+          const targetSection = document.getElementById(targetId);
+          if (targetSection) {
+            const headerHeight = document.querySelector('.header')?.offsetHeight || 0;
+            const targetPosition = targetSection.offsetTop - headerHeight;
+            window.scrollTo({ top: targetPosition, behavior: 'smooth' });
+          }
+          return;
+        }
+        // Si el path es otra página, permitir navegación normal (no prevenir)
+        return; // no hacemos preventDefault
+      }
+
+      // Otros enlaces (a otra página) navegan normalmente
     });
   });
 }
+
 // Scroll suave
 function initializeScroll() {
   const scrollLinks = document.querySelectorAll('.scroll');
