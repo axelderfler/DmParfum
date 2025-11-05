@@ -1509,6 +1509,20 @@ function createCarouselItem(product) {
       </div>
     </div>
   `;
+  // Hacer clickeable toda la tarjeta para ir al detalle del producto
+  item.style.cursor = 'pointer';
+  item.addEventListener('click', function () {
+    window.location.href = `productos.html?id=${product.id}`;
+  });
+  // Evitar que el clic en los controles internos burbujee y dispare la navegación del item
+  const infoLink = item.querySelector('.carousel-item-actions a');
+  if (infoLink) {
+    infoLink.addEventListener('click', function (e) { e.stopPropagation(); });
+  }
+  const addBtn = item.querySelector('.carousel-item-actions button');
+  if (addBtn) {
+    addBtn.addEventListener('click', function (e) { e.stopPropagation(); });
+  }
   
   return item;
 }

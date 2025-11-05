@@ -833,6 +833,12 @@ h1, h2, h3, h4, h5, h6 {
   right: 0;
 }
 
+@media (max-width: 768px) {
+  .carousel-btn {
+    display: none;
+  }
+}
+
 .carousel-dots {
   display: flex;
   justify-content: center;
