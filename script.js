@@ -57,6 +57,94 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 });
 
+// Menú hamburguesa (mobile)
+function initializeMobileMenu() {
+  const containers = document.querySelectorAll('.nav-container');
+  if (!containers.length) return;
+
+  containers.forEach(container => {
+    const hamburger = container.querySelector('.hamburger');
+    const navMenu = container.querySelector('.nav-menu');
+    if (!hamburger || !navMenu) return;
+
+    if (hamburger._dmBound) return; // evitar doble binding por contenedor
+    hamburger._dmBound = true;
+
+    const toggleMenu = () => {
+      hamburger.classList.toggle('active');
+      navMenu.classList.toggle('active');
+    };
+
+    hamburger.addEventListener('click', function(e) {
+      e.stopPropagation();
+      toggleMenu();
+    });
+
+    // Cerrar al hacer clic en un link del menú
+    navMenu.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', () => {
+        hamburger.classList.remove('active');
+        navMenu.classList.remove('active');
+      });
+    });
+  });
+
+  // Cerrar al hacer clic fuera (global)
+  document.addEventListener('click', function(e) {
+    document.querySelectorAll('.nav-container').forEach(container => {
+      const hamburger = container.querySelector('.hamburger');
+      const navMenu = container.querySelector('.nav-menu');
+      if (!hamburger || !navMenu) return;
+      const isClickInside = navMenu.contains(e.target) || hamburger.contains(e.target);
+      if (!isClickInside) {
+        hamburger.classList.remove('active');
+        navMenu.classList.remove('active');
+      }
+    });
+  });
+
+  // Reset en resize (evita estados trabados)
+  window.addEventListener('resize', function() {
+    if (window.innerWidth > 768) {
+      document.querySelectorAll('.nav-container').forEach(container => {
+        const hamburger = container.querySelector('.hamburger');
+        const navMenu = container.querySelector('.nav-menu');
+        if (!hamburger || !navMenu) return;
+        hamburger.classList.remove('active');
+        navMenu.classList.remove('active');
+      });
+    }
+  });
+}
+
+// Inicializar menú móvil si el DOM ya está listo
+if (document.readyState !== 'loading') {
+  try { initializeMobileMenu(); } catch (_) {}
+}
+
+// Fallback: delegación global para asegurar toggle en cualquier página
+document.addEventListener('click', function(e) {
+  const hb = e.target.closest('.hamburger');
+  if (hb) {
+    const container = hb.closest('.nav-container') || document;
+    const navMenu = container.querySelector('.nav-menu');
+    if (navMenu) {
+      e.stopPropagation();
+      hb.classList.toggle('active');
+      navMenu.classList.toggle('active');
+    }
+  }
+
+  const navLink = e.target.closest('.nav-menu a');
+  if (navLink) {
+    const container = navLink.closest('.nav-container');
+    const hb2 = container?.querySelector('.hamburger');
+    const menu2 = container?.querySelector('.nav-menu');
+    hb2 && hb2.classList.remove('active');
+    menu2 && menu2.classList.remove('active');
+  }
+});
+
 // Navegación suave
 function initializeNavigation() {
   const navLinks = document.querySelectorAll('.nav-link, .scroll');

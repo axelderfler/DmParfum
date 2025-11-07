@@ -306,9 +306,6 @@
       const badgesContainer = document.getElementById('product-badges');
       badgesContainer.innerHTML = '';
       
-      if (typeof product.stock === 'number' && product.stock <= 2 && product.stock > 0) {
-        badgesContainer.innerHTML += '<span class="product-badge limited">¡Últimas unidades!</span>';
-      }
     }
 
     // Cargar productos relacionados

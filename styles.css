@@ -261,6 +261,37 @@ h1, h2, h3, h4, h5, h6 {
   transform: rotate(-45deg) translate(6px, -6px);
 }
 
+/* Menú responsive */
+@media (max-width: 768px) {
+  .hamburger {
+    display: flex;
+  }
+
+  .nav-menu {
+    position: fixed;
+    top: 80px;
+    right: 0;
+    left: 0;
+    background: var(--bg-white);
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+    padding: 1rem 20px 1.25rem 20px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+    transform: translateY(-10px);
+    opacity: 0;
+    pointer-events: none;
+    transition: var(--transition);
+    z-index: 1200;
+  }
+
+  .nav-menu.active {
+    transform: translateY(0);
+    opacity: 1;
+    pointer-events: auto;
+  }
+}
+
 /* Hero Section */
 .hero {
   margin-top: 80px;
