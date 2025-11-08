@@ -73,6 +73,13 @@
             <span>Filtros</span>
             <span class="filter-count" id="filter-count">0</span>
           </button>
+          <div class="searchbar" id="searchbar">
+            <i class="fas fa-search search-icon" aria-hidden="true"></i>
+            <input type="text" id="search-input" placeholder="Buscar perfume..." aria-label="Buscar perfume por nombre" autocomplete="off">
+            <button type="button" class="clear-search" id="clear-search" title="Limpiar búsqueda">
+              <i class="fas fa-times" aria-hidden="true"></i>
+            </button>
+          </div>
           <div class="sort-controls">
             <label for="ordenar-select">Ordenar por:</label>
             <select id="ordenar-select" class="sort-select">
@@ -265,6 +272,19 @@
       // Limpiar filtros de precio
       document.getElementById('precio-min').value = '';
       document.getElementById('precio-max').value = '';
+      
+      // Limpiar buscador
+      const searchInput = document.getElementById('search-input');
+      if (searchInput) {
+        searchInput.value = '';
+      }
+      if (typeof window !== 'undefined') {
+        window.searchQuery = '';
+      }
+      const searchbarEl = document.getElementById('searchbar');
+      if (searchbarEl) {
+        searchbarEl.classList.remove('has-value');
+      }
       
       // Aplicar filtros
       if (typeof applyInitialFilter === 'function') {

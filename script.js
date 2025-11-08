@@ -32,6 +32,9 @@ const fallbackProducts = [];
 // Variables globales
 let currentFilter = 'all';
 let filteredProducts = [];
+let searchQuery = '';
+// Debounce para el buscador
+let searchDebounce = null;
 
 // Variables del carrusel
 let currentCarouselIndex = 0;
@@ -54,28 +57,141 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 });
 
-// Navegación suave
-function initializeNavigation() {
-  const navLinks = document.querySelectorAll('.nav-link', '.scroll');
-  
-  navLinks.forEach(link => {
-    link.addEventListener('click', function(e) {
-      e.preventDefault();
-      const targetId = this.getAttribute('href').substring(1);
-      const targetSection = document.getElementById(targetId);
-      
-      if (targetSection) {
-        const headerHeight = document.querySelector('.header').offsetHeight;
-        const targetPosition = targetSection.offsetTop - headerHeight;
-        
-        window.scrollTo({
-          top: targetPosition,
-          behavior: 'smooth'
-        });
+// Menú hamburguesa (mobile)
+function initializeMobileMenu() {
+  const containers = document.querySelectorAll('.nav-container');
+  if (!containers.length) return;
+
+  containers.forEach(container => {
+    const hamburger = container.querySelector('.hamburger');
+    const navMenu = container.querySelector('.nav-menu');
+    if (!hamburger || !navMenu) return;
+
+    if (hamburger._dmBound) return; // evitar doble binding por contenedor
+    hamburger._dmBound = true;
+
+    const toggleMenu = () => {
+      hamburger.classList.toggle('active');
+      navMenu.classList.toggle('active');
+    };
+
+    hamburger.addEventListener('click', function(e) {
+      e.stopPropagation();
+      toggleMenu();
+    });
+
+    // Cerrar al hacer clic en un link del menú
+    navMenu.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', () => {
+        hamburger.classList.remove('active');
+        navMenu.classList.remove('active');
+      });
+    });
+  });
+
+  // Cerrar al hacer clic fuera (global)
+  document.addEventListener('click', function(e) {
+    document.querySelectorAll('.nav-container').forEach(container => {
+      const hamburger = container.querySelector('.hamburger');
+      const navMenu = container.querySelector('.nav-menu');
+      if (!hamburger || !navMenu) return;
+      const isClickInside = navMenu.contains(e.target) || hamburger.contains(e.target);
+      if (!isClickInside) {
+        hamburger.classList.remove('active');
+        navMenu.classList.remove('active');
       }
     });
   });
+
+  // Reset en resize (evita estados trabados)
+  window.addEventListener('resize', function() {
+    if (window.innerWidth > 768) {
+      document.querySelectorAll('.nav-container').forEach(container => {
+        const hamburger = container.querySelector('.hamburger');
+        const navMenu = container.querySelector('.nav-menu');
+        if (!hamburger || !navMenu) return;
+        hamburger.classList.remove('active');
+        navMenu.classList.remove('active');
+      });
+    }
+  });
 }
+
+// Inicializar menú móvil si el DOM ya está listo
+if (document.readyState !== 'loading') {
+  try { initializeMobileMenu(); } catch (_) {}
+}
+
+// Fallback: delegación global para asegurar toggle en cualquier página
+document.addEventListener('click', function(e) {
+  const hb = e.target.closest('.hamburger');
+  if (hb) {
+    const container = hb.closest('.nav-container') || document;
+    const navMenu = container.querySelector('.nav-menu');
+    if (navMenu) {
+      e.stopPropagation();
+      hb.classList.toggle('active');
+      navMenu.classList.toggle('active');
+    }
+  }
+
+  const navLink = e.target.closest('.nav-menu a');
+  if (navLink) {
+    const container = navLink.closest('.nav-container');
+    const hb2 = container?.querySelector('.hamburger');
+    const menu2 = container?.querySelector('.nav-menu');
+    hb2 && hb2.classList.remove('active');
+    menu2 && menu2.classList.remove('active');
+  }
+});
+
+// Navegación suave
+function initializeNavigation() {
+  const navLinks = document.querySelectorAll('.nav-link, .scroll');
+
+  navLinks.forEach(link => {
+    link.addEventListener('click', function(e) {
+      const href = this.getAttribute('href') || '';
+      if (!href) return;
+
+      // Caso 1: ancla en la misma página (#seccion)
+      if (href.startsWith('#')) {
+        e.preventDefault();
+        const targetId = href.substring(1);
+        const targetSection = document.getElementById(targetId);
+        if (targetSection) {
+          const headerHeight = document.querySelector('.header')?.offsetHeight || 0;
+          const targetPosition = targetSection.offsetTop - headerHeight;
+          window.scrollTo({ top: targetPosition, behavior: 'smooth' });
+        }
+        return;
+      }
+
+      // Caso 2: enlace con ruta + ancla (ej: index.html#contacto)
+      if (href.includes('#')) {
+        const [path, hash] = href.split('#');
+        const currentPage = (window.location.pathname.split('/').pop() || 'index.html');
+        // Si el path apunta a la página actual, hacer scroll suave sin recargar
+        if (path === '' || path === currentPage) {
+          e.preventDefault();
+          const targetId = hash;
+          const targetSection = document.getElementById(targetId);
+          if (targetSection) {
+            const headerHeight = document.querySelector('.header')?.offsetHeight || 0;
+            const targetPosition = targetSection.offsetTop - headerHeight;
+            window.scrollTo({ top: targetPosition, behavior: 'smooth' });
+          }
+          return;
+        }
+        // Si el path es otra página, permitir navegación normal (no prevenir)
+        return; // no hacemos preventDefault
+      }
+
+      // Otros enlaces (a otra página) navegan normalmente
+    });
+  });
+}
+
 // Scroll suave
 function initializeScroll() {
   const scrollLinks = document.querySelectorAll('.scroll');
@@ -107,6 +223,9 @@ function initializeFilters() {
   const precioMax = document.getElementById('precio-max');
   const filtroMarca = document.getElementById('filtro-marca');
   const ordenarSelect = document.getElementById('ordenar-select');
+  const searchInput = document.getElementById('search-input');
+  const clearSearchBtn = document.getElementById('clear-search');
+  const searchbarEl = document.getElementById('searchbar');
 
   // --- Rellenar marcas dinámicamente SIEMPRE que cambian los datos ---
   if (filtroMarca) {
@@ -147,6 +266,32 @@ function initializeFilters() {
   filtroMarca && filtroMarca.addEventListener('change', filterProducts);
   // Evento ordenar
   if (ordenarSelect) ordenarSelect.addEventListener('change', filterProducts);
+
+  // Buscador por nombre
+  if (searchInput) {
+    // Estado inicial de la UI del buscador
+    searchbarEl && searchbarEl.classList.toggle('has-value', searchInput.value.trim().length > 0);
+    searchQuery = (searchInput.value || '').trim().toLowerCase();
+
+    searchInput.addEventListener('input', function() {
+      const val = this.value.trim();
+      if (searchbarEl) searchbarEl.classList.toggle('has-value', val.length > 0);
+      searchQuery = val.toLowerCase();
+      if (searchDebounce) clearTimeout(searchDebounce);
+      searchDebounce = setTimeout(() => {
+        filterProducts();
+      }, 200);
+    });
+  }
+  if (clearSearchBtn && searchInput) {
+    clearSearchBtn.addEventListener('click', function(e) {
+      e.preventDefault();
+      searchInput.value = '';
+      searchQuery = '';
+      searchbarEl && searchbarEl.classList.remove('has-value');
+      filterProducts();
+    });
+  }
 }
 
 // Filtrar productos
@@ -179,6 +324,15 @@ function filterProducts() {
   }
   if (precioMax !== null) {
     result = result.filter(product => product.price <= precioMax);
+  }
+
+  // Filtro por nombre (buscador)
+  {
+    const inputVal = document.getElementById('search-input')?.value || '';
+    const q = (inputVal ? inputVal : (typeof searchQuery === 'string' ? searchQuery : '')).trim().toLowerCase();
+    if (q) {
+      result = result.filter(product => (product.name || '').toLowerCase().includes(q));
+    }
   }
 
   // Ordenamiento
@@ -1468,6 +1622,20 @@ function createCarouselItem(product) {
       </div>
     </div>
   `;
+  // Hacer clickeable toda la tarjeta para ir al detalle del producto
+  item.style.cursor = 'pointer';
+  item.addEventListener('click', function () {
+    window.location.href = `productos.html?id=${product.id}`;
+  });
+  // Evitar que el clic en los controles internos burbujee y dispare la navegación del item
+  const infoLink = item.querySelector('.carousel-item-actions a');
+  if (infoLink) {
+    infoLink.addEventListener('click', function (e) { e.stopPropagation(); });
+  }
+  const addBtn = item.querySelector('.carousel-item-actions button');
+  if (addBtn) {
+    addBtn.addEventListener('click', function (e) { e.stopPropagation(); });
+  }
   
   return item;
 }
