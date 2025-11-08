@@ -103,7 +103,7 @@
                 </div>
                 <div class="summary-row">
                   <span>Envío:</span>
-                  <span class="free-shipping">Gratis</span>
+                  <span class="free-shipping">Consultar</span>
                 </div>
                 <div class="summary-row total">
                   <span>Total:</span>
@@ -114,7 +114,8 @@
               <div class="summary-info">
                 <div class="info-item">
                   <i class="fas fa-shipping-fast"></i>
-                  <span>Envío gratis en toda la ciudad</span>
+                  <span>Envío sin cargo por la zona.
+                    <br>Consultá costo según distancia.</span>
                 </div>
                 <div class="info-item">
                   <i class="fas fa-shield-alt"></i>
@@ -464,6 +465,15 @@
           </div>
         </div>
       `;
+
+      card.style.cursor = 'pointer';
+      card.addEventListener('click', function() {
+        window.location.href = `productos.html?id=${product.id}`;
+      });
+      // Evitar que los botones/links internos propaguen el click del card
+      card.querySelectorAll('a, button').forEach(el => {
+        el.addEventListener('click', function(e) { e.stopPropagation(); });
+      });
 
       return card;
     }

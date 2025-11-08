@@ -353,6 +353,15 @@
         </div>
       `;
 
+      card.style.cursor = 'pointer';
+      card.addEventListener('click', function() {
+        window.location.href = `productos.html?id=${product.id}`;
+      });
+      const innerLink = card.querySelector('a');
+      if (innerLink) {
+        innerLink.addEventListener('click', function(e) { e.stopPropagation(); });
+      }
+
       return card;
     }
 
