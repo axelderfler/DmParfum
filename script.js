@@ -506,6 +506,7 @@ function createProductCard(product) {
 // Formulario de contacto
 function initializeContactForm() {
   const contactForm = document.getElementById('contact-form');
+  if (!contactForm) return;
   
   contactForm.addEventListener('submit', function(e) {
     e.preventDefault();
@@ -537,6 +538,11 @@ function initializeScrollEffects() {
   
   let lastKnownScrollY = 0;
   let tickingRAF = false;
+  let isHeaderHidden = false;
+  let lastToggleTime = 0;
+  const TOGGLE_COOLDOWN_MS = 400; // evita más de ~2.5 toggles/seg
+  const SCROLL_DELTA_THRESHOLD = 14; // px mínimos para considerar cambio de dirección
+  const HIDE_MIN_SCROLL = 80; // no ocultar cerca del top
 
   function onScroll() {
     lastKnownScrollY = window.pageYOffset || document.documentElement.scrollTop;
@@ -551,19 +557,36 @@ function initializeScrollEffects() {
 
   function updateHeaderOnScroll() {
     const scrollTop = lastKnownScrollY;
+    const now = (typeof performance !== 'undefined' && performance.now) ? performance.now() : Date.now();
+    const delta = scrollTop - lastScrollTop;
+    const canToggle = (now - lastToggleTime) > TOGGLE_COOLDOWN_MS;
+
     if (window.innerWidth <= 768) {
-      if (scrollTop > lastScrollTop && scrollTop > 80) {
-        header.style.transform = 'translateY(-100%)';
-        document.body.classList.add('header-hidden');
-      } else {
-        header.style.transform = 'translateY(0)';
-        document.body.classList.remove('header-hidden');
+      // Ocultar al desplazar hacia abajo con umbral y lejos del top
+      if (delta > SCROLL_DELTA_THRESHOLD && scrollTop > HIDE_MIN_SCROLL) {
+        if (!isHeaderHidden && canToggle) {
+          document.body.classList.add('header-hidden');
+          isHeaderHidden = true;
+          lastToggleTime = now;
+        }
+      }
+      // Mostrar al desplazar hacia arriba suficientemente o cerca del top
+      else if (delta < -SCROLL_DELTA_THRESHOLD || scrollTop < 10) {
+        if (isHeaderHidden && canToggle) {
+          document.body.classList.remove('header-hidden');
+          isHeaderHidden = false;
+          lastToggleTime = now;
+        }
       }
     } else {
-      header.style.transform = 'translateY(0)';
-      document.body.classList.remove('header-hidden');
+      // En desktop siempre visible
+      if (isHeaderHidden) {
+        document.body.classList.remove('header-hidden');
+        isHeaderHidden = false;
+      }
     }
 
+    // Estilo de fondo y sombra al hacer scroll
     if (scrollTop > 100) {
       header.style.background = 'rgba(255, 255, 255, 0.98)';
       header.style.boxShadow = '0 2px 20px rgba(0, 0, 0, 0.1)';
