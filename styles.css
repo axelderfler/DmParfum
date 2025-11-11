@@ -199,33 +199,6 @@ h1, h2, h3, h4, h5, h6 {
   width: 100%;
 }
 
-.nav-link-catalogo {
-  text-decoration: none;
-  color: var(--text-dark);
-  font-weight: 500;
-  transition: var(--transition);
-  position: relative;
-}
-
-.nav-link-catalogo:hover {
-  color: var(--primary-color);
-}
-
-.nav-link-catalogo::after {
-  content: '';
-  position: absolute;
-  bottom: -5px;
-  left: 0;
-  width: 0;
-  height: 2px;
-  background: var(--gradient-primary);
-  transition: var(--transition);
-}
-
-.nav-link-catalogo:hover::after {
-  width: 100%;
-}
-
 .hamburger {
   display: none;
   flex-direction: column;
@@ -2754,8 +2727,7 @@ h1, h2, h3, h4, h5, h6 {
   }
   
   .btn {
-    font-size: 0.7rem;
-    padding: 12px;
+    font-size: 0.9rem;
   }
   
   .product-actions {
