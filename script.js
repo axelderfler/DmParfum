@@ -71,8 +71,14 @@ function initializeMobileMenu() {
     hamburger._dmBound = true;
 
     const toggleMenu = () => {
+      const isActive = navMenu.classList.toggle('active');
       hamburger.classList.toggle('active');
-      navMenu.classList.toggle('active');
+      // Lock/unlock body scroll cuando el menú está abierto
+      if (isActive) {
+        document.body.style.overflow = 'hidden';
+      } else {
+        document.body.style.overflow = '';
+      }
     };
 
     hamburger.addEventListener('click', function(e) {
@@ -85,6 +91,7 @@ function initializeMobileMenu() {
       link.addEventListener('click', () => {
         hamburger.classList.remove('active');
         navMenu.classList.remove('active');
+        document.body.style.overflow = '';
       });
     });
   });
@@ -99,6 +106,7 @@ function initializeMobileMenu() {
       if (!isClickInside) {
         hamburger.classList.remove('active');
         navMenu.classList.remove('active');
+        document.body.style.overflow = '';
       }
     });
   });
@@ -112,6 +120,7 @@ function initializeMobileMenu() {
         if (!hamburger || !navMenu) return;
         hamburger.classList.remove('active');
         navMenu.classList.remove('active');
+        document.body.style.overflow = '';
       });
     }
   });
@@ -130,8 +139,9 @@ document.addEventListener('click', function(e) {
     const navMenu = container.querySelector('.nav-menu');
     if (navMenu) {
       e.stopPropagation();
+      const isActive = navMenu.classList.toggle('active');
       hb.classList.toggle('active');
-      navMenu.classList.toggle('active');
+      document.body.style.overflow = isActive ? 'hidden' : '';
     }
   }
 
@@ -142,6 +152,7 @@ document.addEventListener('click', function(e) {
     const menu2 = container?.querySelector('.nav-menu');
     hb2 && hb2.classList.remove('active');
     menu2 && menu2.classList.remove('active');
+    document.body.style.overflow = '';
   }
 });
 
@@ -640,56 +651,7 @@ function initializeScrollEffects() {
   });
 }
 
-// Menú móvil
-function initializeMobileMenu() {
-  const hamburger = document.querySelector('.hamburger');
-  const navMenu = document.querySelector('.nav-menu');
-  
-  if (hamburger && navMenu) {
-    hamburger.addEventListener('click', function(e) {
-      e.stopPropagation();
-      const isActive = navMenu.classList.toggle('active');
-      hamburger.classList.toggle('active');
-      
-      // Lock/unlock body scroll
-      if (isActive) {
-        document.body.style.overflow = 'hidden';
-      } else {
-        document.body.style.overflow = '';
-      }
-    });
-    
-    // Cerrar menú al hacer click en un enlace
-    const navLinks = document.querySelectorAll('.nav-link');
-    navLinks.forEach(link => {
-      link.addEventListener('click', function() {
-        navMenu.classList.remove('active');
-        hamburger.classList.remove('active');
-        document.body.style.overflow = '';
-      });
-    });
-    
-    // Cerrar menú al hacer click fuera
-    document.addEventListener('click', function(e) {
-      if (navMenu.classList.contains('active') && 
-          !navMenu.contains(e.target) && 
-          !hamburger.contains(e.target)) {
-        navMenu.classList.remove('active');
-        hamburger.classList.remove('active');
-        document.body.style.overflow = '';
-      }
-    });
-    
-    // Cerrar menú con tecla ESC
-    document.addEventListener('keydown', function(e) {
-      if (e.key === 'Escape' && navMenu.classList.contains('active')) {
-        navMenu.classList.remove('active');
-        hamburger.classList.remove('active');
-        document.body.style.overflow = '';
-      }
-    });
-  }
-}
+
 
 // Variables globales para el modal de filtros móviles
 let mobileFiltersModal = null;
@@ -1363,10 +1325,6 @@ async function loadProductsFromGoogleSheets() {
     const sheetData = await fetchGoogleSheetsData();
     if (sheetData && sheetData.length > 0) {
       productsData = sheetData;
-      console.log('Productos cargados desde Google Sheets:', productsData.length);
-      showNotification(`Se cargaron ${productsData.length} productos desde Google Sheets`, 'success');
-    } else {
-      throw new Error('No se encontraron datos en Google Sheets');
     }
   } catch (error) {
     console.warn('Error cargando desde Google Sheets, usando datos de respaldo:', error);
