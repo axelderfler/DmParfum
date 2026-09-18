@@ -60,11 +60,14 @@
   <!-- Hero Section -->
   <section id="inicio" class="hero">
     <div class="hero-banner">
-      <img
-        class="hero-banner-img"
-        src="img/dia-madre-hero.jpg"
-        alt="Se viene el Día de la Madre en Dm Parfum"
-        onerror="this.onerror=null; this.src='img/banner2.jpg';">
+      <picture>
+        <source media="(max-width: 768px)" srcset="img/BannerCelular.jpg" onerror="this.onerror=null; this.srcset='img/banner2.jpg';">
+        <img
+          class="hero-banner-img"
+          src="img/dia-madre-hero.jpg"
+          alt="Se viene el Día de la Madre en Dm Parfum"
+          onerror="this.onerror=null; this.src='img/banner2.jpg';">
+      </picture>
       <div class="hero-overlay">
         <div class="hero-content-overlay">
           <h2>Día de la Madre</h2>
