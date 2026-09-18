@@ -25,27 +25,33 @@ input, textarea, select {
 :root {
   --primary-color: #D4AF37;
   --secondary-color: #B8860B;
-  --accent-color: #2C2C2C;
-  --text-dark: #1A1A1A;
-  --text-medium: #404040;
-  --text-light: #666666;
-  --text-muted: #999999;
-  --bg-white: #FFFFFF;
-  --bg-light: #FAFAFA;
-  --bg-normal: #F5F5F5;
-  --bg-catalogo: #ebebeb;
-  --bg-producto: #FFFFFF;
-  --bg-header: rgba(224, 224, 224, 0.95);
-  --border-light: #E5E5E5;
-  --border-medium: #CCCCCC;
+  --rose-gold: #C9A07A;
+  --champagne: #F6EDE4;
+  --champagne-deep: #E8D5C4;
+  --blush: #E8C4B8;
+  --accent-color: #3D2C24;
+  --text-dark: #2A1F1A;
+  --text-medium: #5C4A40;
+  --text-light: #7A6558;
+  --text-muted: #A89080;
+  --bg-white: #FFF9F4;
+  --bg-light: #F6EDE4;
+  --bg-normal: #F3E6DC;
+  --bg-catalogo: #EDE0D4;
+  --bg-producto: #FFF9F4;
+  --bg-header: rgba(246, 237, 228, 0.95);
+  --border-light: #E8D5C4;
+  --border-medium: #D4BBA8;
   --gradient-primary: linear-gradient(135deg, #D4AF37 0%, #B8860B 100%);
-  --gradient-secondary: linear-gradient(135deg, #2C2C2C 0%, #1A1A1A 100%);
+  --gradient-secondary: linear-gradient(135deg, #4A3428 0%, #2A1F1A 100%);
   --gradient-accent: linear-gradient(135deg, #D4AF37 0%, #F4D03F 100%);
-  --shadow-light: 0 2px 10px rgba(0, 0, 0, 0.08);
-  --shadow-medium: 0 4px 20px rgba(0, 0, 0, 0.12);
-  --shadow-heavy: 0 8px 30px rgba(0, 0, 0, 0.15);
+  --shadow-light: 0 2px 10px rgba(42, 31, 26, 0.08);
+  --shadow-medium: 0 4px 20px rgba(42, 31, 26, 0.12);
+  --shadow-heavy: 0 8px 30px rgba(42, 31, 26, 0.15);
   --border-radius: 12px;
   --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  --diamadre:#fdead8;
+  --productos:#faf3f7;
 }
 
 /* Tipografía */
@@ -316,79 +322,99 @@ h1, h2, h3, h4, h5, h6 {
   }
 }
 
-.hero-images {
-  display: flex;
+.hero {
+  background: var(--champagne-deep);
+}
+
+.hero-banner {
+  position: relative;
+  width: 100%;
   height: 100%;
 }
 
-.hero-image-left,
-.hero-image-right {
-  flex: 1;
-  height: 100%;  
-  background-size: cover;
-  background-position-y: 20%;
-  background-repeat: no-repeat;
-  position: relative;
-  cursor: pointer;
-  transition: var(--transition);
-}
-
-.hero-image-left {
-  background-image: url('img/hawas-tropical.jpg');
-}
-
-.hero-image-right {
-  background-image: url('img/Haya.webp');
+.hero-banner-img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+  object-position: center;
 }
 
 .hero-overlay {
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.3);
+  inset: 0;
   display: flex;
   align-items: center;
   justify-content: center;
+  z-index: 5;
   opacity: 0;
+  pointer-events: none;
+  background: linear-gradient(135deg, rgba(250, 215, 223, 0.582) 0%, rgba(219, 94, 209, 0.68) 100%);
   transition: var(--transition);
-}
-
-.hero-image-left:hover .hero-overlay{
-  opacity: 1;
-  background: rgba(104, 71, 0, 0.623);
-}
-.hero-image-right:hover .hero-overlay {
-  opacity: 1;
-  background: rgba(255, 100, 28, 0.527);
 }
 
 .hero-content-overlay {
   text-align: center;
-  color: white;
   padding: 2rem;
+  max-width: 720px;
   transform: translateY(20px);
   transition: var(--transition);
 }
 
-.hero-image-left:hover .hero-content-overlay,
-.hero-image-right:hover .hero-content-overlay {
-  transform: translateY(0);
-}
-
 .hero-content-overlay h2 {
-  font-size: 2.5rem;
-  margin-bottom: 1rem;
   font-family: 'Playfair Display', serif;
+  font-size: 3rem;
   line-height: 1.2;
+  margin-bottom: 0.75rem;
+  color: #57275e;
+  text-shadow: 0 1px 12px rgba(42, 31, 26, 0.18);
 }
 
 .hero-content-overlay p {
-  font-size: 1.2rem;
+  font-size: 1.15rem;
+  line-height: 1.5;
   margin-bottom: 2rem;
-  opacity: 0.9;
-  line-height: 1.4;
+  color: #3D2C24;
+  font-weight: 400;
+}
+
+.hero-banner:hover .hero-overlay,
+.hero-banner:focus-within .hero-overlay {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.hero-banner:hover .hero-content-overlay,
+.hero-banner:focus-within .hero-content-overlay {
+  transform: translateY(0);
+}
+
+.btn-hero-madre {
+  background: var(--gradient-primary);
+  color: #1A1A1A;
+  box-shadow: 0 10px 28px rgba(184, 134, 11, 0.4);
+  border: 1px solid rgba(212, 175, 55, 0.9);
+  padding: 16px 36px;
+  font-size: 1.05rem;
+  letter-spacing: 0.02em;
+}
+
+.btn-hero-madre:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 14px 32px rgba(184, 134, 11, 0.5);
+  color: #1A1A1A;
+}
+
+@media (hover: none) {
+  .hero-overlay {
+    opacity: 1;
+    pointer-events: auto;
+    background: linear-gradient(135deg, rgba(255, 75, 114, 0.582) 0%, rgba(204, 94, 195, 0.68) 100%);
+  }
+
+  .hero-content-overlay {
+    transform: none;
+  }
 }
 
 .btn {
@@ -732,7 +758,7 @@ h1, h2, h3, h4, h5, h6 {
 .carousel-item {
   /* 3 items per view on desktop: gap is 2rem, so total gap between 3 items = 4rem */
   flex: 0 0 calc((100% - 4rem) / 3);
-  background: var(--bg-producto);
+  background: var(--diamadre);
   border-radius: var(--border-radius);
   overflow: hidden;
   box-shadow: var(--shadow-medium);
@@ -981,7 +1007,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .product-card {
-  background: var(--bg-white);
+  background: var(--productos);
   border-radius: var(--border-radius);
   overflow: hidden;
   box-shadow: var(--shadow-light);
@@ -2559,27 +2585,20 @@ h1, h2, h3, h4, h5, h6 {
     min-height: 400px;
   }
   
-  .hero-images {
-    flex-direction: column;
-  }
-  
-  .hero-image-left,
-  .hero-image-right {
-    flex: 1;
-    min-height: 50%;
-  }
-  
   .hero-content-overlay h2 {
-    font-size: 1.8rem;
+    font-size: 2rem;
   }
-  
+
   .hero-content-overlay p {
     font-size: 1rem;
+    margin-bottom: 1.4rem;
   }
-  
-  .hero-content-overlay .btn {
-    padding: 12px 24px;
-    font-size: 0.9rem;
+
+  .btn-hero-madre {
+    width: 100%;
+    max-width: 360px;
+    padding: 14px 24px;
+    font-size: 0.95rem;
   }
   
   .scroll-indicator {
@@ -2783,18 +2802,13 @@ h1, h2, h3, h4, h5, h6 {
     height: 60vh;
     min-height: 350px;
   }
-  
+
   .hero-content-overlay h2 {
-    font-size: 1.5rem;
+    font-size: 1.9rem;
   }
-  
+
   .hero-content-overlay p {
-    font-size: 0.9rem;
-  }
-  
-  .hero-content-overlay .btn {
-    padding: 10px 20px;
-    font-size: 0.8rem;
+    font-size: 0.95rem;
   }
   
   .features-grid {
@@ -2873,16 +2887,17 @@ h1, h2, h3, h4, h5, h6 {
   }
   
   .hero-content-overlay h2 {
-    font-size: 1.3rem;
+    font-size: 1.45rem;
   }
-  
+
   .hero-content-overlay p {
-    font-size: 0.8rem;
+    font-size: 0.88rem;
+    margin-bottom: 1.1rem;
   }
-  
-  .hero-content-overlay .btn {
-    padding: 8px 16px;
-    font-size: 0.7rem;
+
+  .btn-hero-madre {
+    font-size: 0.88rem;
+    padding: 12px 18px;
   }
   
   .btn {

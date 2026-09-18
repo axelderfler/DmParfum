@@ -47,13 +47,16 @@ document.addEventListener('DOMContentLoaded', function() {
   initializeContactForm();
   initializeScrollEffects();
   initializeMobileMenu();
-  initializeHeroButtons();
   initializeScroll();
   initializeMobileFilters();
   initializeTouchOptimizations();
   // Cargar productos desde Google Sheets y luego inicializar filtros (para que existan las marcas)
   loadProductsFromGoogleSheets().then(() => {
     initializeFilters();
+    applyInitialFilter();
+    if (document.getElementById('products-grid')) {
+      filterProducts();
+    }
   });
 });
 
@@ -346,17 +349,54 @@ function filterProducts() {
     }
   }
 
-  // Ordenamiento
+  // Ordenamiento - primero por stock (disponibles primero), luego por criterio seleccionado
   const ordenar = document.getElementById('ordenar-select')?.value;
+  
+  // Función auxiliar para determinar si un producto tiene stock
+  const hasStock = (product) => typeof product.stock === 'number' && product.stock > 0;
+  
+  // Ordenar por stock primero (disponibles antes que sin stock)
+  result = result.slice().sort((a, b) => {
+    const aHasStock = hasStock(a);
+    const bHasStock = hasStock(b);
+    
+    // Si ambos tienen stock o ambos no tienen stock, mantener orden relativo
+    if (aHasStock === bHasStock) return 0;
+    
+    // Productos con stock primero
+    return aHasStock ? -1 : 1;
+  });
+  
+  // Luego aplicar el ordenamiento secundario seleccionado por el usuario
   if (ordenar === 'precio-desc') {
-    result = result.slice().sort((a, b) => b.price - a.price);
+    result = result.slice().sort((a, b) => {
+      const aHasStock = hasStock(a);
+      const bHasStock = hasStock(b);
+      if (aHasStock !== bHasStock) return aHasStock ? -1 : 1;
+      return b.price - a.price;
+    });
   } else if (ordenar === 'precio-asc') {
-    result = result.slice().sort((a, b) => a.price - b.price);
+    result = result.slice().sort((a, b) => {
+      const aHasStock = hasStock(a);
+      const bHasStock = hasStock(b);
+      if (aHasStock !== bHasStock) return aHasStock ? -1 : 1;
+      return a.price - b.price;
+    });
   } else if (ordenar === 'nombre-az') {
-    result = result.slice().sort((a, b) => a.name.localeCompare(b.name));
+    result = result.slice().sort((a, b) => {
+      const aHasStock = hasStock(a);
+      const bHasStock = hasStock(b);
+      if (aHasStock !== bHasStock) return aHasStock ? -1 : 1;
+      return a.name.localeCompare(b.name);
+    });
   } else if (ordenar === 'nombre-za') {
-    result = result.slice().sort((a, b) => b.name.localeCompare(a.name));
-  } // 'Más relevantes' mantiene el orden original del Excel/Google Sheets
+    result = result.slice().sort((a, b) => {
+      const aHasStock = hasStock(a);
+      const bHasStock = hasStock(b);
+      if (aHasStock !== bHasStock) return aHasStock ? -1 : 1;
+      return b.name.localeCompare(a.name);
+    });
+  } // 'Más relevantes' mantiene el orden original del Excel/Google Sheets pero con stock primero
 
   filteredProducts = result;
   // Recargar productos con animación
@@ -372,19 +412,39 @@ function filterProducts() {
   }, 100);
 }
 
-// Función para aplicar filtro inicial (mostrar todos por defecto)
-function applyInitialFilter() {
-  currentFilter = 'all';
-  filteredProducts = productsData;
-  
-  // Marcar el botón "Todos" como activo
+function getCategoryFromUrl() {
+  const allowed = ['femenino', 'masculino', 'unisex', 'all'];
+  const categoria = (new URLSearchParams(window.location.search).get('categoria') || '').toLowerCase();
+  return allowed.includes(categoria) ? categoria : 'all';
+}
+
+// Función para aplicar filtro inicial (URL o todos)
+function applyInitialFilter(reset = false) {
+  currentFilter = reset ? 'all' : getCategoryFromUrl();
+  filteredProducts = currentFilter === 'all'
+    ? productsData
+    : productsData.filter(product => product.category === currentFilter);
+
+  // Ordenar por stock primero (disponibles antes que sin stock)
+  const hasStock = (product) => typeof product.stock === 'number' && product.stock > 0;
+  filteredProducts = filteredProducts.slice().sort((a, b) => {
+    const aHasStock = hasStock(a);
+    const bHasStock = hasStock(b);
+    
+    // Si ambos tienen stock o ambos no tienen stock, mantener orden relativo
+    if (aHasStock === bHasStock) return 0;
+    
+    // Productos con stock primero
+    return aHasStock ? -1 : 1;
+  });
+
   const filterButtons = document.querySelectorAll('.filter-btn');
   filterButtons.forEach(btn => btn.classList.remove('active'));
-  const allButton = document.querySelector('[data-filter="all"]');
-  if (allButton) {
-    allButton.classList.add('active');
+  const activeButton = document.querySelector(`[data-filter="${currentFilter}"]`);
+  if (activeButton) {
+    activeButton.classList.add('active');
   }
-  
+
   console.log('Filtro inicial aplicado:', { currentFilter, filteredProducts: filteredProducts.length });
 }
 
@@ -1208,45 +1268,6 @@ function initializeTouchOptimizations() {
   });
 }
 
-// Botones del hero
-function initializeHeroButtons() {
-  const heroButtons = document.querySelectorAll('.hero-content-overlay .btn');
-  
-  heroButtons.forEach(button => {
-    button.addEventListener('click', function(e) {
-      e.preventDefault();
-      const filter = this.getAttribute('data-filter');
-      
-      if (filter) {
-        // Cambiar filtro
-        currentFilter = filter;
-        
-        // Actualizar botones de filtro
-        const filterButtons = document.querySelectorAll('.filter-btn');
-        filterButtons.forEach(btn => btn.classList.remove('active'));
-        const activeButton = document.querySelector(`[data-filter="${filter}"]`);
-        if (activeButton) {
-          activeButton.classList.add('active');
-        }
-        
-        // Filtrar productos
-        filterProducts();
-        
-        // Scroll suave al catálogo
-        const catalogSection = document.getElementById('catalogo');
-        if (catalogSection) {
-          const headerHeight = document.querySelector('.header').offsetHeight;
-          const targetPosition = catalogSection.offsetTop - headerHeight;
-          
-          window.scrollTo({
-            top: targetPosition,
-            behavior: 'smooth'
-          });
-        }
-      }
-    });
-  });
-}
 
 // Sistema de notificaciones
 function showNotification(message, type = 'info') {

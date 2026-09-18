@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Perfumes Árabes Originales | Dm Parfum – Fragancias Premium</title>
   <meta name="description" content="Descubre la elegancia de los perfumes árabes Originales en Dm Parfum. Fragancias únicas y exclusivas para hombres y mujeres.">
-  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="styles.css?v=5">
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
   <link rel="icon" type="image/png" href="img/LogoIGPNG.png">
@@ -59,27 +59,20 @@
 
   <!-- Hero Section -->
   <section id="inicio" class="hero">
-    <div class="hero-images">
-      <div class="hero-image-left">
-        <div class="hero-overlay">
-          <div class="hero-content-overlay">
-            <h2>Perfumes Masculinos</h2>
-            <p>Descubre fragancias únicas para el hombre moderno</p>
-            <a href="catalogo.html" class="btn btn-primary" data-filter="masculino">Ver Colección</a>
-          </div>
+    <div class="hero-banner">
+      <img
+        class="hero-banner-img"
+        src="img/dia-madre-hero.jpg"
+        alt="Se viene el Día de la Madre en Dm Parfum"
+        onerror="this.onerror=null; this.src='img/banner2.jpg';">
+      <div class="hero-overlay">
+        <div class="hero-content-overlay">
+          <h2>Día de la Madre</h2>
+          <p>Descubrí las mejores fragancias para su regalo</p>
+          <a href="catalogo.html?categoria=femenino" class="btn btn-primary btn-hero-madre">Ver regalos para mamá</a>
         </div>
       </div>
-        <div class="hero-image-right">
-          <div class="hero-overlay">
-            <div class="hero-content-overlay">
-              <h2>Perfumes Femeninos</h2>
-              <p>Elegancia y sofisticación en cada fragancia</p>
-              <a href="catalogo.html" class="btn btn-primary" data-filter="femenino">Ver Colección</a>
-            </div>
-          </div>
-        </div>
     </div>
-        <!-- Scroll Indicator -->
     <a href="#catalogo" class="scroll">
       <div class="scroll-indicator">
         <span class="arrow-down">
@@ -164,7 +157,7 @@
           <p>Nuestra pasión es compartir contigo la magia de estas fragancias únicas que capturan la esencia del lujo oriental.</p>
           <div class="stats">
             <div class="stat">
-              <h3>50+</h3>
+              <h3>200+</h3>
               <p>Clientes Satisfechos</p>
             </div>
             <div class="stat">
@@ -280,7 +273,7 @@
   </div>
   </footer>
 
-  <script src="script.js?v=3"></script>
+  <script src="script.js?v=4"></script>
   <script src="cart.js"></script>
 </body>
 </html>
