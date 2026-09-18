@@ -50,14 +50,21 @@ document.addEventListener('DOMContentLoaded', function() {
   initializeScroll();
   initializeMobileFilters();
   initializeTouchOptimizations();
-  // Cargar productos desde Google Sheets y luego inicializar filtros (para que existan las marcas)
-  loadProductsFromGoogleSheets().then(() => {
-    initializeFilters();
-    applyInitialFilter();
-    if (document.getElementById('products-grid')) {
-      filterProducts();
-    }
-  });
+  
+  // Verificar si estamos en la página del catálogo
+  const isCatalogPage = window.location.pathname.includes('catalogo.html');
+  
+  // Solo cargar productos si NO estamos en catalogo.html (catalogo.html tiene su propia inicialización)
+  if (!isCatalogPage) {
+    // Cargar productos desde Google Sheets y luego inicializar filtros (para que existan las marcas)
+    loadProductsFromGoogleSheets().then(() => {
+      initializeFilters();
+      applyInitialFilter();
+      if (document.getElementById('products-grid')) {
+        filterProducts();
+      }
+    });
+  }
 });
 
 // Menú hamburguesa (mobile)
@@ -1546,9 +1553,9 @@ function showNoProductsMessage() {
 
 // Funciones del carrusel
 function initializeCarousel() {
-  // Filtrar productos con stock > 0 para el carrusel
+  // Filtrar productos con stock > 0 y categoría femenino para el carrusel
   carouselItems = productsData.filter(product => 
-    typeof product.stock === 'number' && product.stock > 0
+    typeof product.stock === 'number' && product.stock > 0 && product.category === 'femenino'
   );
   
   // Limitar a 9 productos para el carrusel
