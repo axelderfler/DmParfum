@@ -353,6 +353,18 @@ h1, h2, h3, h4, h5, h6 {
   transition: var(--transition);
 }
 
+/* Overlay activo en móvil al tocar */
+.hero-overlay.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+@media (max-width: 768px) {
+  .hero-overlay.active .hero-content-overlay {
+    transform: none;
+  }
+}
+
 .hero-content-overlay {
   text-align: center;
   padding: 2rem;
@@ -403,18 +415,6 @@ h1, h2, h3, h4, h5, h6 {
   transform: translateY(-2px);
   box-shadow: 0 14px 32px rgba(184, 134, 11, 0.5);
   color: #1A1A1A;
-}
-
-@media (hover: none) {
-  .hero-overlay {
-    opacity: 1;
-    pointer-events: auto;
-    background: linear-gradient(135deg, rgba(255, 75, 114, 0.582) 0%, rgba(204, 94, 195, 0.68) 100%);
-  }
-
-  .hero-content-overlay {
-    transform: none;
-  }
 }
 
 .btn {

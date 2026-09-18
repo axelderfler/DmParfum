@@ -50,6 +50,7 @@ document.addEventListener('DOMContentLoaded', function() {
   initializeScroll();
   initializeMobileFilters();
   initializeTouchOptimizations();
+  initializeHeroOverlay();
   // Cargar productos desde Google Sheets y luego inicializar filtros (para que existan las marcas)
   loadProductsFromGoogleSheets().then(() => {
     initializeFilters();
@@ -1156,6 +1157,30 @@ function updateFilterCount() {
   
   filterCount.textContent = activeFilters;
   filterCount.style.display = activeFilters > 0 ? 'flex' : 'none';
+}
+
+// Overlay del hero en móvil
+function initializeHeroOverlay() {
+  const heroBanner = document.querySelector('.hero-banner');
+  const heroOverlay = document.querySelector('.hero-overlay');
+  
+  if (!heroBanner || !heroOverlay) return;
+  
+  // Solo activar en dispositivos móviles
+  if (window.innerWidth > 768) return;
+  
+  // Activar overlay al tocar el banner
+  heroBanner.addEventListener('click', function(e) {
+    // Si el click es en un botón o enlace dentro del overlay, no hacer nada
+    if (e.target.closest('a, button')) return;
+    
+    heroOverlay.classList.toggle('active');
+  });
+  
+  // También activar con touchstart para mejor respuesta en móviles
+  heroBanner.addEventListener('touchstart', function(e) {
+    if (e.target.closest('a, button')) return;
+  }, { passive: true });
 }
 
 // Optimizaciones táctiles para móviles
