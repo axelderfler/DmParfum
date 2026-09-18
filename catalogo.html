@@ -347,38 +347,8 @@
       document.getElementById('products-grid').style.display = 'grid';
     }
 
-    // Inicialización mejorada del catálogo
+    // Inicialización de eventos específicos del catálogo
     document.addEventListener('DOMContentLoaded', function() {
-      // Inicialización correcta para que los filtros y marcas funcionen SIEMPRE
-      if (typeof loadProductsFromGoogleSheets === 'function') {
-        showLoadingIndicator();
-        
-        loadProductsFromGoogleSheets().then(() => {
-          hideLoadingIndicator();
-          
-          if (typeof initializeFilters === 'function') initializeFilters();
-          if (typeof applyInitialFilter === 'function') applyInitialFilter();
-          if (typeof filterProducts === 'function') filterProducts();
-          
-          // Esperar un poco para que se rendericen los productos
-          setTimeout(() => {
-            // Actualizar contador de productos
-            const products = document.querySelectorAll('.product-card');
-            updateProductsCount(products.length);
-            
-            // Mostrar/ocultar mensaje de no productos
-            if (products.length === 0) {
-              showNoProducts();
-            } else {
-              hideNoProducts();
-            }
-          }, 100);
-        }).catch(error => {
-          hideLoadingIndicator();
-          console.error('Error cargando productos:', error);
-        });
-      }
-
       // Control de vista (grid/list)
       document.querySelectorAll('.view-btn').forEach(btn => {
         btn.addEventListener('click', function() {
@@ -397,11 +367,14 @@
       });
 
       // Control de ordenamiento
-      document.getElementById('ordenar-select').addEventListener('change', function() {
-        if (typeof sortProducts === 'function') {
-          sortProducts(this.value);
-        }
-      });
+      const ordenarSelect = document.getElementById('ordenar-select');
+      if (ordenarSelect) {
+        ordenarSelect.addEventListener('change', function() {
+          if (typeof filterProducts === 'function') {
+            filterProducts();
+          }
+        });
+      }
     });
   </script>
 </body>

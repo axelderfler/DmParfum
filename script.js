@@ -50,21 +50,14 @@ document.addEventListener('DOMContentLoaded', function() {
   initializeScroll();
   initializeMobileFilters();
   initializeTouchOptimizations();
-  
-  // Verificar si estamos en la página del catálogo
-  const isCatalogPage = window.location.pathname.includes('catalogo.html');
-  
-  // Solo cargar productos si NO estamos en catalogo.html (catalogo.html tiene su propia inicialización)
-  if (!isCatalogPage) {
-    // Cargar productos desde Google Sheets y luego inicializar filtros (para que existan las marcas)
-    loadProductsFromGoogleSheets().then(() => {
-      initializeFilters();
-      applyInitialFilter();
-      if (document.getElementById('products-grid')) {
-        filterProducts();
-      }
-    });
-  }
+  // Cargar productos desde Google Sheets y luego inicializar filtros (para que existan las marcas)
+  loadProductsFromGoogleSheets().then(() => {
+    initializeFilters();
+    applyInitialFilter();
+    if (document.getElementById('products-grid')) {
+      filterProducts();
+    }
+  });
 });
 
 // Menú hamburguesa (mobile)
