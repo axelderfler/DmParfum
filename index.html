@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Perfumes Árabes Originales | Dm Parfum – Fragancias Premium</title>
+  <meta name="description" content="Descubre la elegancia de los perfumes árabes Originales en Dm Parfum. Fragancias únicas y exclusivas para hombres y mujeres.">
+  <link rel="stylesheet" href="styles.css?v=5">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <link rel="icon" type="image/png" href="img/LogoIGPNG.png">
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "Dm Parfum",
+      "url": "https://axelderfler.github.io/DmParfum/",
+      "logo": "https://axelderfler.github.io/DmParfum/img/LogoIGPNG.png",
+      "sameAs": [
+        "https://www.instagram.com/dm.parfum_",
+        "https://wa.me/541162634332"
+      ]
+    }
+    </script>
+</head>
+<body>
+  <!-- Header -->
+  <header class="header">
+    <nav class="header">
+      <div class="nav-container">
+        <a href="https://axelderfler.github.io/DmParfum/" style="text-decoration: none;">
+          <div class="logo">
+              <img src="img/LogoPNG.png" alt="Dm Parfum Logo" class="logo-image">
+            <div class="logo-text">
+              <h1>Dm Parfum</h1>
+              <span class="tagline">Perfumes Árabes</span>
+            </div>
+          </div>
+        </a>
+        <ul class="nav-menu">
+          <li><a href="#inicio" class="nav-link">Inicio</a></li>
+          <li><a class="nav-link" href="catalogo.html" >Catálogo</a></li>
+          <li><a href="#sobre-nosotros" class="nav-link">Nosotros</a></li>
+          <li><a href="#contacto" class="nav-link">Contacto</a></li>
+        </ul>
+        <!-- Carrito de compras -->
+        <div class="cart-icon" onclick="toggleCart()">
+          <i class="fas fa-shopping-cart"></i>
+          <span class="cart-count" id="cart-count">0</span>
+        </div>
+        <div class="hamburger">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <!-- Hero Section -->
+  <section id="inicio" class="hero">
+    <div class="hero-banner">
+      <picture>
+        <source media="(max-width: 768px)" srcset="img/BannerCelular.jpg" onerror="this.onerror=null; this.srcset='img/banner2.jpg';">
+        <img
+          class="hero-banner-img"
+          src="img/dia-madre-hero.jpg"
+          alt="Se viene el Día de la Madre en Dm Parfum"
+          onerror="this.onerror=null; this.src='img/banner2.jpg';">
+      </picture>
+      <div class="hero-overlay">
+        <div class="hero-content-overlay">
+          <h2>Día de la Madre</h2>
+          <p>Descubrí las mejores fragancias para su regalo</p>
+          <a href="catalogo.html?categoria=femenino" class="btn btn-primary btn-hero-madre">Ver regalos para mamá</a>
+        </div>
+      </div>
+    </div>
+    <a href="#catalogo" class="scroll">
+      <div class="scroll-indicator">
+        <span class="arrow-down">
+          <svg viewBox="0 0 24 24">
+            <polyline points="6 10 12 16 18 10" />
+          </svg>
+        </span>
+      </div>
+    </a>
+  </section>
+
+  <!-- Features Section -->
+  <section class="features">
+    <div class="container-info">
+      <div class="features-grid">
+        <div class="feature">
+          <div class="feature-icon">
+            <i class="fas fa-gem"></i>
+          </div>
+          <h3>Autenticidad</h3>
+          <p>Perfumes árabes 100% originales importados directamente</p>
+        </div>
+        <div class="feature">
+          <div class="feature-icon">
+            <i class="fas fa-shipping-fast"></i>
+          </div>
+          <h3>Encargos</h3>
+          <p>Trabajamos con encargos para darte la fragancia que estas buscando.</p>
+        </div>
+        <div class="feature">
+          <div class="feature-icon">
+            <i class="fas fa-headset"></i>
+          </div>
+          <h3>Atención Personal</h3>
+          <p>Asesoramiento personalizado para encontrar tu fragancia ideal</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Featured Perfumes Carousel -->
+  <section id="catalogo" class="featured-perfumes">
+    <div class="container-info">
+      <div class="section-header">
+        <h2>Su regalo Perfecto</h2>
+        <p>Perfumes Seleccionados para su regalo del Dia de la Madre</p>
+      </div>
+      
+      <div class="carousel-container">
+        <button class="carousel-btn carousel-prev" onclick="moveCarousel(-1)">
+          <i class="fas fa-chevron-left"></i>
+        </button>
+        
+        <div class="carousel-wrapper">
+          <div class="carousel-track" id="carousel-track">
+            <!-- Los productos destacados se cargarán aquí -->
+          </div>
+        </div>
+        
+        <button class="carousel-btn carousel-next" onclick="moveCarousel(1)">
+          <i class="fas fa-chevron-right"></i>
+        </button>
+      </div>
+      
+      <div class="carousel-dots" id="carousel-dots">
+        <!-- Los puntos indicadores se generarán dinámicamente -->
+      </div>
+      
+      <div class="view-all-container">
+        <a href="catalogo.html" class="btn-catalogo">Ver Catálogo Completo</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- About Section -->
+  <section id="sobre-nosotros" class="about">
+    <div class="container-info">
+      <div class="about-content">
+        <div class="about-text">
+          <h2>Sobre Dm Parfum</h2>
+          <p>Somos especialistas en perfumes árabes auténticos, trayéndote las fragancias más exclusivas y elegantes del mundo árabe. Cada perfume en nuestro catálogo ha sido cuidadosamente seleccionado por su calidad, duración y autenticidad.</p>
+          <p>Nuestra pasión es compartir contigo la magia de estas fragancias únicas que capturan la esencia del lujo oriental.</p>
+          <div class="stats">
+            <div class="stat">
+              <h3>200+</h3>
+              <p>Clientes Satisfechos</p>
+            </div>
+            <div class="stat">
+              <h3>100+</h3>
+              <p>Fragancias Disponibles</p>
+            </div>
+            <div class="stat">
+              <h3>100%</h3>
+              <p>Autenticidad Garantizada</p>
+            </div>
+          </div>
+        </div>
+        <div class="about-image">
+          <div class="about-image-container">
+            <img class="about-logo" src="img/LogoPNG.png" alt="Dm Parfum Logo">
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact Section -->
+  <section id="contacto" class="contact">
+    <div class="container-info">
+      <div class="section-header">
+        <h2>Contáctanos</h2>
+        <p>¿Tienes alguna pregunta o quieres hacer un pedido?</p>
+      </div>
+      
+      <div class="contact-content">
+        <div class="contact-info">
+          <div class="contact-item">
+            <div class="contact-icon">
+              <i class="fab fa-whatsapp"></i>
+            </div>
+            <div class="contact-details">
+              <h3>WhatsApp - Juani</h3>
+              <p>+54 11 2712-0295</p>
+              <a href="https://wa.me/541127120295" class="contact-link">Enviar mensaje</a>
+            </div>
+          </div>
+          <div class="contact-item">
+            <div class="contact-icon">
+              <i class="fab fa-whatsapp"></i>
+            </div>
+            <div class="contact-details">
+              <h3>WhatsApp - Axel</h3>
+              <p>+54 11 6263-4332</p>
+              <a href="https://wa.me/541162634332" class="contact-link">Enviar mensaje</a>
+            </div>
+          </div>
+          
+          <div class="contact-item">
+            <div class="contact-icon">
+              <i class="fab fa-instagram"></i>
+            </div>
+            <div class="contact-details">
+              <h3>Instagram</h3>
+              <p>@dm.parfum_</p>
+              <a href="https://instagram.com/dm.parfum_" class="contact-link">Seguir</a>
+            </div>
+          </div>
+        </div>
+        
+        <div class="contact-form">
+          <form id="contact-form">
+            <div class="form-group">
+              <input type="text" id="name" name="name" placeholder="Tu nombre" required>
+            </div>
+            <div class="form-group">
+              <textarea id="message" name="message" placeholder="Tu mensaje" rows="4" required></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">Enviar Mensaje</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container-info">
+      <div class="footer-content">
+        <div class="footer-section">
+          <h3>Dm Parfum</h3>
+          <p>Perfumes árabes auténticos para una experiencia única</p>
+          <div class="social-links">
+            <a href="https://instagram.com/dm.parfum_"><i class="fab fa-instagram"></i></a>
+            <a href="https://wa.me/541162634332"><i class="fab fa-whatsapp"></i></a>
+          </div>
+        </div>
+        <div class="footer-section">
+          <h4>Enlaces Rápidos</h4>
+          <ul>
+            <li><a href="#inicio">Inicio</a></li>
+            <li><a href="#catalogo">Catálogo</a></li>
+            <li><a href="#sobre-nosotros">Nosotros</a></li>
+            <li><a href="#contacto">Contacto</a></li>
+          </ul>
+        </div>
+        <div class="footer-section">
+          <h4>Información</h4>
+          <ul>
+            <li><a href="#">Política de Privacidad</a></li>
+            <li><a href="#">Términos y Condiciones</a></li>
+            <li><a href="#">Envíos y Devoluciones</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2024 Dm Parfum. Todos los derechos reservados.</p>
+      </div>
+  </div>
+  </footer>
+
+  <script src="script.js?v=4"></script>
+  <script src="cart.js"></script>
+</body>
+</html>
+
