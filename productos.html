@@ -272,13 +272,44 @@
       document.getElementById('product-brand').textContent = product.brand;
       document.getElementById('product-description').textContent = product.description;
 
-      // Precio
+      // Precio - Verificar si tiene precio promocional
+      const hasPromo = product.promoPrice && product.promoPrice > 0 && product.category === 'femenino';
       const formattedPrice = new Intl.NumberFormat('es-CO', {
         style: 'currency',
         currency: 'COP',
         minimumFractionDigits: 0
       }).format(product.price);
-      document.getElementById('product-price').textContent = formattedPrice;
+      
+      const priceSection = document.querySelector('.product-price-section');
+      
+      if (hasPromo) {
+        const formattedPromoPrice = new Intl.NumberFormat('es-CO', {
+          style: 'currency',
+          currency: 'COP',
+          minimumFractionDigits: 0
+        }).format(product.promoPrice);
+        
+        priceSection.classList.add('promo');
+        priceSection.innerHTML = `
+          <div class="promo-price-container">
+            <span class="product-price original-price">${formattedPrice}</span>
+            <span class="product-price promo-price">${formattedPromoPrice}</span>
+          </div>
+          <div class="price-details">
+            <span class="price-label">Precio promocional</span>
+            <span class="price-note">Incluye envío</span>
+          </div>
+        `;
+      } else {
+        priceSection.classList.remove('promo');
+        priceSection.innerHTML = `
+          <span id="product-price" class="product-price">${formattedPrice}</span>
+          <div class="price-details">
+            <span class="price-label">Precio final</span>
+            <span class="price-note">Incluye envío</span>
+          </div>
+        `;
+      }
 
       // Detalles
       document.getElementById('detail-brand').textContent = product.brand;
@@ -306,6 +337,13 @@
       const badgesContainer = document.getElementById('product-badges');
       badgesContainer.innerHTML = '';
       
+      // Agregar badge de promoción si aplica
+      if (hasPromo) {
+        const promoBadge = document.createElement('div');
+        promoBadge.className = 'product-badge promo-badge-detail';
+        promoBadge.innerHTML = '🌸 PROMO';
+        badgesContainer.appendChild(promoBadge);
+      }
     }
 
     // Cargar productos relacionados
@@ -335,20 +373,47 @@
       const card = document.createElement('div');
       card.className = 'related-product-card';
       
-      const formattedPrice = new Intl.NumberFormat('es-CO', {
-        style: 'currency',
-        currency: 'COP',
-        minimumFractionDigits: 0
-      }).format(product.price);
+      // Verificar si tiene precio promocional
+      const hasPromo = product.promoPrice && product.promoPrice > 0 && product.category === 'femenino';
+      let priceHtml = '';
+      
+      if (hasPromo) {
+        const formattedPrice = new Intl.NumberFormat('es-CO', {
+          style: 'currency',
+          currency: 'COP',
+          minimumFractionDigits: 0
+        }).format(product.price);
+        
+        const formattedPromoPrice = new Intl.NumberFormat('es-CO', {
+          style: 'currency',
+          currency: 'COP',
+          minimumFractionDigits: 0
+        }).format(product.promoPrice);
+        
+        priceHtml = `
+          <div class="related-price-container">
+            <p class="related-product-price original-price">${formattedPrice}</p>
+            <p class="related-product-price promo-price">${formattedPromoPrice}</p>
+          </div>
+        `;
+      } else {
+        const formattedPrice = new Intl.NumberFormat('es-CO', {
+          style: 'currency',
+          currency: 'COP',
+          minimumFractionDigits: 0
+        }).format(product.price);
+        priceHtml = `<p class="related-product-price">${formattedPrice}</p>`;
+      }
 
       card.innerHTML = `
         <div class="related-product-image">
           <img src="${product.image}" alt="${product.name}" loading="lazy">
+          ${hasPromo ? '<div class="related-promo-badge">🌸 PROMO</div>' : ''}
         </div>
         <div class="related-product-info">
           <h4>${product.name}</h4>
           <p class="related-product-brand">${product.brand}</p>
-          <p class="related-product-price">${formattedPrice}</p>
+          ${priceHtml}
           <a href="productos.html?id=${product.id}" class="btn btn-primary btn-sm">Ver Detalles</a>
         </div>
       `;
@@ -370,7 +435,14 @@
       if (!currentProduct) return;
       
       if (typeof addProductToCart === 'function') {
-        addProductToCart(currentProduct);
+        // Usar precio promocional si aplica
+        const productToCart = {
+          ...currentProduct,
+          price: (currentProduct.promoPrice && currentProduct.promoPrice > 0 && currentProduct.category === 'femenino')
+            ? currentProduct.promoPrice
+            : currentProduct.price
+        };
+        addProductToCart(productToCart);
         showNotification('Producto agregado al carrito', 'success');
         updateCartCount();
       } else {

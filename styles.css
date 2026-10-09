@@ -816,6 +816,73 @@ h1, h2, h3, h4, h5, h6 {
   margin-bottom: 1rem;
 }
 
+/* Estilos para precios promocionales en carrusel */
+.carousel-item-promo {
+  background: linear-gradient(135deg, #fff5f8 0%, #fce4ec 50%, #f8bbd0 100%) !important;
+  border: 2px solid #f48fb1 !important;
+  box-shadow: 0 4px 20px rgba(233, 30, 99, 0.15) !important;
+  position: relative;
+  overflow: hidden;
+}
+
+.carousel-item-promo::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  right: -50%;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle, rgba(233, 30, 99, 0.08) 0%, transparent 70%);
+  border-radius: 50%;
+}
+
+.carousel-price-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  margin-bottom: 1rem;
+}
+
+.carousel-item-price.original-price {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  text-decoration: line-through;
+  opacity: 0.6;
+  margin-bottom: 0;
+  letter-spacing: 0.3px;
+}
+
+.carousel-item-price.promo-price {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #E91E63;
+  background: linear-gradient(135deg, #E91E63 0%, #C2185B 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 0;
+}
+
+.carousel-promo-badge {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: linear-gradient(135deg, #E91E63 0%, #C2185B 100%);
+  color: white;
+  padding: 0.4rem 0.8rem;
+  border-radius: 20px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  box-shadow: 0 3px 12px rgba(233, 30, 99, 0.35), 0 0 0 2px rgba(233, 30, 99, 0.1);
+  z-index: 10;
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  animation: shimmer 3s infinite;
+}
+
 .carousel-item-stock {
   font-size: 0.9rem;
   font-weight: 600;
@@ -1033,8 +1100,22 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .product-card-promo {
-  background: linear-gradient(135deg, #faeff3 0%, #f8d2df 100%);
-  border: 2px solid #f0035242;
+  background: linear-gradient(135deg, #fff5f8 0%, #fce4ec 50%, #f8bbd0 100%);
+  border: 2px solid #f48fb1;
+  box-shadow: 0 4px 20px rgba(233, 30, 99, 0.15);
+  position: relative;
+  overflow: hidden;
+}
+
+.product-card-promo::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  right: -50%;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle, rgba(233, 30, 99, 0.08) 0%, transparent 70%);
+  border-radius: 50%;
 }
 
 .product-card:hover {
@@ -1164,17 +1245,21 @@ h1, h2, h3, h4, h5, h6 {
 
 .promo-badge {
   position: absolute;
-  top: 10px;
-  right: 10px;
+  top: 12px;
+  right: 12px;
   background: linear-gradient(135deg, #E91E63 0%, #C2185B 100%);
   color: white;
-  padding: 0.4rem 0.8rem;
-  border-radius: 20px;
+  padding: 0.5rem 1rem;
+  border-radius: 25px;
   font-size: 0.75rem;
   font-weight: 700;
-  box-shadow: 0 2px 10px rgba(233, 30, 99, 0.3);
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  box-shadow: 0 3px 12px rgba(233, 30, 99, 0.35), 0 0 0 2px rgba(233, 30, 99, 0.1);
   z-index: 10;
-  animation: pulse 2s infinite;
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  animation: shimmer 3s infinite;
 }
 
 @keyframes pulse {
@@ -3567,6 +3652,142 @@ h1, h2, h3, h4, h5, h6 {
   font-weight: 700;
   color: var(--primary-color);
   margin-bottom: 1rem;
+}
+
+/* Estilos para precios promocionales en página de detalle */
+.promo-price-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.product-price-section.promo {
+  border-left-color: #E91E63;
+  background: linear-gradient(135deg, #fff5f8 0%, #fce4ec 50%, #f8bbd0 100%);
+  box-shadow: 0 4px 20px rgba(233, 30, 99, 0.15);
+  position: relative;
+  overflow: hidden;
+}
+
+.product-price-section.promo::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 100px;
+  height: 100px;
+  background: radial-gradient(circle, rgba(233, 30, 99, 0.1) 0%, transparent 70%);
+  border-radius: 50%;
+}
+
+.product-price-section .original-price {
+  font-size: 1.4rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  text-decoration: line-through;
+  opacity: 0.6;
+  letter-spacing: 0.5px;
+}
+
+.product-price-section .promo-price {
+  font-size: 3rem;
+  font-weight: 700;
+  color: #E91E63;
+  background: linear-gradient(135deg, #E91E63 0%, #C2185B 50%, #AD1457 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-shadow: 0 2px 10px rgba(233, 30, 99, 0.2);
+  position: relative;
+  z-index: 1;
+}
+
+/* Badge de promoción en página de detalle */
+.promo-badge-detail {
+  background: linear-gradient(135deg, #E91E63 0%, #C2185B 100%);
+  color: white;
+  padding: 0.8rem 1.5rem;
+  border-radius: 30px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  box-shadow: 0 4px 20px rgba(233, 30, 99, 0.4), 0 0 0 3px rgba(233, 30, 99, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  animation: shimmer 3s infinite;
+}
+
+@keyframes shimmer {
+  0%, 100% {
+    box-shadow: 0 4px 20px rgba(233, 30, 99, 0.4), 0 0 0 3px rgba(233, 30, 99, 0.1);
+  }
+  50% {
+    box-shadow: 0 4px 25px rgba(233, 30, 99, 0.5), 0 0 0 4px rgba(233, 30, 99, 0.2);
+  }
+}
+
+/* Estilos para precios promocionales en productos relacionados */
+.related-price-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  margin-bottom: 1rem;
+}
+
+.related-product-price.original-price {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  text-decoration: line-through;
+  opacity: 0.6;
+  margin-bottom: 0;
+  letter-spacing: 0.3px;
+}
+
+.related-product-price.promo-price {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #E91E63;
+  background: linear-gradient(135deg, #E91E63 0%, #C2185B 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 0;
+}
+
+.related-promo-badge {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: linear-gradient(135deg, #E91E63 0%, #C2185B 100%);
+  color: white;
+  padding: 0.4rem 0.8rem;
+  border-radius: 20px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  box-shadow: 0 3px 12px rgba(233, 30, 99, 0.35), 0 0 0 2px rgba(233, 30, 99, 0.1);
+  z-index: 5;
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.related-product-card {
+  position: relative;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.related-product-card.promo {
+  background: linear-gradient(135deg, #fff5f8 0%, #fce4ec 50%, #f8bbd0 100%);
+  border: 2px solid #f48fb1;
+  box-shadow: 0 4px 20px rgba(233, 30, 99, 0.15);
+}
+
+.related-product-card.promo:hover {
+  box-shadow: 0 8px 30px rgba(233, 30, 99, 0.25);
+  transform: translateY(-8px);
 }
 
 .btn-sm {

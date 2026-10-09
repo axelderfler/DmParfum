@@ -1675,11 +1675,39 @@ function createCarouselItem(product) {
   const item = document.createElement('div');
   item.className = 'carousel-item';
   
+  // Agregar clase especial si tiene precio promocional
+  if (product.promoPrice && product.promoPrice > 0 && product.category === 'femenino') {
+    item.classList.add('carousel-item-promo');
+  }
+  
   const formattedPrice = new Intl.NumberFormat('es-CO', {
     style: 'currency',
     currency: 'COP',
     minimumFractionDigits: 0
   }).format(product.price);
+  
+  // Verificar si tiene precio promocional
+  const hasPromo = product.promoPrice && product.promoPrice > 0 && product.category === 'femenino';
+  let priceHtml = '';
+  let promoBadge = '';
+  
+  if (hasPromo) {
+    const formattedPromoPrice = new Intl.NumberFormat('es-CO', {
+      style: 'currency',
+      currency: 'COP',
+      minimumFractionDigits: 0
+    }).format(product.promoPrice);
+    
+    priceHtml = `
+      <div class="carousel-price-container">
+        <p class="carousel-item-price original-price">${formattedPrice}</p>
+        <p class="carousel-item-price promo-price">${formattedPromoPrice}</p>
+      </div>
+    `;
+    promoBadge = '<div class="carousel-promo-badge">🌸 PROMO</div>';
+  } else {
+    priceHtml = `<p class="carousel-item-price">${formattedPrice}</p>`;
+  }
   
   const stockStatus = (typeof product.stock === 'number' && product.stock > 0) ? 
     `<span class="stock-available">Disponible (${product.stock})</span>` : 
@@ -1687,13 +1715,14 @@ function createCarouselItem(product) {
   
   item.innerHTML = `
     <div class="carousel-item-image" style="background-image: url('${product.image}')">
-      ${(typeof product.stock === 'number' && product.stock <= 2 && product.stock > 0) ? 
+      ${hasPromo ? '' : (typeof product.stock === 'number' && product.stock <= 2 && product.stock > 0) ? 
         '<div class="stock-warning">¡Últimas unidades!</div>' : ''}
+      ${promoBadge}
     </div>
     <div class="carousel-item-info">
       <h3 class="carousel-item-name">${product.name}</h3>
       <p class="carousel-item-brand">${product.brand}</p>
-      <p class="carousel-item-price">${formattedPrice}</p>
+      ${priceHtml}
       <div class="carousel-item-stock">${stockStatus}</div>
       <div class="carousel-item-actions">
         <a href="productos.html?id=${product.id}" class="btn btn-secondary">
