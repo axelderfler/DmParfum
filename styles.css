@@ -3329,8 +3329,8 @@ h1, h2, h3, h4, h5, h6 {
 
 .product-badges {
   position: absolute;
-  top: 1rem;
-  left: 1rem;
+  top: 0.5rem;
+  Right: 1rem;
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
