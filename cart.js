@@ -63,10 +63,10 @@ function addProductToCart(product) {
   
   // Verificar si el producto ya está en el carrito
   const existingItemIndex = cart.findIndex(item => item.id === product.id);
-  
-  // Usar precio promocional si aplica (perfume de mujer con promo)
-  const priceToUse = (product.promoPrice && product.promoPrice > 0 && product.category === 'femenino') 
-    ? product.promoPrice 
+
+  // Usar precio promocional si aplica (cuando existe precio promocional válido)
+  const priceToUse = (product.promoPrice && product.promoPrice > 0)
+    ? product.promoPrice
     : product.price;
   
   if (existingItemIndex !== -1) {

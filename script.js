@@ -337,16 +337,16 @@ function filterProducts() {
   const precioMax = parseFloat(document.getElementById('precio-max')?.value) || null;
   if (precioMin !== null) {
     result = result.filter(product => {
-      const effectivePrice = (product.promoPrice && product.promoPrice > 0 && product.category === 'femenino') 
-        ? product.promoPrice 
+      const effectivePrice = (product.promoPrice && product.promoPrice > 0)
+        ? product.promoPrice
         : product.price;
       return effectivePrice >= precioMin;
     });
   }
   if (precioMax !== null) {
     result = result.filter(product => {
-      const effectivePrice = (product.promoPrice && product.promoPrice > 0 && product.category === 'femenino') 
-        ? product.promoPrice 
+      const effectivePrice = (product.promoPrice && product.promoPrice > 0)
+        ? product.promoPrice
         : product.price;
       return effectivePrice <= precioMax;
     });
@@ -385,8 +385,8 @@ function filterProducts() {
       const aHasStock = hasStock(a);
       const bHasStock = hasStock(b);
       if (aHasStock !== bHasStock) return aHasStock ? -1 : 1;
-      const aPrice = (a.promoPrice && a.promoPrice > 0 && a.category === 'femenino') ? a.promoPrice : a.price;
-      const bPrice = (b.promoPrice && b.promoPrice > 0 && b.category === 'femenino') ? b.promoPrice : b.price;
+      const aPrice = (a.promoPrice && a.promoPrice > 0) ? a.promoPrice : a.price;
+      const bPrice = (b.promoPrice && b.promoPrice > 0) ? b.promoPrice : b.price;
       return bPrice - aPrice;
     });
   } else if (ordenar === 'precio-asc') {
@@ -394,8 +394,8 @@ function filterProducts() {
       const aHasStock = hasStock(a);
       const bHasStock = hasStock(b);
       if (aHasStock !== bHasStock) return aHasStock ? -1 : 1;
-      const aPrice = (a.promoPrice && a.promoPrice > 0 && a.category === 'femenino') ? a.promoPrice : a.price;
-      const bPrice = (b.promoPrice && b.promoPrice > 0 && b.category === 'femenino') ? b.promoPrice : b.price;
+      const aPrice = (a.promoPrice && a.promoPrice > 0) ? a.promoPrice : a.price;
+      const bPrice = (b.promoPrice && b.promoPrice > 0) ? b.promoPrice : b.price;
       return aPrice - bPrice;
     });
   } else if (ordenar === 'nombre-az') {
@@ -541,37 +541,37 @@ function loadProducts(animate = false) {
 function createProductCard(product) {
   const card = document.createElement('div');
   card.className = 'product-card';
-  // Agregar clase especial si tiene precio promocional
-  if (product.promoPrice && product.promoPrice > 0 && product.category === 'femenino') {
+  // Agregar clase especial si tiene precio promocional válido
+  const hasPromo = product.promoPrice && product.promoPrice > 0;
+  if (hasPromo) {
     card.classList.add('product-card-promo');
   }
   card.setAttribute('data-category', product.category);
-  
+
   const formattedPrice = new Intl.NumberFormat('es-CO', {
     style: 'currency',
     currency: 'COP',
     minimumFractionDigits: 0
   }).format(product.price);
-  
-  // Verificar si tiene precio promocional y es de mujer
-  const hasPromo = product.promoPrice && product.promoPrice > 0 && product.category === 'femenino';
+
+  // Verificar si tiene precio promocional válido
   let priceHtml = '';
   let promoBadge = '';
-  
+
   if (hasPromo) {
     const formattedPromoPrice = new Intl.NumberFormat('es-CO', {
       style: 'currency',
       currency: 'COP',
       minimumFractionDigits: 0
     }).format(product.promoPrice);
-    
+
     priceHtml = `
       <div class="price-container">
         <p class="product-price original-price">${formattedPrice}</p>
         <p class="product-price promo-price">${formattedPromoPrice}</p>
       </div>
     `;
-    promoBadge = '<div class="promo-badge">🌸 PROMO</div>';
+    promoBadge = '<div class="promo-badge">PROMO</div>';
   } else {
     priceHtml = `<p class="product-price">${formattedPrice}</p>`;
   }
@@ -1525,11 +1525,10 @@ function parseCSVToProducts(csvText) {
       };
       
       console.log('Producto creado:', product); // Debug
-      
-      // Solo agregar productos con stock > 0
-      if (product.stock > 0 || product.stock === 'Sin stock') {
-        products.push(product);
-      }
+
+      // Agregar todos los productos (con y sin stock)
+      // El carrusel filtrará solo los con stock
+      products.push(product);
     }
   }
   
@@ -1629,17 +1628,17 @@ function showNoProductsMessage() {
 
 // Funciones del carrusel
 function initializeCarousel() {
-  // Filtrar productos con stock > 0 y categoría femenino para el carrusel
-  carouselItems = productsData.filter(product => 
-    typeof product.stock === 'number' && product.stock > 0 && product.category === 'femenino'
+  // Filtrar productos con stock > 0 para el carrusel (sin restricción de categoría)
+  carouselItems = productsData.filter(product =>
+    typeof product.stock === 'number' && product.stock > 0
   );
-  
-  // Limitar a 9 productos para el carrusel
+
+  // Limitar a 12 productos para el carrusel
   carouselItems = carouselItems.slice(0, 12);
-  
+
   // Ajustar itemsPerView según el tamaño de pantalla
   updateCarouselItemsPerView();
-  
+
   loadCarouselItems();
   createCarouselDots();
   // Recalcular al redimensionar para evitar cortes y páginas en blanco
@@ -1674,37 +1673,37 @@ function loadCarouselItems() {
 function createCarouselItem(product) {
   const item = document.createElement('div');
   item.className = 'carousel-item';
-  
-  // Agregar clase especial si tiene precio promocional
-  if (product.promoPrice && product.promoPrice > 0 && product.category === 'femenino') {
+
+  // Agregar clase especial si tiene precio promocional válido
+  const hasPromo = product.promoPrice && product.promoPrice > 0;
+  if (hasPromo) {
     item.classList.add('carousel-item-promo');
   }
-  
+
   const formattedPrice = new Intl.NumberFormat('es-CO', {
     style: 'currency',
     currency: 'COP',
     minimumFractionDigits: 0
   }).format(product.price);
-  
-  // Verificar si tiene precio promocional
-  const hasPromo = product.promoPrice && product.promoPrice > 0 && product.category === 'femenino';
+
+  // Verificar si tiene precio promocional válido
   let priceHtml = '';
   let promoBadge = '';
-  
+
   if (hasPromo) {
     const formattedPromoPrice = new Intl.NumberFormat('es-CO', {
       style: 'currency',
       currency: 'COP',
       minimumFractionDigits: 0
     }).format(product.promoPrice);
-    
+
     priceHtml = `
       <div class="carousel-price-container">
         <p class="carousel-item-price original-price">${formattedPrice}</p>
         <p class="carousel-item-price promo-price">${formattedPromoPrice}</p>
       </div>
     `;
-    promoBadge = '<div class="carousel-promo-badge">🌸 PROMO</div>';
+    promoBadge = '<div class="carousel-promo-badge">PROMO</div>';
   } else {
     priceHtml = `<p class="carousel-item-price">${formattedPrice}</p>`;
   }
